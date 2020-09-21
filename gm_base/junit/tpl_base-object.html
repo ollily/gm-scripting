@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Test gm_base-object.js</title>
+<script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
+<script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
+</head>
+<body>
+<div id="divid1" title="tit1-0"></div>
+
+<input name="input1" value="i1-0" alt="alt1-0"/>
+<input name="input1" value="i1-1" alt="alt1-1"/>
+<input name="input2" value="i2-0" alt="alt2-0"/>
+
+<textarea id="ta1" name="ta1">content1-0</textarea>
+<textarea name="ta1">content1-1</textarea>
+<textarea id="ta2" name="ta2">content2-0</textarea>
+
+<textarea id="ta3" name="ta3"></textarea>
+<textarea name="ta3"></textarea>
+<textarea id="ta4" name="ta4"></textarea>
+
+
+<script type="text/javascript">
+
+/* ------- */
+o = gmCreateObj(null, null, null);
+if (null == o) {} else alert("11-00");
+
+o = gmCreateObj("", "", "");
+if (null == o) {} else alert("11-01");
+
+o = gmCreateObj(null, "div", null);
+if (null != o) {} else alert("11-02");
+if ("DIV" == o.tagName) {} else alert("11-03");
+
+o = gmCreateObj(null, "input", "inputid");
+if (null != o) {} else alert("11-11");
+if ("INPUT" == o.tagName) {} else alert("11-12");
+if ("inputid" == o.id) {} else alert("11-13");
+if ("inputid" == o.name) {} else alert("11-14");
+
+d = gmCreateObj(o, "input", "divid");
+if (null != d) {} else alert("11-20");
+if ("INPUT" == o.tagName) {} else alert("11-21");
+if ("divid" == d.id) {} else alert("11-22");
+if (null != o.firstChild) {} else alert("11-23");
+if ("divid" == o.firstChild.id) {} else alert("11-24");
+if ("divid" == o.firstChild.name) {} else alert("11-25");
+
+
+/* ------- */
+o = gmCreateObj(null, "input", "divid");
+c = gmCreateObjCommon(o, "cap", "tit", true);
+if (null != c) {} else alert("12-00");
+if ("INPUT" == o.tagName) {} else alert("12-01");
+if ("cap" == c.innerHTML) {} else alert("12-02");
+if ("tit" == c.title) {} else alert("12-03");
+if ("readonly" == c.getAttribute("readonly")) {} else alert("12-04");
+
+/* ------- */
+d = gmCreateButton(null, null, "btnid", "cap");
+if (null != d) {} else alert("13-00");
+if ("BUTTON" == d.tagName) {} else alert("13-01");
+if ("btnid" == d.id) {} else alert("13-02");
+if ("cap" == d.innerHTML) {} else alert("13-03");
+
+o = gmCreateObj(null, "div", "divid");
+e = gmCreateButton(o, null, "btnid", "cap");
+if (null != o) {} else alert("13-10");
+if ("DIV" == o.tagName) {} else alert("13-11");
+if ("BUTTON" == e.tagName) {} else alert("13-12");
+if ("btnid" == e.id) {} else alert("13-13");
+if ("cap" == e.innerHTML) {} else alert("13-14");
+
+/* ------- */
+f = gmCreateInput(null, null, "inputid");
+if (null != f) {} else alert("14-00");
+if ("INPUT" == f.tagName) {} else alert("14-01");
+if ("inputid" == f.id) {} else alert("14-02");
+if ("" == f.value) {} else alert("14-03");
+if ("text" == f.type) {} else alert("14-04");
+
+f = null;
+f = gmCreateInput(null, "password", "inputid", "initval", "title", true);
+if (null != f) {} else alert("14-10");
+if ("INPUT" == f.tagName) {} else alert("14-11");
+if ("inputid" == f.id) {} else alert("14-12");
+if ("initval" == f.value) {} else alert("14-13");
+if ("password" == f.type) {} else alert("14-14");
+if ("readonly" == f.getAttribute("readonly")) {} else alert("14-15");
+
+o = gmCreateObj(null, "div", "divid");
+f = null;
+f = gmCreateInput(o, "button", "inputid2", "", "title2");
+if (null != o) {} else alert("14-20");
+if ("DIV" == o.tagName) {} else alert("14-21");
+if ("INPUT" == f.tagName) {} else alert("14-22");
+if ("inputid2" == f.id) {} else alert("14-23");
+if ("" == f.value) {} else alert("14-24");
+if ("button" == f.type) {} else alert("14-25");
+if (null == f.getAttribute("readonly")) {} else alert("14-26");
+
+
+/* ------- */
+if (false == gmAddObj(null)) {} else alert("15-00");
+if (false == gmAddObj(null, null)) {} else alert("15-01");
+if (true == gmAddObj(gmCreateObj(null, "button", "ipadd1"))) {} else alert("15-02");
+if (true == gmAddObj(gmCreateObj(null, "button", "ipadd2"), null)) {} else alert("15-03");
+if (true == gmAddObj(gmCreateObj(null, "button", "ipadd31"), gmCreateObj(null, "button", "ipadd32"))) {} else alert("15-04");
+
+
+/* ------- */
+g = gmCreateObj(null, "input", "inputid");
+if (false == gmSetInput(null, null)) {} else alert("16-00");
+if (false == gmSetInput(null, "ip0")) {} else alert("16-01");
+if (true == gmSetInput(g, null)) {} else alert("16-02");
+if (true == gmSetInput(g, "ip2")) {} else alert("16-03");
+if (true == gmSetInput(g, new Object())) {} else alert("16-04");
+if (true == gmSetInput(g, new Array(1,5,43))) {} else alert("16-05");
+
+
+/* ------- */
+if (false == gmSelectInput(null)) {} else alert ("gmSelectInput-00");
+if (false == gmSelectInput("")) {} else alert ("gmSelectInput-01");
+if (false == gmSelectInput(new Object())) {} else alert ("gmSelectInput-02");
+
+if (true == gmSelectInput(gmGetElI("ta1"))) {} else alert ("gmSelectInput-10");
+
+
+/* ------- */
+var res = null;
+res = gmGetTextSelectMode();
+if (res == SELECT_IE || res == SELECT_G) {} else alert("gmGetTextSelectMode-00");
+
+
+/* ------- */
+if ("" == gmGetSelectedText()) {} else alert("gmGetSelectedText-00");
+
+
+/* ------- */
+var res = null;
+res = gmGetNewRange(null);
+if (SELECT_G == SELECT_CURR) {
+	if (null == res) {} else alert("gmGetNewRange-G-00");
+} else {
+	if (null != res) {} else alert("gmGetNewRange-I-00");
+}
+res = null;
+res = gmGetNewRange("");
+if (SELECT_G == SELECT_CURR) {
+	if (null == res) {} else alert("gmGetNewRange-G-01");
+} else {
+	if (null != res) {} else alert("gmGetNewRange-I-01");
+}
+res = null;
+res = gmGetNewRange(new Object());
+if (null != res) {} else alert("gmGetNewRange-02");
+
+res = null;
+res = gmGetNewRange(gmGetElI("ta1"));
+if (null != res) {} else alert("gmGetNewRange-10");
+
+
+/* ------- */
+gmSetCoI("ta2", "seltxt");
+
+var res = null;
+res = gmSelectText(null);
+if ("" == res) {} else alert("gmSelectText-00");
+res = null;
+res = gmSelectText("");
+if ("" == res) {} else alert("gmSelectText-01");
+res = null;
+res = gmSelectText(new Object());
+if ("" == res) {} else alert("gmSelectText-02");
+
+res = null;
+res = gmSelectText(gmGetElI("ta2"));
+if ("seltxt" == res) {} else alert("gmSelectText-10");
+
+/* not working
+res = null;
+res = gmSelectText(gmGetElI("ta2"));
+if ("seltxt" == res) {} else alert("gmSelectText-11");
+*/
+
+res = null;
+res = gmSelectText(gmGetElI("ta2"), false);
+if ("seltxt" == res) {} else alert("gmSelectText-20");
+res = null;
+res = gmSelectText(gmGetElI("ta2"), true);
+if ("seltxt" == res) {} else alert("gmSelectText-21");
+
+/* ------- */
+var res = null;
+var addO = gmCreateObj(gmGetEl("tagname", "body"), "input", "inputid4del");
+if (true == gmIsObject(addO)) {} else alert("gmDelObj-00 " + addO) ;
+res = gmDelObj(addO);
+if (true == res) {} else alert("gmDelObj-01 " + res);
+if (null == gmGetElI("inputid4del")) {} else alert("gmDelObj-02");
+
+
+/* ------- */
+var res = 2;
+var res = gmEmptyObj(null);
+if (false == res) {} else alert("gmEmptyObj-01 " + res);
+
+var res = 2;
+var res = gmEmptyObj("");
+if (false == res) {} else alert("gmEmptyObj-02 " + res);
+
+var res = 2;
+var res = gmEmptyObj(new Array());
+if (true == res) {} else alert("gmEmptyObj-03 " + res);
+
+var res = false;
+var addO = gmCreateObj(null, "div", "div1empty");
+var res = gmEmptyObj(addO);
+if (true == res) {} else alert("gmEmptyObj-03 " + res);
+if (0 == addO.children.length) {} else alert("gmEmptyObj-04 " + addO.children.length);
+
+var res = false;
+var addO1 = gmCreateObj(null, "div", "div1empty");
+gmCreateObj(addO1, "img", "img1empty");
+gmCreateObj(addO1, "img", "img2empty");
+gmCreateObj(addO1, "img", "img3empty");
+if (3 == addO1.children.length) {} else alert("gmEmptyObj-05 " + addO1.children.length);
+var res = gmEmptyObj(addO1);
+if (true == res) {} else alert("gmEmptyObj-06 " + res);
+if (0 == addO1.children.length) {} else alert("gmEmptyObj-07 " + addO1.children.length);
+
+
+</script>
+</body>
+</html>
