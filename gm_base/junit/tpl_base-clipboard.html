@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Test gm_base-clipboard.js</title>
+<script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
+<script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
+<script type="text/javascript" src="../tpl/tpl_base-web.js"></script>
+<script type="text/javascript" src="../tpl/tpl_base-clipboard.js"></script>
+</head>
+<body>
+<div id="divid1" title="tit1-0"></div>
+
+<input name="input1" value="i1-0" alt="alt1-0"/>
+<input name="input1" value="i1-1" alt="alt1-1"/>
+<input name="input2" value="i2-0" alt="alt2-0"/>
+
+<textarea id="ta1" name="ta1">content1-0</textarea>
+<textarea name="ta1">content1-1</textarea>
+<textarea id="ta2" name="ta2">content2-0</textarea>
+
+<textarea id="ta3" name="ta3"></textarea>
+<textarea name="ta3"></textarea>
+<textarea id="ta4" name="ta4"></textarea>
+
+<button onclick="return testgmCopy2clipboard()">gmCopy2clipboard</button>
+<button onclick="return testgmIsClipboardSupported()">gmIsClipboardSupported</button>
+<script type="text/javascript">
+/* ------- */
+if (null != gmClipRef()) {} else alert("gmClipRef-00 " + gmClipRef());
+
+/* ------- */
+/* not working since FF 16 */
+if (null == gmPrivsManager()) {} else alert("gmPrivsManager-00 " + gmPrivsManager());
+
+
+/* ------- */
+function testgmIsClipboardSupported(){
+	var res = null;
+	res = gmIsClipboardSupported();
+	if (res == true || res == false) {} else alert("gmIsClipboardSupported-00");
+}
+
+
+/* ------- */
+function testgmCopy2clipboard() {
+	var mustWork = gmIsClipboardSupported();
+	{
+		var expected = null;
+		var actual = gmCopy2clipboard(expected, true, null);
+		if (mustWork) {
+			if (expected == actual) {} else alert ("gmCopy2clipboard-00");
+		} else {
+			if (expected != actual) {} else alert ("gmCopy2clipboard-01");
+		}
+	}
+	{
+		var expected = new Date().toDateString();
+		var actual = gmCopy2clipboard(expected, true, null);
+		if (mustWork) {
+			if (expected == actual) {} else alert ("gmCopy2clipboard-10");
+		} else {
+			if (expected != actual) {} else alert ("gmCopy2clipboard-11");
+		}
+	}
+}
+
+/* ------- */
+gmAddClipboardSupport();
+var pagescripts = document.getElementsByTagName("script");
+var script_added = false;
+for ( var inti = 0; inti < pagescripts.length; inti++) {
+	content = gmGetCoI(pagescripts[inti]);
+	if (content != null && content.indexOf("function " + "gmClipRef()") > -1) {
+		script_added = true;
+		break;
+	}
+}
+if (true == script_added) {} else alert("gmAddClipboardSupport-00");
+
+
+</script>
+</body>
+</html>

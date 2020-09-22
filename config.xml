@@ -1,0 +1,29 @@
+<UserScriptConfig>
+	<Script filename="grab_links.user.js" name="Grab Links" namespace="http://userscripts.org/users/ollily" description="Lists all links on a page for clipboard copy" version="1.00.00" enabled="true" basedir="grab_links" modified="1296346592390" dependhash="da39a3ee5e6b4b0d3255bfef95601890afd80709">
+		<Include>http://gmonkey.*.*/test/*</Include>
+		<Include>http://devzone.*.*/test/gm/*</Include>
+		<Include>http://*.youtube.*/watch*</Include>
+		<Include>http://*.youtube.*/results*</Include>
+		<Include>http://*.youtube.*/user/*</Include>
+		<Include>http://youtube.*/watch*</Include>
+		<Include>http://youtube.*/results*</Include>
+		<Include>http://youtube.*/user/*</Include>
+	</Script>
+	<Script filename="xing_hover_images.user.js" name="XING Hover Images" namespace="http://userscripts.org/users/ollily" description="Enlarge all Profile Images to normal size" version="0.90.00" enabled="true" basedir="xing_hover_images" modified="1296346601359" dependhash="da39a3ee5e6b4b0d3255bfef95601890afd80709">
+		<Include>http://gmonkey.*.*/test/*</Include>
+		<Include>http://devzone.*.*/test/gm/*</Include>
+		<Include>https://*.xing.com/*</Include>
+		<Include>http://*.xing.com/*</Include>
+		<Include>https://xing.com/*</Include>
+		<Include>http://xing.com/*</Include>
+	</Script>
+	<Script filename="flickr_hover_images.user.js" name="Flickr Hover Images" namespace="http://userscripts.org/users/ollily" description="Enlarge all Thumbs to middle size" version="0.80.00" enabled="true" basedir="flickr_hover_images" modified="1296346595859" dependhash="da39a3ee5e6b4b0d3255bfef95601890afd80709">
+		<Include>http://gmonkey.*.*/test/*</Include>
+		<Include>http://devzone.*.*/test/gm/*</Include>
+		<Include>https://*.flickr.com/*</Include>
+		<Include>http://*.flickr.com/*</Include>
+		<Include>https://flickr.com/*</Include>
+		<Include>http://flickr.com/*</Include>
+	</Script>
+
+</UserScriptConfig>

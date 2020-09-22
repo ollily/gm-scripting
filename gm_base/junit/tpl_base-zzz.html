@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Test gm_base.user.js</title>
+<script type="text/javascript" src="../tpl/tpl_base.js"></script>
+</head>
+<body>
+<div id="divid1" title="tit1-0"></div>
+
+<input name="input1" value="i1-0" alt="alt1-0"/>
+<input name="input1" value="i1-1" alt="alt1-1"/>
+<input name="input2" value="i2-0" alt="alt2-0"/>
+
+<textarea id="ta1" name="ta1">content1-0</textarea>
+<textarea name="ta1">content1-1</textarea>
+<textarea id="ta2" name="ta2">content2-0</textarea>
+
+<textarea id="ta3" name="ta3"></textarea>
+<textarea name="ta3"></textarea>
+<textarea id="ta4" name="ta4"></textarea>
+
+
+<script type="text/javascript">
+
+var s1 = null;
+if (s1) alert("1-1obj");
+if (!s1) alert("1-2not obj");
+if (s1 == null) alert("1-3null");
+if (s1 != null) alert("1-4not null");
+
+var s2;
+if (s2) alert("2-1obj");
+if (!s2) alert("2-2not obj");
+if (s2 == null) alert("2-3null");
+if (s2 != null) alert("2-4not null");
+
+var s3 = "h";
+if (s3) alert("3-1obj " + typeof s3);
+if (!s3) alert("3-2not obj");
+if (s3 == null) alert("3-3null");
+if (s3 != null) alert("3-4not null");
+
+var s4 = new String("h");
+if (s4) alert("4-1obj " + typeof s4);
+if (!s4) alert("4-2not obj");
+if (s4 == null) alert("4-3null");
+if (s4 != null) alert("4-4not null");
+
+</script>
+</body>
+</html>
