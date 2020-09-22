@@ -531,6 +531,7 @@ function trim(a) {
  */
 function gmToNo(a) {
 	var numFound = "";
+<<<<<<< HEAD
 	if (isNaN(a)) {
 		if (a && a.length > 0) {
 			for ( var int = 0; int < a.length; int++) {
@@ -551,6 +552,19 @@ function gmToNo(a) {
 	return newNum;
 }
 
+=======
+	if (a && a.length > 0) {
+		for ( var int = 0; int < a.length; int++) {
+			var a_ele = a[int];
+			if (!isNaN(a_ele)) {
+				numFound += a_ele;
+			} else {
+			}
+		}
+	}
+	return eval(numFound);
+}
+>>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
 /**
  * Sorts an array by a specific sort order (alphanumeric).
  *

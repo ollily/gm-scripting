@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 REM $Id: build_env.cmd 45 2013-03-08 08:55:45Z ollily $
 
 set P1=%GM_COMMON%\%PRF%base-core.js
@@ -10,4 +11,18 @@ set gmname2=86396.user.js
 set tpldir=%~dp0\tpl
 
 set tgtfolder=xing_hover_images
+=======
+REM $Id: build_env.cmd 45 2013-03-08 08:55:45Z ollily $
+
+set P1=%GM_COMMON%\%PRF%base-core.js
+set P2=%GM_COMMON%\%PRF%base-object.js
+set P3=%GM_COMMON%\%PRF%base-web.js
+set P5=%PRF%xing_hover_images.js
+
+set gmname=xing_hover_images.user.js
+set gmname2=86396.user.js
+set tpldir=%~dp0\tpl
+
+set tgtfolder=xing_hover_images
+>>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
 set tgtname=86396.user.js
