@@ -12,9 +12,9 @@ var initFilter;
 
 var bshow = '\\/';
 var bhide = '/\\';
-var hmin = '25px';
-var hmax = '99.5%';
-var hmaxauto = 'auto';
+var hmin = '27px';
+var hmax = '99%';
+var hmaxauto = '99%';
 var hmaxlh = 14;
 var h_on = -1;
 var h_off = -2;

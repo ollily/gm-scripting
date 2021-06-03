@@ -1201,8 +1201,9 @@ function gmFindLinksInPage(sea, withDesc) {
         var searchText = new Array();
         searchText.push(gmGetAtI(curlink, "href"));
         if (withDesc != 0) {
-            searchText.push(gmGetAtI(curlink, "alt"));
             searchText.push(gmGetAtI(curlink, "title"));
+            searchText.push(gmGetAtI(curlink, "aria-label"));
+            searchText.push(gmGetAtI(curlink, "alt"));
             searchText.push(gmGetAtI(curlink, "onmouseover"));
             searchText.push(gmGetAtI(curlink, "onclick"));
             searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
@@ -1224,8 +1225,9 @@ function gmFindLinksInPage(sea, withDesc) {
                     var searchText = new Array();
                     searchText.push(curlink.text);
                     if (withDesc != 0) {
-                        searchText.push(gmGetAtI(curlink, "alt"));
                         searchText.push(gmGetAtI(curlink, "title"));
+                        searchText.push(gmGetAtI(curlink, "alt"));
+                        searchText.push(gmGetAtI(curlink, "aria-label"));
                         searchText.push(gmGetAtI(curlink, "onmouseover"));
                         searchText.push(gmGetAtI(curlink, "onclick"));
                         searchText.push(curlink.innerHTML);
@@ -1252,7 +1254,7 @@ function gmFindLinksInPage(sea, withDesc) {
 function gmFindLinksInPage0(arrText, sea) {
     var found = false;
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n"));
+        //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
@@ -1278,7 +1280,7 @@ function gmFindLinksInPage0(arrText, sea) {
 function gmFindLinksInPage1(arrText) {
     var searchTextClean = new Array("", "", "");
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n"));
+        //alert(arrText.join("\n----\n"));
         for (var idxST = 0; idxST < arrText.length; idxST++) {
             var aEle = arrText[idxST];
             if (aEle != null) {
