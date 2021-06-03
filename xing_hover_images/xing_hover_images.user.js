@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name			XING Hover Images
 // @fullname		Enlarge Profile Images
@@ -4626,4 +4625,4 @@ function lgm_addInitAction() {
 //
 // GM-Script specific code - END
 //
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

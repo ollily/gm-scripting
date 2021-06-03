@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 REM $Id: build_env.cmd 50 2013-03-25 07:31:39Z ollily $
 
 REM set C1=%GM_COMMON%\%PRF%jquery.js
@@ -32,4 +31,4 @@ set tpldir=%~dp0\tpl
 
 set tgtfolder=grab_links
 set tgtname=82191.user.js
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

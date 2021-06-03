@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
@@ -102,5 +101,5 @@ if "%tgtroot%" NEQ "" (
 		)
 ) else (
 	echo targetroot missing "%tgtroot%"
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+
 )

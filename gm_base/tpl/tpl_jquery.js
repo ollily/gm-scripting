@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ---------------
 // Import Libs - START
 // ---------------
@@ -54,4 +53,4 @@
 //---------------
 //Import Libs - END
 //---------------
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

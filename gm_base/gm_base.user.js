@@ -4,7 +4,6 @@
 // @description		General Library for Greasemonkey Scripts
 // @namespace		http://userscripts.org/users/ollily
 // @author			ollily2907
-<<<<<<< HEAD
 // @source			http://userscripts.org/scripts/show/
 // @run-at			document-end
 // @licence			http://www.gnu.org/licenses/gpl-3.0.txt
@@ -22,7 +21,7 @@
 // @version			0.50.02
 // @date			$LastChangedDate: 2014-05-28 22:26:22 +0200 (Mi, 28 Mai 2014) $
 // @revision		$LastChangedRevision: 61 $
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+
 // @include			http://gmonkey.*.*/test/6/*
 // @include			http://devzone.*.*/test/gm/*
 // ==/UserScript==

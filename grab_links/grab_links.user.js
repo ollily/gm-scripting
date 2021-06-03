@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name               Grab Links
 // @fullname           Grab Links
@@ -4844,4 +4843,4 @@ function lgm_addInitAction() {
 };
 
 gmInitEventHandler();
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

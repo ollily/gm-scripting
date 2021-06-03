@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name			XING Hover Images
 // @fullname		Enlarge Profile Images
@@ -30,4 +29,4 @@
 // @include         http://*.xing.com/*
 // @include         https://xing.com/*
 // @include         http://xing.com/*
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

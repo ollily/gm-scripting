@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name               Flickr Hover Images
 // @fullname           Enlarge Thumbs
@@ -4668,4 +4667,4 @@ function lgm_addInitAction() {
 //);
 
 gmInitEventHandler();
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

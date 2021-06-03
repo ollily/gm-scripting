@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
@@ -20,4 +19,4 @@
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="&quot;${workspace_loc:/gm_scripts/flickr_hover_images}&quot; &#13;&#10;&quot;C:\Dokumente und Einstellungen\ollily\Anwendungsdaten\Mozilla\Firefox\Profiles\4bytdj01.default\gm_scripts&quot;&#13;&#10;&quot;C:\Users\localpc\AppData\Roaming\Mozilla\Firefox\Profiles\qu5qapj0.default/gm_scripts&quot;"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/gm_scripts/flickr_hover_images}"/>
 </launchConfiguration>
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

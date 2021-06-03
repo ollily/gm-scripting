@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
@@ -280,4 +279,4 @@ echo finished building
 echo.
 
 endlocal
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

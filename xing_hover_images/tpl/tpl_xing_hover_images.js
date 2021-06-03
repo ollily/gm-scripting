@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 //
 // Global Code - END
@@ -972,4 +971,4 @@ window.onload =
 //		addHandler(e);
 //	}
 //);
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

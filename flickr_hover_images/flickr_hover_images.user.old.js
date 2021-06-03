@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name			Flickr Hover Images
 // @fullname		Enlarge Thumbs
@@ -1172,4 +1171,4 @@ $(window).ready(
 		addHandler2(e);
 	}
 );
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

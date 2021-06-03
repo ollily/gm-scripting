@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // @grant              unsafeWindow
 // @include            http://gmonkey.*.*/test/*
 // @include            http://devzone.*.*/test/gm/*
@@ -106,4 +105,4 @@
  2010-07-24
  - Initial Release
  */
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

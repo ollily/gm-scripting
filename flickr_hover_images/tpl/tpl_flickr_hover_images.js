@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* -------------------------------- */
 /**
  * Switch for debug-mode
@@ -447,4 +446,4 @@ function defineIds() {
 }
 
 
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

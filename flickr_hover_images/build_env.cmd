@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 REM $Id: build_env.cmd 58 2013-03-29 22:37:20Z ollily $
 
 set C1=%GM_COMMON%\%PRF%jquery.js
@@ -28,5 +27,5 @@ set gmname2=87112.user.js
 set tpldir=%~dp0\tpl
 
 set tgtfolder=flickr_hover_images
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+
 set tgtname=87112.user.js

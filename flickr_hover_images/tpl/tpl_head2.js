@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // @include            http://gmonkey.*.*/test/*
 // @include            http://devzone.*.*/test/gm/*
 // @include            /http(|s)\://(|.+?\.)flickr\.com/.*/
@@ -59,4 +58,4 @@ Known Bugs:
 - Does not work, if images are loaded via Ajax
 - Could not download orginal upload, if username is given
  */
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

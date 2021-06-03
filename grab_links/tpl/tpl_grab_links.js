@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Define the global variables used for this script.
  */
@@ -752,4 +751,4 @@ function lgmShowLinks(sea) {
 
 	return false;
 }
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // @include			http://gmonkey.*.*/test/*
 // @include			http://devzone.*.*/test/gm/*
 // ==/UserScript==
@@ -106,4 +105,4 @@ Known Bugs:
 // Global Code - START
 //
 
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

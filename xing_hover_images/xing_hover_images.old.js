@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name            XING Hover Images
 // @fullname        Enlarge Profile Images
@@ -1192,4 +1191,4 @@ $(window).ready(
 		addHandler(e);
 	}
 );
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

@@ -7,7 +7,6 @@
  *          unsafeWindow
  */
 function gmClipRef() {
-<<<<<<< HEAD
     var refWindow = window;
     if (!refWindow && unsafeWindow != null) {
         refWindow = unsafeWindow;
@@ -364,7 +363,7 @@ function gmIsClipboardSupported() {
 		alert("ERR: " + ex);
 	}
 	return isOK;
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+
 }
 
 // ---------------

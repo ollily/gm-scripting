@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name			Grab Links
 // @fullname		Grab Links
@@ -2692,4 +2691,4 @@ $(window).ready(
 		gm_addHandler(e);
 	}
 );
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

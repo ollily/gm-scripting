@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Adds site which should be known by this script.
  * Can be left empty.
@@ -118,4 +117,4 @@ function lgm_addInitAction() {
 //
 // GM-Script specific code - END
 //
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+

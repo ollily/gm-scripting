@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ==UserScript==
 // @name               Flickr Hover Images
 // @fullname           Enlarge Thumbs
@@ -28,4 +27,4 @@
 // @licence            http://www.gnu.org/licenses/gpl-3.0.txt
 // @licence            http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license            (CC) by-nc-sa
->>>>>>> branch 'master' of https://github.com/ollily/gm-scripting.git
+
