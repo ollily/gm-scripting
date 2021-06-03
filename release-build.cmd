@@ -55,7 +55,8 @@ if not exist "%tpldir%" (
 )
 
 echo.
-echo now building %gmfile%
+echo now building
+echo   "%gmfile%"
 echo.
 
 REM -----
@@ -129,12 +130,15 @@ REM -----
 REM copy file to browser target folder
 
 if "%gmfile2%" NEQ "" (
+    echo copy from   : "%gmfile%"
+    echo deploy-file : "%gmfile2%"
 	if exist "%gmfile2%" (rm "%gmfile2%")
 	copy /Y "%gmfile%" "%gmfile2%"
 )
 
 echo.
 echo finished building
+echo   "%gmfile%"
 echo.
 
 endlocal

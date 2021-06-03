@@ -8,7 +8,8 @@
 // @run-at			document-end
 // @licence			http://www.gnu.org/licenses/gpl-3.0.txt
 // @licence			http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license			(CC) by-nc-sa// @version			0.50.02
+// @license			(CC) by-nc-sa
+// @version			0.50.02
 // @date			$LastChangedDate: 2013-02-24 19:00:59 +0100 (Sun, 24 Feb 2013) $
 // @revision		$LastChangedRevision: 39 $
 // @include			http://gmonkey.*.*/test/6/*
@@ -18,6 +19,7 @@
 //
 // Global Code - START
 //
+
 
 //
 // Global Code - START
@@ -585,6 +587,59 @@ function gmToNo(a) {
 	}
 	return newNum;
 }
+
+/**
+ * Sorts an array by a specific sort order (alphanumeric).
+ *
+ * @param unsortedArray -
+ *            the aray which should be sorted
+ * @param sortmode -
+ *            the sort order or leave null to ignore sorting
+ * @returns {Array} the sorted array
+ */
+function gmSortArray(unsortedArray, sortmode) {
+	var sortedArray = unsortedArray;
+	if (sortmode == null) {
+		sortmode = false;
+	}
+	if (sortmode) {
+		sortedArray.sort();
+	}
+	return sortedArray;
+}
+
+/**
+ * The start point for all gmonkey scripts.
+ *
+ * @param e -
+ *            the occuring event
+ * @returns {Boolean} TRUE = if all handler are succesfull done, else FALSE
+ */
+function gmAddHandler(e) {
+	var isDone = false;
+	lgm_addKnownSites();
+	lgm_addStyles();
+	lgm_addControls();
+	lgm_addInitAction();
+	isDone = true;
+	return isDone;
+}
+
+
+/**
+* Now add the event handler.
+*/
+function gmInitEventHandler() {
+	if (INIT_ONLOAD) {
+		window.addEventListener("load",  function(e) {
+			gmAddHandler(e);
+		});
+	}
+}
+
+// ---------------
+// base-core.js - END
+// ---------------
 // ---------------
 // base-object.js - START
 // ---------------
@@ -1868,6 +1923,12 @@ function gmIsClipboardSupported() {
         alert("ERR: " + ex);
     }
     return isOK;
+}
+
+// ---------------
+// base-clipboard.js - END
+// ---------------
+
 //
 //GM-Script specific code - END
 //

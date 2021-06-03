@@ -27,7 +27,10 @@ if exist "%benv%" (
 )
 
 set bbuild=%BASE%\release-build.cmd
-echo D%tgtfolder%D
+echo.
+echo now deploying
+echo   "%tgtfolder%"
+echo.
 if exist "%bbuild%" (
 	call "%bbuild%"
 ) else (
