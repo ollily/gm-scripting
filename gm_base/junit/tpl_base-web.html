@@ -2,11 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Test gm_base-web.js</title>
-<script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
-<script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
-<script type="text/javascript" src="../tpl/tpl_base-web.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <title>Test gm_base-web.js</title>
+    <script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
+    <script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
+    <script type="text/javascript" src="../tpl/tpl_base-web.js"></script>
 </head>
 <body>
 <div id="divid1" title="tit1-0"></div>
@@ -16,37 +16,37 @@
 <input name="input2" value="i2-0" alt="alt2-0"/>
 
 <div id="divid2" title="tit2-0">
-	<textarea id="ta1" name="ta1">content1-0</textarea>
-	<textarea name="ta1">content1-1</textarea>
-	<textarea id="ta2" name="ta2">content2-0</textarea>
+    <textarea id="ta1" name="ta1">content1-0</textarea>
+    <textarea name="ta1">content1-1</textarea>
+    <textarea id="ta2" name="ta2">content2-0</textarea>
 
-	<textarea id="ta3" name="ta3"></textarea>
-	<textarea name="ta3"></textarea>
-	<textarea id="ta4" name="ta4"></textarea>
+    <textarea id="ta3" name="ta3"></textarea>
+    <textarea name="ta3"></textarea>
+    <textarea id="ta4" name="ta4"></textarea>
 </div>
 
-<img id="img1" src="img.jpg" alt="test" height="1" width="1" />
+<img id="img1" src="img.jpg" alt="test" height="1" width="1"/>
 
-<div id="divid10" title="tit10-0" >div10</div>
+<div id="divid10" title="tit10-0">div10</div>
 <br/>
 <div id="divid11" title="tit11-0" style="background-color:fuchsia">div11</div>
 <br/>
-<div id="divid12" title="tit12-0" >div12</div>
+<div id="divid12" title="tit12-0">div12</div>
 <br/>
-<div id="divid13" title="tit13-0" >div13</div>
+<div id="divid13" title="tit13-0">div13</div>
 <br/>
-<div id="divid14" title="tit14-0" >div14</div>
+<div id="divid14" title="tit14-0">div14</div>
 <br/>
 <div id="divid15" title="tit15-0" style="background-color:fuchsia;width:100px; height:220px">div15</div>
 <br/>
 <div id="divid16" title="tit16-0" style="background-color:fuchsia;width:100px; height:220px">div16</div>
 <br/>
 <img id="imgid20" src="pic.jpg" alt="altpic" title="titlepic" style="width:90px;height:60px"></img><br/>
-<div id="divid20" title="tit20-0" style="background-color:blue;width:10px;height:20px;" >div20<br/></div>
+<div id="divid20" title="tit20-0" style="background-color:blue;width:10px;height:20px;">div20<br/></div>
 <br/>
-<div id="divid21" title="tit21-0" style="background-color:blue;width:10px;height:20px;" >div21<br/></div>
+<div id="divid21" title="tit21-0" style="background-color:blue;width:10px;height:20px;">div21<br/></div>
 <br/>
-<div id="divid22" title="tit22-0" style="background-color:blue;width:10px;height:20px;" >div22<br/></div>
+<div id="divid22" title="tit22-0" style="background-color:blue;width:10px;height:20px;">div22<br/></div>
 <br/>
 
 <script type="text/javascript">
@@ -442,16 +442,16 @@ if ("fuchsia" == gmGetAtI(resStyle, "backgroundColor")) {} else alert("gmGetStyl
 
 (function() {
 
-	o = gmCreateObj(null, "div", "divdyn");
-	o.innerHTML = "DYN";
-//	if (unsafeWindow != null && unsafeWindow.jQuery) {
-		// alert(unsafeWindow.$.fn.jquery);
-//	} else {
-		// gmaddScriptLinkGlobal("http://code.jquery.com/jquery-latest.pack.js");
-//	}
-	// alert(unsafeWindow.jQuery);
-	// $("#idhallo").css("background-color", "red");
-	// gmaddScriptGlobal("//DATA");
+    o = gmCreateObj(null, "div", "divdyn");
+    o.innerHTML = "DYN";
+//    if (unsafeWindow != null && unsafeWindow.jQuery) {
+        // alert(unsafeWindow.$.fn.jquery);
+//    } else {
+        // gmaddScriptLinkGlobal("http://code.jquery.com/jquery-latest.pack.js");
+//    }
+    // alert(unsafeWindow.jQuery);
+    // $("#idhallo").css("background-color", "red");
+    // gmaddScriptGlobal("//DATA");
 })();
 
 </script>

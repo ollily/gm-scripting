@@ -9,12 +9,9 @@
 // @downloadURL        http://userscripts.org/scripts/source/87112.user.js
 // @updateURL          http://userscripts.org/scripts/source/87112.meta.js
 // @run-at             document-end
-// @licence            http://www.gnu.org/licenses/gpl-3.0.txt
-// @licence            http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license            (CC) by-nc-sa
-// @version            0.91.00
-// @date               $LastChangedDate: 2015-04-11 19:40:14 +0200 (Sat, 11 Apr 2015) $
-// @revision           $LastChangedRevision: 63 $
+// @license            Apache License, Version 2.0
+// @license            https://www.apache.org/licenses/LICENSE-2.0.txt
+// @version            0.92.000
 // @include            http://gmonkey.*.*/test/*
 // @include            http://devzone.*.*/test/gm/*
 // @include            /http(|s)\://(|.+?\.)flickr\.com/.*/
@@ -95,14 +92,14 @@ var currPort = document.location.port;
  */
 var currSite = currHost;
 if (document.location.port) {
-	currPort = ":" + document.location.port;
-	if (currSite.search(currPort) == -1) {
-		currSite += ":" + document.location.port;
-	}
+    currPort = ":" + document.location.port;
+    if (currSite.search(currPort) == -1) {
+        currSite += ":" + document.location.port;
+    }
 }
 var currPath = document.location.href.substring(document.location.href
-		.indexOf(currSite)
-		+ currSite.length);
+        .indexOf(currSite)
+        + currSite.length);
 
 var bTestMode = false;
 
@@ -119,21 +116,21 @@ var shortId = "id";
 var ATTR_SEP = ";";
 
 if (document.getElementById) {
-	DHTML = true;
-	DOM = true;
+    DHTML = true;
+    DOM = true;
 } else {
-	if (document.all) {
-		DHTML = true;
-		MSIE4 = true;
-	} else {
-		if (document.layers) {
-			DHTML = true;
-			NS4 = true;
-		}
-	}
+    if (document.all) {
+        DHTML = true;
+        MSIE4 = true;
+    } else {
+        if (document.layers) {
+            DHTML = true;
+            NS4 = true;
+        }
+    }
 }
 if (window.opera) {
-	OP = true;
+    OP = true;
 }
 
 /**
@@ -145,7 +142,7 @@ if (window.opera) {
  * @returns {Object} the found object or null
  */
 function gmGetElI(identifier) {
-	return gmGetEl(shortId, identifier, null);
+    return gmGetEl(shortId, identifier, null);
 }
 
 /**
@@ -160,67 +157,67 @@ function gmGetElI(identifier) {
  * @returns {Object} the found object or null
  */
 function gmGetEl(mode, identifier, elementNumber) {
-	var element, elementList;
-	if (gmIsObject(identifier)) {
-		return identifier;
-	}
-	if (!elementNumber) {
-		elementNumber = 0;
-	}
-	if (!gmIsInstanceOf(mode, String)) {
-		if (mode != null) {
-			alert(mode.id + " " + identifier.constructor);
-		} else {
-			alert(null);
-		}
-	}
-	if (DOM) {
-		if (mode.toLowerCase() == "id") {
-			element = document.getElementById(identifier);
-			return element;
-		}
-		if (mode.toLowerCase() == "name") {
-			elementList = document.getElementsByName(identifier);
-			element = elementList[elementNumber];
-			if (!element || element == "undefined") {
-				element = null;
-			}
-			return element;
-		}
-		if (mode.toLowerCase() == "tagname") {
-			elementList = document.getElementsByTagName(identifier);
-			element = elementList[elementNumber];
-			return element;
-		}
-		return null;
-	}
-	if (MSIE4) {
-		if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
-			element = document.all(identifier);
-			return element;
-		}
-		if (mode.toLowerCase() == "tagname") {
-			elementList = document.all.tags(identifier);
-			element = elementList[elementNumber];
-			return element;
-		}
-		return null;
-	}
-	if (NS4) {
-		if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
-			element = document[identifier];
-			if (!element) {
-				element = document.anchors[identifier];
-			}
-			return element;
-		}
-		if (mode.toLowerCase() == "layerindex") {
-			element = document.layers[identifier];
-			return element;
-		}
-		return null;
-	}
-	return null;
+    var element, elementList;
+    if (gmIsObject(identifier)) {
+        return identifier;
+    }
+    if (!elementNumber) {
+        elementNumber = 0;
+    }
+    if (!gmIsInstanceOf(mode, String)) {
+        if (mode != null) {
+            alert(mode.id + " " + identifier.constructor);
+        } else {
+            alert(null);
+        }
+    }
+    if (DOM) {
+        if (mode.toLowerCase() == "id") {
+            element = document.getElementById(identifier);
+            return element;
+        }
+        if (mode.toLowerCase() == "name") {
+            elementList = document.getElementsByName(identifier);
+            element = elementList[elementNumber];
+            if (!element || element == "undefined") {
+                element = null;
+            }
+            return element;
+        }
+        if (mode.toLowerCase() == "tagname") {
+            elementList = document.getElementsByTagName(identifier);
+            element = elementList[elementNumber];
+            return element;
+        }
+        return null;
+    }
+    if (MSIE4) {
+        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
+            element = document.all(identifier);
+            return element;
+        }
+        if (mode.toLowerCase() == "tagname") {
+            elementList = document.all.tags(identifier);
+            element = elementList[elementNumber];
+            return element;
+        }
+        return null;
+    }
+    if (NS4) {
+        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
+            element = document[identifier];
+            if (!element) {
+                element = document.anchors[identifier];
+            }
+            return element;
+        }
+        if (mode.toLowerCase() == "layerindex") {
+            element = document.layers[identifier];
+            return element;
+        }
+        return null;
+    }
+    return null;
 }
 
 /**
@@ -233,35 +230,35 @@ function gmGetEl(mode, identifier, elementNumber) {
  * @returns {Object} returns the found content as array or null
  */
 function gmGetElList(mode, identifier) {
-	if (gmIsObject(identifier)) {
-		return identifier;
-	}
-	if (identifier == null) {
-		return null;
-	}
-	if (DOM) {
-		if (mode.toLowerCase() == "name") {
-			return document.getElementsByName(identifier);
-		}
-		if (mode.toLowerCase() == "tagname") {
-			return document.getElementsByTagName(identifier);
-		}
-		return null;
-	}
-	if (MSIE4) {
-		if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
-			element = document.all(identifier);
-			return element;
-		}
-		if (mode.toLowerCase() == "tagname") {
-			return document.all.tags(identifier);
-		}
-		return null;
-	}
-	if (NS4) {
-		return gmGetEl(mode, identifier);
-	}
-	return null;
+    if (gmIsObject(identifier)) {
+        return identifier;
+    }
+    if (identifier == null) {
+        return null;
+    }
+    if (DOM) {
+        if (mode.toLowerCase() == "name") {
+            return document.getElementsByName(identifier);
+        }
+        if (mode.toLowerCase() == "tagname") {
+            return document.getElementsByTagName(identifier);
+        }
+        return null;
+    }
+    if (MSIE4) {
+        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
+            element = document.all(identifier);
+            return element;
+        }
+        if (mode.toLowerCase() == "tagname") {
+            return document.all.tags(identifier);
+        }
+        return null;
+    }
+    if (NS4) {
+        return gmGetEl(mode, identifier);
+    }
+    return null;
 }
 
 /**
@@ -274,7 +271,7 @@ function gmGetElList(mode, identifier) {
  * @returns {Object} returns the found attribute or false
  */
 function gmGetAtI(identifier, attributeName) {
-	return gmGetAt(shortId, identifier, null, attributeName);
+    return gmGetAt(shortId, identifier, null, attributeName);
 }
 
 /**
@@ -291,28 +288,28 @@ function gmGetAtI(identifier, attributeName) {
  * @returns {Object} returns the found attribute or null
  */
 function gmGetAt(mode, identifier, elementNumber, attributeName) {
-	var attribute = null;
-	var element = gmGetEl(mode, identifier, elementNumber);
-	if (element) {
-		if (DOM || MSIE4) {
-			try {
-				attribute = element[attributeName];
-			} catch (e) {
-				try {
-					attribute = element.getAttribute(attributeName);
-				} catch (e2) {
-					// ignored
-				}
-			}
-		}
-		if (NS4) {
-			attribute = element[attributeName];
-			if (!attribute) {
-				attribute = null;
-			}
-		}
-	}
-	return attribute;
+    var attribute = null;
+    var element = gmGetEl(mode, identifier, elementNumber);
+    if (element) {
+        if (DOM || MSIE4) {
+            try {
+                attribute = element[attributeName];
+            } catch (e) {
+                try {
+                    attribute = element.getAttribute(attributeName);
+                } catch (e2) {
+                    // ignored
+                }
+            }
+        }
+        if (NS4) {
+            attribute = element[attributeName];
+            if (!attribute) {
+                attribute = null;
+            }
+        }
+    }
+    return attribute;
 }
 
 /**
@@ -323,7 +320,7 @@ function gmGetAt(mode, identifier, elementNumber, attributeName) {
  * @returns {Object} returns the found content or null
  */
 function gmGetCoI(identifier) {
-	return gmGetCo(shortId, identifier, null);
+    return gmGetCo(shortId, identifier, null);
 }
 
 /**
@@ -338,23 +335,23 @@ function gmGetCoI(identifier) {
  * @returns {Object} returns the found content or null
  */
 function gmGetCo(mode, identifier, elementNumber) {
-	var content = null;
-	var element = gmGetEl(mode, identifier, elementNumber);
-	if (element) {
-		if (DOM && element.firstChild) {
-			if (element.firstChild.nodeType == 3) {
-				content = element.firstChild.nodeValue;
-			} else {
-				content = "";
-			}
-			return content;
-		}
-		if (MSIE4) {
-			content = element.innerText;
-			return content;
-		}
-	}
-	return content;
+    var content = null;
+    var element = gmGetEl(mode, identifier, elementNumber);
+    if (element) {
+        if (DOM && element.firstChild) {
+            if (element.firstChild.nodeType == 3) {
+                content = element.firstChild.nodeValue;
+            } else {
+                content = "";
+            }
+            return content;
+        }
+        if (MSIE4) {
+            content = element.innerText;
+            return content;
+        }
+    }
+    return content;
 }
 
 /**
@@ -367,7 +364,7 @@ function gmGetCo(mode, identifier, elementNumber) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gmSetCoI(identifier, text) {
-	return gmSetCo(shortId, identifier, null, text);
+    return gmSetCo(shortId, identifier, null, text);
 }
 
 /**
@@ -384,27 +381,27 @@ function gmSetCoI(identifier, text) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gmSetCo(mode, identifier, elementNumber, text) {
-	var element = gmGetEl(mode, identifier, elementNumber);
-	if (element) {
-		if (DOM) {
-			if (!element.firstChild) {
-				element.appendChild(document.createTextNode(""));
-			}
-			element.firstChild.nodeValue = text;
-			return true;
-		}
-		if (MSIE4) {
-			element.innerText = text;
-			return true;
-		}
-		if (NS4) {
-			element.document.open();
-			element.document.write(text);
-			element.document.close();
-			return true;
-		}
-	}
-	return false;
+    var element = gmGetEl(mode, identifier, elementNumber);
+    if (element) {
+        if (DOM) {
+            if (!element.firstChild) {
+                element.appendChild(document.createTextNode(""));
+            }
+            element.firstChild.nodeValue = text;
+            return true;
+        }
+        if (MSIE4) {
+            element.innerText = text;
+            return true;
+        }
+        if (NS4) {
+            element.document.open();
+            element.document.write(text);
+            element.document.close();
+            return true;
+        }
+    }
+    return false;
 }
 // - General DHTML-Lib - End
 
@@ -421,7 +418,7 @@ function gmSetCo(mode, identifier, elementNumber, text) {
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmSetAtI(identifier, attributeName, attributeValue) {
-	return gmSetAt(shortId, identifier, null, attributeName, attributeValue);
+    return gmSetAt(shortId, identifier, null, attributeName, attributeValue);
 }
 
 /**
@@ -439,29 +436,29 @@ function gmSetAtI(identifier, attributeName, attributeValue) {
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmSetAt(mode, identifier, elementNumber, attributeName, attributeValue) {
-	//var attribute;
-	var element = gmGetEl(mode, identifier, elementNumber);
-	if (element) {
-		if (DOM || MSIE4) {
-			try {
-				element[attributeName] = attributeValue;
-			} catch (e) {
-				try {
-					element.setAttribute(attributeName, attributeValue);
-				} catch (e2) {
-					// ignored
-				}
-			}
-			return true;
-			// return gmGetAt(mode, identifier, elementNumber, attributeName);
-		}
-		if (NS4) {
-			element[attributeName] = attributeValue;
-			return true;
-			// return gmGetAt(mode, identifier, elementNumber, attributeName);
-		}
-	}
-	return false;
+    //var attribute;
+    var element = gmGetEl(mode, identifier, elementNumber);
+    if (element) {
+        if (DOM || MSIE4) {
+            try {
+                element[attributeName] = attributeValue;
+            } catch (e) {
+                try {
+                    element.setAttribute(attributeName, attributeValue);
+                } catch (e2) {
+                    // ignored
+                }
+            }
+            return true;
+            // return gmGetAt(mode, identifier, elementNumber, attributeName);
+        }
+        if (NS4) {
+            element[attributeName] = attributeValue;
+            return true;
+            // return gmGetAt(mode, identifier, elementNumber, attributeName);
+        }
+    }
+    return false;
 }
 
 /**
@@ -479,9 +476,9 @@ function gmSetAt(mode, identifier, elementNumber, attributeName, attributeValue)
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmAppAt(mode, identifier, attributeName, attributeValue) {
-	var oldValue = gmGetAt(mode, identifier, attributeName);
-	var newValue = oldValue + ATTR_SEP + attributeValue;
-	return gmSetAt(mode, identifier, attributeName, newValue);
+    var oldValue = gmGetAt(mode, identifier, attributeName);
+    var newValue = oldValue + ATTR_SEP + attributeValue;
+    return gmSetAt(mode, identifier, attributeName, newValue);
 }
 
 /**
@@ -497,7 +494,7 @@ function gmAppAt(mode, identifier, attributeName, attributeValue) {
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmAppAtI(identifier, attributeName, attributeValue) {
-	return gmAppAt(shortId, identifier, attributeName, attributeValue);
+    return gmAppAt(shortId, identifier, attributeName, attributeValue);
 }
 
 /**
@@ -508,11 +505,11 @@ function gmAppAtI(identifier, attributeName, attributeValue) {
  * @returns {Boolean} TRUE=if instance is an array, else FALSE
  */
 function gmIsArray(obj) {
-	return gmIsInstanceOf(obj, Array);
+    return gmIsInstanceOf(obj, Array);
 }
 
 function gmIsFunction(obj) {
-	return gmIsInstanceOf(obj, Function);
+    return gmIsInstanceOf(obj, Function);
 }
 
 /**
@@ -523,7 +520,7 @@ function gmIsFunction(obj) {
  * @returns {Boolean} TRUE=if instance is an object, else FALSE
  */
 function gmIsObject(obj) {
-	return (obj == null ? false : (typeof obj == "object"));
+    return (obj == null ? false : (typeof obj == "object"));
 }
 
 /**
@@ -536,20 +533,20 @@ function gmIsObject(obj) {
  * @returns {Boolean} TRUE = if the object is from the tested type, else FALSE
  */
 function gmIsInstanceOf(obj, objType) {
-	var isType = false;
-	if (obj != null) {
-		if (objType == null) {
-			objType = "Object";
-		}
-		try {
-			tObjType = eval(objType);
-			isType = (obj.constructor == tObjType);
-		} catch (e) {
-			// ignore
-		}
-		// isType = (typeof obj) == objType;
-	}
-	return isType;
+    var isType = false;
+    if (obj != null) {
+        if (objType == null) {
+            objType = "Object";
+        }
+        try {
+            tObjType = eval(objType);
+            isType = (obj.constructor == tObjType);
+        } catch (e) {
+            // ignore
+        }
+        // isType = (typeof obj) == objType;
+    }
+    return isType;
 }
 
 /**
@@ -560,16 +557,16 @@ function gmIsInstanceOf(obj, objType) {
  * @returns {String} the trimmed string
  */
 function ltrim(a) {
-	var ret = null;
-	if (a != null) {
-		ret = new String(a);
-		var pos = 0;
-		while (a.charAt(pos) == " ") {
-			pos++;
-		}
-		ret = a.substring(pos);
-	}
-	return ret;
+    var ret = null;
+    if (a != null) {
+        ret = new String(a);
+        var pos = 0;
+        while (a.charAt(pos) == " ") {
+            pos++;
+        }
+        ret = a.substring(pos);
+    }
+    return ret;
 }
 
 /**
@@ -580,16 +577,16 @@ function ltrim(a) {
  * @returns {String} the trimmed string
  */
 function rtrim(a) {
-	var ret = null;
-	if (a != null) {
-		ret = new String(a);
-		var pos = a.length - 1;
-		while (a.charAt(pos) == " ") {
-			pos--;
-		}
-		ret = a.substring(0, pos + 1);
-	}
-	return ret;
+    var ret = null;
+    if (a != null) {
+        ret = new String(a);
+        var pos = a.length - 1;
+        while (a.charAt(pos) == " ") {
+            pos--;
+        }
+        ret = a.substring(0, pos + 1);
+    }
+    return ret;
 }
 
 /**
@@ -600,7 +597,7 @@ function rtrim(a) {
  * @returns {String} the trimmed string
  */
 function trim(a) {
-	return ltrim(rtrim(a));
+    return ltrim(rtrim(a));
 }
 
 /**
@@ -611,25 +608,25 @@ function trim(a) {
  * @returns {Number} the found numeric value or 0;
  */
 function gmToNo(a) {
-	var numFound = "";
-	if (isNaN(a)) {
-		if (a && a.length > 0) {
-			for ( var int = 0; int < a.length; int++) {
-				var a_ele = a[int];
-				if (!isNaN(a_ele)) {
-					numFound += a_ele;
-				} else {
-				}
-			}
-		}
-	} else {
-		numFound = a;
-	}
-	newNum = new Number(numFound).valueOf();
-	if (typeof(newNum) != "number") {
-		newNum = 0;
-	}
-	return newNum;
+    var numFound = "";
+    if (isNaN(a)) {
+        if (a && a.length > 0) {
+            for ( var int = 0; int < a.length; int++) {
+                var a_ele = a[int];
+                if (!isNaN(a_ele)) {
+                    numFound += a_ele;
+                } else {
+                }
+            }
+        }
+    } else {
+        numFound = a;
+    }
+    newNum = new Number(numFound).valueOf();
+    if (typeof(newNum) != "number") {
+        newNum = 0;
+    }
+    return newNum;
 }
 
 /**
@@ -642,14 +639,14 @@ function gmToNo(a) {
  * @returns {Array} the sorted array
  */
 function gmSortArray(unsortedArray, sortmode) {
-	var sortedArray = unsortedArray;
-	if (sortmode == null) {
-		sortmode = false;
-	}
-	if (sortmode) {
-		sortedArray.sort();
-	}
-	return sortedArray;
+    var sortedArray = unsortedArray;
+    if (sortmode == null) {
+        sortmode = false;
+    }
+    if (sortmode) {
+        sortedArray.sort();
+    }
+    return sortedArray;
 }
 
 /**
@@ -660,13 +657,13 @@ function gmSortArray(unsortedArray, sortmode) {
  * @returns {Boolean} TRUE = if all handler are succesfull done, else FALSE
  */
 function gmAddHandler(e) {
-	var isDone = false;
-	lgm_addKnownSites();
-	lgm_addStyles();
-	lgm_addControls();
-	lgm_addInitAction();
-	isDone = true;
-	return isDone;
+    var isDone = false;
+    lgm_addKnownSites();
+    lgm_addStyles();
+    lgm_addControls();
+    lgm_addInitAction();
+    isDone = true;
+    return isDone;
 }
 
 
@@ -674,11 +671,11 @@ function gmAddHandler(e) {
 * Now add the event handler.
 */
 function gmInitEventHandler() {
-	if (INIT_ONLOAD) {
-		window.addEventListener("load",  function(e) {
-			gmAddHandler(e);
-		});
-	}
+    if (INIT_ONLOAD) {
+        window.addEventListener("load",  function(e) {
+            gmAddHandler(e);
+        });
+    }
 }
 
 // ---------------
@@ -700,24 +697,24 @@ function gmInitEventHandler() {
  * @returns {Object} the created object or null
  */
 function gmCreateObj(par, objtyp, id) {
-	// var obj = $("<" + objtyp + ">");
-	var obj = null;
-	if (objtyp != null && objtyp != "") {
-		obj = document.createElement(objtyp);
-		if (obj) {
-			if (id != null) {
-				// obj.attr("id", id);
-				// obj.attr("name", id);
-				gmSetAtI(obj, "id", id);
-				gmSetAtI(obj, "name", id);
-			}
-			if (gmIsObject(par)) {
-				// $(par).append(obj);
-				par.appendChild(obj);
-			}
-		}
-	}
-	return obj;
+    // var obj = $("<" + objtyp + ">");
+    var obj = null;
+    if (objtyp != null && objtyp != "") {
+        obj = document.createElement(objtyp);
+        if (obj) {
+            if (id != null) {
+                // obj.attr("id", id);
+                // obj.attr("name", id);
+                gmSetAtI(obj, "id", id);
+                gmSetAtI(obj, "name", id);
+            }
+            if (gmIsObject(par)) {
+                // $(par).append(obj);
+                par.appendChild(obj);
+            }
+        }
+    }
+    return obj;
 }
 
 /**
@@ -738,27 +735,27 @@ function gmCreateObj(par, objtyp, id) {
  * @returns {Object} the object with added attributes FIXME: Check
  */
 function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
-	if (obj) {
-		// obj.attr("title", tit);
-		gmSetAtI(obj, "title", tit);
-		if (ro) {
-			// obj.attr("readonly", "readonly");
-			gmSetAtI(obj, "readonly", "readonly");
-		}
-		if (caption) {
-			// obj.append(caption);
-			gmSetCoI(obj, caption);
-		}
-		if (ev_click) {
-			// obj.click(ev_click);
-			obj.onclick = ev_click;
-		};
-		if (ev_focus) {
-			// obj.focus(ev_focus);
-			obj.onfocus = ev_focus;
-		};
-	}
-	return obj;
+    if (obj) {
+        // obj.attr("title", tit);
+        gmSetAtI(obj, "title", tit);
+        if (ro) {
+            // obj.attr("readonly", "readonly");
+            gmSetAtI(obj, "readonly", "readonly");
+        }
+        if (caption) {
+            // obj.append(caption);
+            gmSetCoI(obj, caption);
+        }
+        if (ev_click) {
+            // obj.click(ev_click);
+            obj.onclick = ev_click;
+        };
+        if (ev_focus) {
+            // obj.focus(ev_focus);
+            obj.onfocus = ev_focus;
+        };
+    }
+    return obj;
 }
 
 /**
@@ -781,16 +778,16 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
  * @returns {Object} the created DOM-Button
  */
 function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
-	var obj = gmCreateObj(par, "button", id);
-	obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
-	if (!typ) {
-		typ = "button";
-	}
-	gmSetAtI(obj, "type", typ);
-	if (initval) {
-		gmSetAtI(obj, "value", initval);
-	}
-	return obj;
+    var obj = gmCreateObj(par, "button", id);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    if (!typ) {
+        typ = "button";
+    }
+    gmSetAtI(obj, "type", typ);
+    if (initval) {
+        gmSetAtI(obj, "value", initval);
+    }
+    return obj;
 }
 
 /**
@@ -809,16 +806,16 @@ function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
  * @returns {Object} the created DOM-Link
  */
 function gmCreateLink(par, id, href, caption, tit, target, ev_click) {
-	var obj = gmCreateObj(par, "a", id);
-	obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
-	if (href) {
-		gmSetAtI(obj, "href", href);
-	}
-	if (target) {
-		gmSetAtI(obj, "target", target);
-	}
+    var obj = gmCreateObj(par, "a", id);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    if (href) {
+        gmSetAtI(obj, "href", href);
+    }
+    if (target) {
+        gmSetAtI(obj, "target", target);
+    }
 
-	return obj;
+    return obj;
 }
 
 /**
@@ -843,22 +840,22 @@ function gmCreateLink(par, id, href, caption, tit, target, ev_click) {
  * @returns {Object} the new DOM-Input
  */
 function gmCreateInput(par, typ, id, initval, tit, ro, ev_click, ev_focus) {
-	var obj = gmCreateObj(par, "input", id);
-	if (obj) {
-		obj = gmCreateObjCommon(obj, null, tit, ro, ev_click, ev_focus);
-		if (!typ) {
-			typ = "text";
-		}
-		gmSetAtI(obj, "type", typ);
-		if (initval) {
-			// obj.val(initval);
-			gmSetAtI(obj, "value", initval);
-		} else {
-			// obj.val("");
-			gmSetAtI(obj, "value", "");
-		}
-	}
-	return obj;
+    var obj = gmCreateObj(par, "input", id);
+    if (obj) {
+        obj = gmCreateObjCommon(obj, null, tit, ro, ev_click, ev_focus);
+        if (!typ) {
+            typ = "text";
+        }
+        gmSetAtI(obj, "type", typ);
+        if (initval) {
+            // obj.val(initval);
+            gmSetAtI(obj, "value", initval);
+        } else {
+            // obj.val("");
+            gmSetAtI(obj, "value", "");
+        }
+    }
+    return obj;
 }
 
 /**
@@ -872,15 +869,15 @@ function gmCreateInput(par, typ, id, initval, tit, ro, ev_click, ev_focus) {
  * @returns {Boolean} TRUE = the object could be added, else FALSE
  */
 function gmAddObj(obj, parent) {
-	var isSet = false;
-	if (gmIsObject(obj)) {
-		if (!parent) {
-			parent = gmGetEl("tagname", "body");
-		}
-		parent.appendChild(obj);
-		isSet = true;
-	}
-	return isSet;
+    var isSet = false;
+    if (gmIsObject(obj)) {
+        if (!parent) {
+            parent = gmGetEl("tagname", "body");
+        }
+        parent.appendChild(obj);
+        isSet = true;
+    }
+    return isSet;
 }
 
 /**
@@ -893,21 +890,21 @@ function gmAddObj(obj, parent) {
  * @returns {Boolean} TRUE = if the value could be set, else FALSE
  */
 function gmSetInput(id, initval) {
-	var isSet = false;
-	// var obj = document.getElementById(id);
-	var obj = gmGetElI(id);
-	if (obj) {
-		if (initval) {
-			// obj.setAttribute("value", initval);
-			gmSetAtI(obj, "value", initval);
-			isSet = true;
-		} else {
-			// obj.setAttribute("value", "");
-			gmSetAtI(obj, "value", "");
-			isSet = true;
-		}
-	}
-	return isSet;
+    var isSet = false;
+    // var obj = document.getElementById(id);
+    var obj = gmGetElI(id);
+    if (obj) {
+        if (initval) {
+            // obj.setAttribute("value", initval);
+            gmSetAtI(obj, "value", initval);
+            isSet = true;
+        } else {
+            // obj.setAttribute("value", "");
+            gmSetAtI(obj, "value", "");
+            isSet = true;
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -918,15 +915,15 @@ function gmSetInput(id, initval) {
  * @returns {Boolean} TRUE = if the input element could be selected, else FALSE
  */
 function gmSelectInput(inputElem) {
-	var isSet = false;
-	if (gmIsObject(inputElem)) {
-		try {
-			inputElem.select();
-			isSet = true;
-		} catch (e) {
-		}
-	}
-	return isSet;
+    var isSet = false;
+    if (gmIsObject(inputElem)) {
+        try {
+            inputElem.select();
+            isSet = true;
+        } catch (e) {
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -942,12 +939,12 @@ var SELECT_G = 1;
  * @returns {Number} which Selection of Text Modus is used
  */
 function gmGetTextSelectMode() {
-	if (document.selection && document.selection.createRange) {
-		return SELECT_IE;
-	} else if (document.createRange && window.getSelection) {
-		return SELECT_G;
-	}
-	return SELECT_IE;
+    if (document.selection && document.selection.createRange) {
+        return SELECT_IE;
+    } else if (document.createRange && window.getSelection) {
+        return SELECT_G;
+    }
+    return SELECT_IE;
 }
 /**
  * Constants Mode which is currently used for Selection of Text.
@@ -962,16 +959,16 @@ var SELECT_CURR = gmGetTextSelectMode();
  * @returns {String} the text which is currently selected.
  */
 function gmGetSelectedText() {
-	var selectedText = "";
-	if (SELECT_IE == SELECT_CURR) {
-		selectedText = document.selection.createRange().text;
-	} else if (SELECT_G == SELECT_CURR) {
-		selectedText = window.getSelection();
-	}
-	if (typeof selectedText == "object") {
-		selectedText = selectedText.toString();
-	}
-	return selectedText;
+    var selectedText = "";
+    if (SELECT_IE == SELECT_CURR) {
+        selectedText = document.selection.createRange().text;
+    } else if (SELECT_G == SELECT_CURR) {
+        selectedText = window.getSelection();
+    }
+    if (typeof selectedText == "object") {
+        selectedText = selectedText.toString();
+    }
+    return selectedText;
 }
 
 /**
@@ -982,20 +979,20 @@ function gmGetSelectedText() {
  * @returns {Range} a new Range-Object or null
  */
 function gmGetNewRange(elem) {
-	var textRange = null;
-	if (SELECT_IE == SELECT_CURR) {
-		textRange = document.selection.createRange();
-	} else if (SELECT_G == SELECT_CURR) {
-		if (gmIsObject(elem)) {
-			textRange = document.createRange();
-			try {
-				textRange.selectNode(elem);
-			} catch (e) {
-				// alert(e);
-			}
-		}
-	}
-	return textRange;
+    var textRange = null;
+    if (SELECT_IE == SELECT_CURR) {
+        textRange = document.selection.createRange();
+    } else if (SELECT_G == SELECT_CURR) {
+        if (gmIsObject(elem)) {
+            textRange = document.createRange();
+            try {
+                textRange.selectNode(elem);
+            } catch (e) {
+                // alert(e);
+            }
+        }
+    }
+    return textRange;
 }
 
 /**
@@ -1009,31 +1006,31 @@ function gmGetNewRange(elem) {
  * @returns {String} the selected text or an empty string
  */
 function gmSelectText(elem, bForceSelect) {
-	var currSel = gmGetSelectedText();
-	if (bForceSelect == null) {
-		bForceSelect = false;
-	}
-	if (!bForceSelect && (currSel && currSel != "")) {
-		if (SELECT_IE == SELECT_CURR) {
-			document.selection.empty;
-		} else if (SELECT_G == SELECT_CURR) {
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-		}
-	} else {
-		if (gmIsObject(elem)) {
-			var tRange = gmGetNewRange(elem);
-			if (SELECT_IE == SELECT_CURR) {
-				tRange.select();
-			} else if (SELECT_G == SELECT_CURR) {
-				var selection = window.getSelection();
-				selection.removeAllRanges();
-				selection.addRange(tRange);
-			}
-			currSel = gmGetSelectedText();
-		}
-	}
-	return currSel;
+    var currSel = gmGetSelectedText();
+    if (bForceSelect == null) {
+        bForceSelect = false;
+    }
+    if (!bForceSelect && (currSel && currSel != "")) {
+        if (SELECT_IE == SELECT_CURR) {
+            document.selection.empty;
+        } else if (SELECT_G == SELECT_CURR) {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+    } else {
+        if (gmIsObject(elem)) {
+            var tRange = gmGetNewRange(elem);
+            if (SELECT_IE == SELECT_CURR) {
+                tRange.select();
+            } else if (SELECT_G == SELECT_CURR) {
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(tRange);
+            }
+            currSel = gmGetSelectedText();
+        }
+    }
+    return currSel;
 }
 
 /**
@@ -1043,20 +1040,20 @@ function gmSelectText(elem, bForceSelect) {
  * @returns {Boolean} TRUE=the obj was deleted
  */
 function gmDelObj(obj) {
-	var isDel = false;
-	oObj = gmGetElI(obj);
-	if (gmIsObject(oObj)) {
-		var parent = oObj.parentNode;
-		if (gmIsObject(parent)) {
-			try {
-				parent.removeChild(oObj);
-				isDel = true;
-			} catch (e) {
-				alert("ERR: " + e);
-			}
-		}
-	}
-	return isDel;
+    var isDel = false;
+    oObj = gmGetElI(obj);
+    if (gmIsObject(oObj)) {
+        var parent = oObj.parentNode;
+        if (gmIsObject(parent)) {
+            try {
+                parent.removeChild(oObj);
+                isDel = true;
+            } catch (e) {
+                alert("ERR: " + e);
+            }
+        }
+    }
+    return isDel;
 }
 
 /**
@@ -1066,15 +1063,15 @@ function gmDelObj(obj) {
  * @returns {Boolean} TRUE = always, if obj is an object, FALSE = obj is null or not an object
  */
 function gmEmptyObj(obj) {
-	var isEmpty = false;
-	oObj = gmGetElI(obj);
-	if (gmIsObject(oObj)) {
-		while (oObj.firstChild) {
-			oObj.removeChild(oObj.firstChild);
-		};
-		isEmpty = true;
-	}
-	return isEmpty;
+    var isEmpty = false;
+    oObj = gmGetElI(obj);
+    if (gmIsObject(oObj)) {
+        while (oObj.firstChild) {
+            oObj.removeChild(oObj.firstChild);
+        };
+        isEmpty = true;
+    }
+    return isEmpty;
 }
 
 // ---------------
@@ -1104,15 +1101,15 @@ var maxWidth = 640;
  *            a path as regular expression (optional)
  */
 function gmAddSite(filter, site, path) {
-	if (knownSite) {
-		if (site && (site != "")) {
-			var len = knownSite.length;
-			knownSite[len] = new Object();
-			knownSite[len].site = site;
-			knownSite[len].filter = (filter != null ? filter : ".+");
-			knownSite[len].path = (path != null ? path : "");
-		}
-	}
+    if (knownSite) {
+        if (site && (site != "")) {
+            var len = knownSite.length;
+            knownSite[len] = new Object();
+            knownSite[len].site = site;
+            knownSite[len].filter = (filter != null ? filter : ".+");
+            knownSite[len].path = (path != null ? path : "");
+        }
+    }
 }
 
 /**
@@ -1133,18 +1130,18 @@ function gmAddSite(filter, site, path) {
  *            1=will add a download-link beneath the picture, else 0
  */
 function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDownload) {
-	if (knownSite) {
-		if (site && site.length > 0) {
-			var len = knownSite.length;
-			knownSite[len] = new Object();
-			knownSite[len].site = site;
-			knownSite[len].url = (urlElem != null ? urlElem : ".+");
-			knownSite[len].search = (urlSearch != null ? urlSearch : "");
-			knownSite[len].replace = (urlReplace != null ? urlReplace : "");
-			knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
-			knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
-		}
-	}
+    if (knownSite) {
+        if (site && site.length > 0) {
+            var len = knownSite.length;
+            knownSite[len] = new Object();
+            knownSite[len].site = site;
+            knownSite[len].url = (urlElem != null ? urlElem : ".+");
+            knownSite[len].search = (urlSearch != null ? urlSearch : "");
+            knownSite[len].replace = (urlReplace != null ? urlReplace : "");
+            knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
+            knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
+        }
+    }
 }
 
 /**
@@ -1159,33 +1156,33 @@ function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withD
  * @returns {String} the predefined searchtext
  */
 function gmFoundFilter(site, path) {
-	var retFilter = "";
-	var init = 0;
-	if (knownSite && site) {
-		if (!path) {
-			path = "";
-		}
-		// alert("site: " + site + "| path: " + path);
-		for ( var i = 0; i < knownSite.length; i++) {
-			// alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
-			if (site.search(knownSite[i].site) >= 0) {
-				if (init == 0 && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					init = 1;
-				}
-				var fIdx = path.search(knownSite[i].path);
-				//alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
-				if (path != "" && (fIdx >= 0)) {
-					retFilter = knownSite[i].filter;
-					break;
-				} else if (path == "" && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					break;
-				}
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = "";
+    var init = 0;
+    if (knownSite && site) {
+        if (!path) {
+            path = "";
+        }
+        // alert("site: " + site + "| path: " + path);
+        for ( var i = 0; i < knownSite.length; i++) {
+            // alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
+            if (site.search(knownSite[i].site) >= 0) {
+                if (init == 0 && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    init = 1;
+                }
+                var fIdx = path.search(knownSite[i].path);
+                //alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
+                if (path != "" && (fIdx >= 0)) {
+                    retFilter = knownSite[i].filter;
+                    break;
+                } else if (path == "" && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    break;
+                }
+            }
+        }
+    }
+    return retFilter;
 }
 
 /**
@@ -1198,15 +1195,15 @@ function gmFoundFilter(site, path) {
  * @return a pattern for the html-element to search in the page
  */
 function gmFoundFilter2(site) {
-	var retFilter = null;
-	if (knownSite != null && site != null) {
-		for (var i=0; i < knownSite.length; i++) {
-			if (site.search(knownSite[i].site) >= 0 ) {
-				retFilter = knownSite[i];
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = null;
+    if (knownSite != null && site != null) {
+        for (var i=0; i < knownSite.length; i++) {
+            if (site.search(knownSite[i].site) >= 0 ) {
+                retFilter = knownSite[i];
+            }
+        }
+    }
+    return retFilter;
 }
 
 var FL_TAG = "fltag";
@@ -1222,69 +1219,69 @@ var FL_ID = "_FL";
  * @returns {Array} an array with all found links
  */
 function gmFindLinksInPage(sea, withDesc) {
-	//
-	if (withDesc == null) {
-		withDesc = 0;
-	}
-	var pagelinks = new Array();
+    //
+    if (withDesc == null) {
+        withDesc = 0;
+    }
+    var pagelinks = new Array();
 
-	if (!sea || sea.length <= 0) {
-		sea = ".*";
-	} else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
-		sea = sea.substring(1, sea.length);
-		sea = sea.substring(0, sea.length -1);
-	} else {
-		sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-	}
-	//alert(sea);
-	sea = new RegExp(sea, "i");
-	for (var i=0; i < document.links.length; i++) {
-		var curlink = document.links[i];
-		var ne = 1;
+    if (!sea || sea.length <= 0) {
+        sea = ".*";
+    } else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
+        sea = sea.substring(1, sea.length);
+        sea = sea.substring(0, sea.length -1);
+    } else {
+        sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+    }
+    //alert(sea);
+    sea = new RegExp(sea, "i");
+    for (var i=0; i < document.links.length; i++) {
+        var curlink = document.links[i];
+        var ne = 1;
 
-		//var searchText = curlink.href;
-		var searchText = new Array();
-		searchText.push(gmGetAtI(curlink, "href"));
-		if (withDesc != 0) {
-			searchText.push(gmGetAtI(curlink, "alt"));
-			searchText.push(gmGetAtI(curlink, "title"));
-			searchText.push(gmGetAtI(curlink, "onmouseover"));
-			searchText.push(gmGetAtI(curlink, "onclick"));
-			searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-		}
-		var found = gmFindLinksInPage0(searchText, sea);
+        //var searchText = curlink.href;
+        var searchText = new Array();
+        searchText.push(gmGetAtI(curlink, "href"));
+        if (withDesc != 0) {
+            searchText.push(gmGetAtI(curlink, "alt"));
+            searchText.push(gmGetAtI(curlink, "title"));
+            searchText.push(gmGetAtI(curlink, "onmouseover"));
+            searchText.push(gmGetAtI(curlink, "onclick"));
+            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+        }
+        var found = gmFindLinksInPage0(searchText, sea);
 
-		if (found) {
-			if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
-				var htmllink = gmGetAtI(curlink, "href");
+        if (found) {
+            if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
+                var htmllink = gmGetAtI(curlink, "href");
 
-				for (var j=0; j < pagelinks.length; j++) {
-					if (htmllink == pagelinks[j][0]) {
-						// link allready added, avoiding duplicates
-						ne = 0; break;
-					}
-				}
-				if (ne == 1) {
+                for (var j=0; j < pagelinks.length; j++) {
+                    if (htmllink == pagelinks[j][0]) {
+                        // link allready added, avoiding duplicates
+                        ne = 0; break;
+                    }
+                }
+                if (ne == 1) {
 
-					var searchText = new Array();
-					searchText.push(curlink.text);
-					if (withDesc != 0) {
-						searchText.push(gmGetAtI(curlink, "alt"));
-						searchText.push(gmGetAtI(curlink, "title"));
-						searchText.push(gmGetAtI(curlink, "onmouseover"));
-						searchText.push(gmGetAtI(curlink, "onclick"));
-						searchText.push(curlink.innerHTML);
-					}
-					var htmltext = gmFindLinksInPage1(searchText);
+                    var searchText = new Array();
+                    searchText.push(curlink.text);
+                    if (withDesc != 0) {
+                        searchText.push(gmGetAtI(curlink, "alt"));
+                        searchText.push(gmGetAtI(curlink, "title"));
+                        searchText.push(gmGetAtI(curlink, "onmouseover"));
+                        searchText.push(gmGetAtI(curlink, "onclick"));
+                        searchText.push(curlink.innerHTML);
+                    }
+                    var htmltext = gmFindLinksInPage1(searchText);
 
-					//alert("L: "+htmllink + " T: " + htmltext);
-					var curlink = new Array(htmllink, htmltext);
-					pagelinks.push(curlink);
-				}
-			}
-		}
-	}
-	return pagelinks;
+                    //alert("L: "+htmllink + " T: " + htmltext);
+                    var curlink = new Array(htmllink, htmltext);
+                    pagelinks.push(curlink);
+                }
+            }
+        }
+    }
+    return pagelinks;
 }
 
 /**
@@ -1295,23 +1292,23 @@ function gmFindLinksInPage(sea, withDesc) {
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
 function gmFindLinksInPage0(arrText, sea) {
-	var found = false;
-	if (gmIsArray(arrText)) {
-		//alert(arrText.join("\n"));
-		for (var i=0; i < arrText.length; i++) {
-			var searchText = arrText[i];
-			try {
-				found = searchText.search(sea) != -1;
-			} catch (e) {
-				// ignored
-			}
-			//alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
-			if (found) {
-				break;
-			}
-		}
-	}
-	return found;
+    var found = false;
+    if (gmIsArray(arrText)) {
+        //alert(arrText.join("\n"));
+        for (var i=0; i < arrText.length; i++) {
+            var searchText = arrText[i];
+            try {
+                found = searchText.search(sea) != -1;
+            } catch (e) {
+                // ignored
+            }
+            //alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
+            if (found) {
+                break;
+            }
+        }
+    }
+    return found;
 }
 
 /**
@@ -1321,64 +1318,64 @@ function gmFindLinksInPage0(arrText, sea) {
  * @returns {String} the final link description
  */
 function gmFindLinksInPage1(arrText) {
-	var searchTextClean = new Array("", "", "");
-	if (gmIsArray(arrText)) {
-		//alert(arrText.join("\n"));
-		for (var idxST = 0; idxST < arrText.length; idxST++) {
-			var aEle = arrText[idxST];
-			if (aEle != null) {
-				try {
-					aEle = ("" + aEle).replace("\\n", "").replace("#", "").trim();
-					if (aEle != "") {
-						var tarIdx = -1;
-						switch (idxST) {
-						case 0:
-						case 1:
-						case 2:
-							tarIdx = 0;
-							break;
-						case 3:
-						case 4:
-							tarIdx = 1;
-							break;
-						case 5:
-							tarIdx = 2;
-							break;
-						default:
-							break;
-						}
-						if (tarIdx > -1) {
-							if (searchTextClean[tarIdx].search(aEle) == -1) {
-								if (searchTextClean[tarIdx] != "") {
-									searchTextClean[tarIdx] += "\n";
-								}
-								searchTextClean[tarIdx] += aEle;
-							}
-						}
-					}
-				} catch (e) {
-					// ignored
-				}
-			}
-		}
-	}
+    var searchTextClean = new Array("", "", "");
+    if (gmIsArray(arrText)) {
+        //alert(arrText.join("\n"));
+        for (var idxST = 0; idxST < arrText.length; idxST++) {
+            var aEle = arrText[idxST];
+            if (aEle != null) {
+                try {
+                    aEle = ("" + aEle).replace("\\n", "").replace("#", "").trim();
+                    if (aEle != "") {
+                        var tarIdx = -1;
+                        switch (idxST) {
+                        case 0:
+                        case 1:
+                        case 2:
+                            tarIdx = 0;
+                            break;
+                        case 3:
+                        case 4:
+                            tarIdx = 1;
+                            break;
+                        case 5:
+                            tarIdx = 2;
+                            break;
+                        default:
+                            break;
+                        }
+                        if (tarIdx > -1) {
+                            if (searchTextClean[tarIdx].search(aEle) == -1) {
+                                if (searchTextClean[tarIdx] != "") {
+                                    searchTextClean[tarIdx] += "\n";
+                                }
+                                searchTextClean[tarIdx] += aEle;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // ignored
+                }
+            }
+        }
+    }
 
-	var htmltext = "";
+    var htmltext = "";
 
-	if (searchTextClean.length > 0) {
-		//alert(searchTextClean.join("\n"));
-		if (searchTextClean[0] != "") {
-			htmltext = searchTextClean[0];
-		} else if (searchTextClean[1] != "") {
-			htmltext = searchTextClean[1];
-		} else if (searchTextClean[2] != "") {
-			htmltext = searchTextClean[2];
-		}
-	}
-	if (htmltext == null || htmltext == "") {
-		htmltext = "n/a";
-	}
-	return htmltext;
+    if (searchTextClean.length > 0) {
+        //alert(searchTextClean.join("\n"));
+        if (searchTextClean[0] != "") {
+            htmltext = searchTextClean[0];
+        } else if (searchTextClean[1] != "") {
+            htmltext = searchTextClean[1];
+        } else if (searchTextClean[2] != "") {
+            htmltext = searchTextClean[2];
+        }
+    }
+    if (htmltext == null || htmltext == "") {
+        htmltext = "n/a";
+    }
+    return htmltext;
 }
 
 /**
@@ -1390,26 +1387,26 @@ function gmFindLinksInPage1(arrText) {
  * @returns {Boolean} TRUE = if the script block could be set, else FALSE
  */
 function gmAddScriptGlobal(scc) {
-	var isSet = false;
-	if (gmIsObject(scc) || gmIsFunction(scc) || (scc && scc.length > 0)) {
-		var head = gmGetHead();
-		if (head) {
-			var script = gmCreateObj(head, "script");
-			script.type = 'text/javascript';
+    var isSet = false;
+    if (gmIsObject(scc) || gmIsFunction(scc) || (scc && scc.length > 0)) {
+        var head = gmGetHead();
+        if (head) {
+            var script = gmCreateObj(head, "script");
+            script.type = 'text/javascript';
 
-			var allscc = "";
-			if (gmIsArray(scc)) {
-				for ( var i = 0; i < scc.length; i++) {
-					allscc += scc[i] + " \n";
-				}
-			} else {
-				allscc = scc;
-			}
-			gmSetCoI(script, "\n" + allscc + "\n");
-			isSet = true;
-		}
-	}
-	return isSet;
+            var allscc = "";
+            if (gmIsArray(scc)) {
+                for ( var i = 0; i < scc.length; i++) {
+                    allscc += scc[i] + " \n";
+                }
+            } else {
+                allscc = scc;
+            }
+            gmSetCoI(script, "\n" + allscc + "\n");
+            isSet = true;
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -1420,24 +1417,24 @@ function gmAddScriptGlobal(scc) {
  *            Check
  */
 function gmAddScriptLinkGlobal(scLink) {
-	var isSet = false;
-	var head = gmGetHead();
-	if (head && scLink && scLink.length > 0) {
-		var allScLink = new Array();
-		if (gmIsArray(scLink)) {
-			allScLink = scLink;
-		} else {
-			allScLink = new Array(scLink);
-		}
+    var isSet = false;
+    var head = gmGetHead();
+    if (head && scLink && scLink.length > 0) {
+        var allScLink = new Array();
+        if (gmIsArray(scLink)) {
+            allScLink = scLink;
+        } else {
+            allScLink = new Array(scLink);
+        }
 
-		for ( var i = 0; i < allScLink.length; i++) {
-			var newScript = gmCreateObj(head, "script");
-			newScript.type = 'text/javascript';
-			newScript.src = allScLink[i];
-		}
-		isSet = true;
-	}
-	return isSet;
+        for ( var i = 0; i < allScLink.length; i++) {
+            var newScript = gmCreateObj(head, "script");
+            newScript.type = 'text/javascript';
+            newScript.src = allScLink[i];
+        }
+        isSet = true;
+    }
+    return isSet;
 }
 
 /**
@@ -1448,26 +1445,26 @@ function gmAddScriptLinkGlobal(scLink) {
  * @returns {Boolean} TRUE = if the style block could be set, else FALSE
  */
 function gmAddStyleGlobal(scc) {
-	var isSet = false;
-	if (gmIsObject(scc) || (scc && scc.length > 0)) {
-		var head = gmGetHead();
-		if (head) {
-			var style = gmCreateObj(head, "style");
-			style.type = 'text/css';
+    var isSet = false;
+    if (gmIsObject(scc) || (scc && scc.length > 0)) {
+        var head = gmGetHead();
+        if (head) {
+            var style = gmCreateObj(head, "style");
+            style.type = 'text/css';
 
-			var allscc = "";
-			if (gmIsArray(scc)) {
-				for ( var i = 0; i < scc.length; i++) {
-					allscc += scc[i] + " \n";
-				}
-			} else {
-				allscc = scc;
-			}
-			gmSetCoI(style, "\n" + allscc + "\n");
-			isSet = true;
-		}
-	}
-	return isSet;
+            var allscc = "";
+            if (gmIsArray(scc)) {
+                for ( var i = 0; i < scc.length; i++) {
+                    allscc += scc[i] + " \n";
+                }
+            } else {
+                allscc = scc;
+            }
+            gmSetCoI(style, "\n" + allscc + "\n");
+            isSet = true;
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -1478,23 +1475,23 @@ function gmAddStyleGlobal(scc) {
  * @returns {Array} array of entries
  */
 function gmGenTestEntries(maxEntries) {
-	if (isNaN(maxEntries) || maxEntries == "") {
-		maxEntries = 1;
-	}
-	if (maxEntries < 0) {
-		maxEntries = 0;
-	} else if (maxEntries > 100) {
-		maxEntries = 100;
-	}
-	testArray = new Array();
-	for ( var i = 1; i <= maxEntries; i++) {
-		var curlink = "http://" + currSite + currPath + "/link-" + i;
-		var htmllink = curlink;
-		var htmltext = "linktext-" + i;
-		var curlink = new Array(htmllink, htmltext);
-		testArray.push(curlink);
-	}
-	return testArray;
+    if (isNaN(maxEntries) || maxEntries == "") {
+        maxEntries = 1;
+    }
+    if (maxEntries < 0) {
+        maxEntries = 0;
+    } else if (maxEntries > 100) {
+        maxEntries = 100;
+    }
+    testArray = new Array();
+    for ( var i = 1; i <= maxEntries; i++) {
+        var curlink = "http://" + currSite + currPath + "/link-" + i;
+        var htmllink = curlink;
+        var htmltext = "linktext-" + i;
+        var curlink = new Array(htmllink, htmltext);
+        testArray.push(curlink);
+    }
+    return testArray;
 }
 
 /**
@@ -1506,17 +1503,17 @@ function gmGenTestEntries(maxEntries) {
  *          topOffset FIXME:TEST
  */
 function gmCumulativeOffset(element) {
-	var valueT = 0;
-	var valueL = 0;
-	if (element) {
-		valueL = element.width || 0;
-		do {
-			valueT += element.offsetTop || 0;
-			valueL += element.offsetLeft || 0;
-			element = element.offsetParent;
-		} while (element);
-	}
-	return [ valueL, valueT ];
+    var valueT = 0;
+    var valueL = 0;
+    if (element) {
+        valueL = element.width || 0;
+        do {
+            valueT += element.offsetTop || 0;
+            valueL += element.offsetLeft || 0;
+            element = element.offsetParent;
+        } while (element);
+    }
+    return [ valueL, valueT ];
 }
 
 /**
@@ -1532,19 +1529,19 @@ function gmCumulativeOffset(element) {
  * @returns {Number} the horizontal offset or 0 FIXME:Test
  */
 function gmCalcOffsetH(parentElem, iPoint, iZoom) {
-	if (isNaN(iZoom)) {
-		iZoom = 1;
-	}
-	var offsetH = 0;
-	if (parentElem) {
-		offsetH = gmCumulativeOffset(parentElem)[1];
-		if (!isNaN(offsetH) && gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[1])) {
-				offsetH = offsetH - (iPoint[1] * iZoom) + (parentElem.height || 0);
-			}
-		}
-	}
-	return offsetH;
+    if (isNaN(iZoom)) {
+        iZoom = 1;
+    }
+    var offsetH = 0;
+    if (parentElem) {
+        offsetH = gmCumulativeOffset(parentElem)[1];
+        if (!isNaN(offsetH) && gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[1])) {
+                offsetH = offsetH - (iPoint[1] * iZoom) + (parentElem.height || 0);
+            }
+        }
+    }
+    return offsetH;
 }
 
 /**
@@ -1559,18 +1556,18 @@ function gmCalcOffsetH(parentElem, iPoint, iZoom) {
  * @returns {String} the url with replaced text
  */
 function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
-	var newUrl = oldUrl;
-	if (oldUrl != null) {
-		if (searchForPattern != "") {
-			// there is something to replace
-			if (replaceWithText == null) {
-				replaceWithText = "";
-			}
-			var patternReplace = new RegExp(searchForPattern);
-			newUrl = oldUrl.replace(patternReplace, replaceWithText);
-		}
-	}
-	return newUrl;
+    var newUrl = oldUrl;
+    if (oldUrl != null) {
+        if (searchForPattern != "") {
+            // there is something to replace
+            if (replaceWithText == null) {
+                replaceWithText = "";
+            }
+            var patternReplace = new RegExp(searchForPattern);
+            newUrl = oldUrl.replace(patternReplace, replaceWithText);
+        }
+    }
+    return newUrl;
 }
 
 /**
@@ -1579,11 +1576,11 @@ function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
  * @returns a server name
  */
 function gmGetCurrentSite() {
-	currSite = document.location.host;
-	if (document.location.port) {
-		currSite += ":" + document.location.port;
-	}
-	return currSite;
+    currSite = document.location.host;
+    if (document.location.port) {
+        currSite += ":" + document.location.port;
+    }
+    return currSite;
 }
 
 /**
@@ -1594,23 +1591,23 @@ function gmGetCurrentSite() {
  * @returns {Array[width, height]} the image metrics [width, height] in px
  */
 function gmGetImageSize(newImage) {
-	var imageObjectWidth = 0;
-	var imageObjectHeight = 0;
+    var imageObjectWidth = 0;
+    var imageObjectHeight = 0;
 
-	if (newImage && newImage.width && newImage.width > 0) {
-		imageObjectWidth = newImage.width;
-		imageObjectHeight = newImage.height;
-	}
-	if (imageObjectWidth <= 0) {
-		imageObjectWidth = minWidth;
-	} else if (imageObjectWidth > maxWidth) {
-		imageObjectWidth = maxWidth;
-		imageObjectHeight = 0;
-	}
-	if (imageObjectHeight <= 0) {
-		imageObjectHeight = "auto";
-	}
-	return [ imageObjectWidth, imageObjectHeight ];
+    if (newImage && newImage.width && newImage.width > 0) {
+        imageObjectWidth = newImage.width;
+        imageObjectHeight = newImage.height;
+    }
+    if (imageObjectWidth <= 0) {
+        imageObjectWidth = minWidth;
+    } else if (imageObjectWidth > maxWidth) {
+        imageObjectWidth = maxWidth;
+        imageObjectHeight = 0;
+    }
+    if (imageObjectHeight <= 0) {
+        imageObjectHeight = "auto";
+    }
+    return [ imageObjectWidth, imageObjectHeight ];
 }
 
 /**
@@ -1629,50 +1626,50 @@ function gmGetImageSize(newImage) {
  * @returns {Boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
-	var w = "auto";
-	var h = "auto";
-	var oH = "5px";
-	var oW = "5px";
+    var w = "auto";
+    var h = "auto";
+    var oH = "5px";
+    var oW = "5px";
 
-	var isSet = false;
-	if (gmIsObject(hDiv)) {
-		if (isNaN(iZoom)) {
-			iZoom = 1;
-		}
-		if (gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[0])) {
-				w = iPoint[0] + 2;
-			}
-			if (isNaN(iPoint[1])) {
-				h = (gmToNo(hDiv.style.width) / ratio) + 2;// + picTextHeight;
-			} else {
-				h = (iPoint[1] + 2); // + picTextHeight;
-			}
-		}
-		if (!isNaN(offsetH)) {
-			oH = offsetH + "px";
-		}
-		if (!isNaN(offsetW)) {
-			oW = offsetW + "px";
-		}
-		if (!isNaN(w)) {
-			w *= iZoom;
-			w = w + "px";
-		}
-		if (!isNaN(h)) {
-			h *= iZoom;
-			h = h + "px";
-		}
-		var css = gmGetAtI(hDiv, "style");
-		if (css == false) {
-			css = "";
-		}
-		css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW ;
-		gmSetAtI(hDiv, "style", css);
-		isSet = true;
-	}
+    var isSet = false;
+    if (gmIsObject(hDiv)) {
+        if (isNaN(iZoom)) {
+            iZoom = 1;
+        }
+        if (gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[0])) {
+                w = iPoint[0] + 2;
+            }
+            if (isNaN(iPoint[1])) {
+                h = (gmToNo(hDiv.style.width) / ratio) + 2;// + picTextHeight;
+            } else {
+                h = (iPoint[1] + 2); // + picTextHeight;
+            }
+        }
+        if (!isNaN(offsetH)) {
+            oH = offsetH + "px";
+        }
+        if (!isNaN(offsetW)) {
+            oW = offsetW + "px";
+        }
+        if (!isNaN(w)) {
+            w *= iZoom;
+            w = w + "px";
+        }
+        if (!isNaN(h)) {
+            h *= iZoom;
+            h = h + "px";
+        }
+        var css = gmGetAtI(hDiv, "style");
+        if (css == false) {
+            css = "";
+        }
+        css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW ;
+        gmSetAtI(hDiv, "style", css);
+        isSet = true;
+    }
 
-	return isSet;
+    return isSet;
 }
 
 /**
@@ -1689,45 +1686,45 @@ function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
  * @returns {Boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
-	var h = "auto";
-	var w = "auto";
+    var h = "auto";
+    var w = "auto";
 
-	var isSet = false;
-	if (gmIsObject(hDiv)) {
-		if (isNaN(iZoom)) {
-			iZoom = 1;
-		}
-		if (gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[0])) {
-				w = iPoint[0];
-			}
-			if (isNaN(iPoint[1])) {
-				if (gmIsObject(hImg)) {
-					ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
-					h = (gmToNo(hDiv.style.width) / ratio);// + picTextHeight;
-				}
-			} else {
-				h = iPoint[1]; // + picTextHeight;
-			}
-		}
-		if (!isNaN(w)) {
-			w *= iZoom;
-			w = w + "px";
-		}
-		if (!isNaN(h)) {
-			h *= iZoom;
-			h = h + "px";
-		}
-		var css = gmGetAtI(hDiv, "style");
-		if (css == false) {
-			css = "";
-		}
-		css += ";width:" + w + ";height:" + h;
-		gmSetAtI(hDiv, "style", css);
-		isSet = true;
-	}
+    var isSet = false;
+    if (gmIsObject(hDiv)) {
+        if (isNaN(iZoom)) {
+            iZoom = 1;
+        }
+        if (gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[0])) {
+                w = iPoint[0];
+            }
+            if (isNaN(iPoint[1])) {
+                if (gmIsObject(hImg)) {
+                    ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
+                    h = (gmToNo(hDiv.style.width) / ratio);// + picTextHeight;
+                }
+            } else {
+                h = iPoint[1]; // + picTextHeight;
+            }
+        }
+        if (!isNaN(w)) {
+            w *= iZoom;
+            w = w + "px";
+        }
+        if (!isNaN(h)) {
+            h *= iZoom;
+            h = h + "px";
+        }
+        var css = gmGetAtI(hDiv, "style");
+        if (css == false) {
+            css = "";
+        }
+        css += ";width:" + w + ";height:" + h;
+        gmSetAtI(hDiv, "style", css);
+        isSet = true;
+    }
 
-	return isSet;
+    return isSet;
 }
 
 /**
@@ -1735,7 +1732,7 @@ function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
  * @returns {Object} the object for the head in the page, or null
  */
 function gmGetHead() {
-	return gmGetEl("tagname", "head");
+    return gmGetEl("tagname", "head");
 }
 
 /**
@@ -1743,7 +1740,7 @@ function gmGetHead() {
  * @returns {Object} the object for the body in the page, or null
  */
 function gmGetBody() {
-	return gmGetEl("tagname", "body");
+    return gmGetEl("tagname", "body");
 }
 
 /**
@@ -1751,16 +1748,16 @@ function gmGetBody() {
  * @returns {Object} the css-style-object from that object
  */
 function gmGetStyle(obj) {
-	var res = null;
-	var oObj = gmGetElI(obj);
-	if (oObj) {
-		try {
-			res = oObj.style;
-		} catch (e) {
-			// ignored
-		}
-	}
-	return res;
+    var res = null;
+    var oObj = gmGetElI(obj);
+    if (oObj) {
+        try {
+            res = oObj.style;
+        } catch (e) {
+            // ignored
+        }
+    }
+    return res;
 }
 
 /**
@@ -1774,8 +1771,8 @@ function gmGetBodyHeight() {
         Dh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     if (D.documentElement) {
-    	D = D.documentElement;
-    	Eh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
+        D = D.documentElement;
+        Eh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     return Math.max(Dh, Eh);
 }
@@ -1859,161 +1856,161 @@ var loopIdxWait = 300;
  */
 function showPreview(parentElem, hDiv, hImg, newImage) {
 
-	var offsetW = (gmCumulativeOffset(parentElem)[0]) + offSetLeftFix;
-	var offsetH = gmCumulativeOffset(parentElem)[1];
-	var ratio = parentElem.width / parentElem.height;
+    var offsetW = (gmCumulativeOffset(parentElem)[0]) + offSetLeftFix;
+    var offsetH = gmCumulativeOffset(parentElem)[1];
+    var ratio = parentElem.width / parentElem.height;
 
-	hDiv.css("cursor", "wait");
-	hImg.css("cursor", "wait");
-	var pE = $(parentElem);
-	pE.css("cursor", "wait");
+    hDiv.css("cursor", "wait");
+    hImg.css("cursor", "wait");
+    var pE = $(parentElem);
+    pE.css("cursor", "wait");
 
-	if (!newImage.complete && loopIdx <= loopIdxMax) {
-		// image not loaded
-		hImg.empty();
-		hImg.text(loopIdx);
-		loopIdx++;
-		var iPoint = ["auto", "auto"];
-		gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio);
-		window.setTimeout(function() { showPreview(parentElem, hDiv, hImg, newImage); }, loopIdxWait);
+    if (!newImage.complete && loopIdx <= loopIdxMax) {
+        // image not loaded
+        hImg.empty();
+        hImg.text(loopIdx);
+        loopIdx++;
+        var iPoint = ["auto", "auto"];
+        gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio);
+        window.setTimeout(function() { showPreview(parentElem, hDiv, hImg, newImage); }, loopIdxWait);
 
-	} else {
-		// set Image
-		hDiv.empty();
-		var hA = $("<a>");
-		hA.attr("id", "a" + hImg.attr("id"));
-		hA.attr("target", "#blank");
-		hDiv.append(hA);
-		hImg = $("<img>");
-		hImg.addClass("hi-preview");
-		hImg.attr("id", hA.attr("id"));
-		hA.append(hImg);
+    } else {
+        // set Image
+        hDiv.empty();
+        var hA = $("<a>");
+        hA.attr("id", "a" + hImg.attr("id"));
+        hA.attr("target", "#blank");
+        hDiv.append(hA);
+        hImg = $("<img>");
+        hImg.addClass("hi-preview");
+        hImg.attr("id", hA.attr("id"));
+        hA.append(hImg);
 
-		// get text
-		var picText = pE.attr("alt");
-		if (!picText || picText.length < 1) {
-			picText = pE.attr("title");
-		}
+        // get text
+        var picText = pE.attr("alt");
+        if (!picText || picText.length < 1) {
+            picText = pE.attr("title");
+        }
 
-		// set text
-		var objText = $("<div>");
-		objText.text(picText);
-		objText.attr("id", "cap" + hImg.attr("id"));
-		objText.addClass("hi-caption");
-		hDiv.append(objText);
-		hImg.attr("src", newImage.src);
-		hA.attr("href", gmGetReplaceUrl(elemSearchUrl, elemReplUrlLarge, newImage.src));
+        // set text
+        var objText = $("<div>");
+        objText.text(picText);
+        objText.attr("id", "cap" + hImg.attr("id"));
+        objText.addClass("hi-caption");
+        hDiv.append(objText);
+        hImg.attr("src", newImage.src);
+        hA.attr("href", gmGetReplaceUrl(elemSearchUrl, elemReplUrlLarge, newImage.src));
 
-		hA.attr("title", "[" + picText + "]");
-		hImg.attr("title", hA.attr("title"));
-		hImg.attr("alt", hImg.attr("title"));
+        hA.attr("title", "[" + picText + "]");
+        hImg.attr("title", hA.attr("title"));
+        hImg.attr("alt", hImg.attr("title"));
 
-		// set layout
-		var iPoint = gmGetImageSize(newImage);
-		setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio);
-		setImgLayout(hDiv, hImg, iPoint);
+        // set layout
+        var iPoint = gmGetImageSize(newImage);
+        setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio);
+        setImgLayout(hDiv, hImg, iPoint);
 
-		// remove hourglass
-		hDiv.css("cursor", "auto");
-		hImg.css("cursor", "pointer");
-		pE.css("cursor", "pointer");
-		hA.css("cursor", "pointer");
-	}
+        // remove hourglass
+        hDiv.css("cursor", "auto");
+        hImg.css("cursor", "pointer");
+        pE.css("cursor", "pointer");
+        hA.css("cursor", "pointer");
+    }
 }
 
 function addDLink(imgObj, tagdivid) {
-	if (elemWithDownLink == 1) {
-		var replaceUrl = gmGetReplaceUrl(elemSearchUrl, elemReplUrlLarge, imgObj.attr("src"));
-		var dlLink = $("<a href=\"\" id=\"dl" + tagdivid + "\" class=\"hi-dlink\">DL</a>");
-		dlLink.attr({"target":"#blank","href":replaceUrl});
-		dlLink.attr("title","download ["+dlLink.attr("href") +"]");
-		var dlSpan = $("<span>");
-		dlSpan.css("position","absolute");
-		dlSpan.css("left",imgObj.position().left);
-		dlSpan.css("top",imgObj.position().top);
-		dlSpan.append(dlLink);
-		imgObj.parent().before(dlSpan);
-	}
+    if (elemWithDownLink == 1) {
+        var replaceUrl = gmGetReplaceUrl(elemSearchUrl, elemReplUrlLarge, imgObj.attr("src"));
+        var dlLink = $("<a href=\"\" id=\"dl" + tagdivid + "\" class=\"hi-dlink\">DL</a>");
+        dlLink.attr({"target":"#blank","href":replaceUrl});
+        dlLink.attr("title","download ["+dlLink.attr("href") +"]");
+        var dlSpan = $("<span>");
+        dlSpan.css("position","absolute");
+        dlSpan.css("left",imgObj.position().left);
+        dlSpan.css("top",imgObj.position().top);
+        dlSpan.append(dlLink);
+        imgObj.parent().before(dlSpan);
+    }
 }
 
 var refid;
 
 function addMouseOver(e, divid, imgid, tagdivid, tagimgid) {
-	replaceUrl = gmGetReplaceUrl(elemSearchUrl, elemReplUrl, refid.src);
-	var newImage = new Image();
-	newImage.src = replaceUrl;
-	var hDiv;
-	var hImg;
-	if ($("body").find(imgid).is("img")) {
-		hDiv = $(divid);
-		hImg = $(imgid);
-	} else {
-		hDiv = $("<div id=\"" + tagdivid + "\" class=\"hi-preview\"></div>");
-		hImg = $("<div id=\"" + tagimgid + "\" class=\"hi-wait\">0</div>");
-		$("body").append(hDiv);
-		$(divid).empty().append(hImg);
-	}
-	hDiv.css("cursor", "wait");
-	hImg.css("cursor", "wait");
+    replaceUrl = gmGetReplaceUrl(elemSearchUrl, elemReplUrl, refid.src);
+    var newImage = new Image();
+    newImage.src = replaceUrl;
+    var hDiv;
+    var hImg;
+    if ($("body").find(imgid).is("img")) {
+        hDiv = $(divid);
+        hImg = $(imgid);
+    } else {
+        hDiv = $("<div id=\"" + tagdivid + "\" class=\"hi-preview\"></div>");
+        hImg = $("<div id=\"" + tagimgid + "\" class=\"hi-wait\">0</div>");
+        $("body").append(hDiv);
+        $(divid).empty().append(hImg);
+    }
+    hDiv.css("cursor", "wait");
+    hImg.css("cursor", "wait");
 
-	loopIdx = 0;
-	//alert(refid.src);
-	showPreview(refid, hDiv, hImg, newImage, 0);
+    loopIdx = 0;
+    //alert(refid.src);
+    showPreview(refid, hDiv, hImg, newImage, 0);
 }
 
 function addMouseOut(e, divid, imgid, tagdivid, tagimgid) {
-	var bRemove = true;
-	var evTarget = e.target;
+    var bRemove = true;
+    var evTarget = e.target;
 
-	var tMsg = (evTarget.tagName + " " + new Date().toGMTString()) + " ";
+    var tMsg = (evTarget.tagName + " " + new Date().toGMTString()) + " ";
 
-	var jDiv = null;
-	if (evTarget != refid) {
-		jDiv = $(divid);
-		var jDivChilds = $(divid).find("*");
-		if (jDiv.size() > 0 && jDivChilds.size() > 0) {
-			tMsg += jDiv.get(0).tagName + " " + evTarget.id + " " + jDivChilds.size();
-			if (evTarget == jDiv.get(0)) {
-				bRemove = false;
-			} else {
-				for ( var childIdx = 0; childIdx < jDivChilds.size(); childIdx++) {
-					var currChild = jDivChilds[childIdx];
-					if (evTarget == currChild) {
-						bRemove = false;
-						break;
-					}
-				}
-			}
-		}
-	} else {
-		bRemove = false;
-	}
-	tMsg += "" + bRemove;
+    var jDiv = null;
+    if (evTarget != refid) {
+        jDiv = $(divid);
+        var jDivChilds = $(divid).find("*");
+        if (jDiv.size() > 0 && jDivChilds.size() > 0) {
+            tMsg += jDiv.get(0).tagName + " " + evTarget.id + " " + jDivChilds.size();
+            if (evTarget == jDiv.get(0)) {
+                bRemove = false;
+            } else {
+                for ( var childIdx = 0; childIdx < jDivChilds.size(); childIdx++) {
+                    var currChild = jDivChilds[childIdx];
+                    if (evTarget == currChild) {
+                        bRemove = false;
+                        break;
+                    }
+                }
+            }
+        }
+    } else {
+        bRemove = false;
+    }
+    tMsg += "" + bRemove;
 
-	if (bRemove && jDiv != null) {
-		if (jDiv.size() > 0) {
-			jDiv.css("cursor", "auto");
-			jDiv.remove();
-			tMsg += " remove";
-		}
-	}
-	//$(thisObj).css("cursor", "auto");
+    if (bRemove && jDiv != null) {
+        if (jDiv.size() > 0) {
+            jDiv.css("cursor", "auto");
+            jDiv.remove();
+            tMsg += " remove";
+        }
+    }
+    //$(thisObj).css("cursor", "auto");
 
-	if (gm_debug) {
-		if ($("#se1").size() < 1) {
-			$("body").before("<span id='se1'>0</span>");
-		}
-		$("#se1").text(tMsg);
-	}
+    if (gm_debug) {
+        if ($("#se1").size() < 1) {
+            $("body").before("<span id='se1'>0</span>");
+        }
+        $("#se1").text(tMsg);
+    }
 }
 
 function defineIds() {
-	var unId = new Date().getTime();
-	var tagdivid = "div" + unId;
-	var tagimgid = "img" + unId;
-	var divid = "#div" + unId;
-	var imgid = "#img" + unId;
-	return [divid, imgid, tagdivid, tagimgid];
+    var unId = new Date().getTime();
+    var tagdivid = "div" + unId;
+    var tagimgid = "img" + unId;
+    var divid = "#div" + unId;
+    var imgid = "#img" + unId;
+    return [divid, imgid, tagdivid, tagimgid];
 }
 
 
@@ -2027,10 +2024,10 @@ function defineIds() {
  * Can be left empty.
  */
 function lgm_addKnownSites() {
-	gmAddSite2(".+\.flickr\.com", ".+\.static\.{0,1}flickr\.com\.+?_(s|t)\.(jpg|gif|png)", "\_(s|t)\.", "_m.", "_b.", 1 );
-	gmAddSite2(".+\.net", "^.+_(s|t)\.(jpg|gif|png)", "\_(s|t)\.", "_m.", "_b.", 1 );
+    gmAddSite2(".+\.flickr\.com", ".+\.static\.{0,1}flickr\.com\.+?_(s|t)\.(jpg|gif|png)", "\_(s|t)\.", "_m.", "_b.", 1 );
+    gmAddSite2(".+\.net", "^.+_(s|t)\.(jpg|gif|png)", "\_(s|t)\.", "_m.", "_b.", 1 );
 
-	return true;
+    return true;
 }
 
 /**
@@ -2038,17 +2035,17 @@ function lgm_addKnownSites() {
  * Can be left empty.
  */
 function lgm_addStyles() {
-	// the main container
-	var style = new Array();
-	style.push("a.hi-dlink, a.hi-dlink:hover {z-index:990;text-decoration:none;padding:1pt 2pt;border:#ff6080 solid 1px;background-color:rgba(255, 255, 255, 0.5);color:#ffffff;font-size:8pt;font-weight:bold");
-	style.push("a.hi-dlink:hover {border:1pt #ff6080 solid;background-color:#ff6080;color:#ffffff}");
-	style.push("div.hi-preview {position:absolute;z-index:997;overflow:hidden;padding:0px;margin:0px;border:solid #cccccc 1px;"
-		+ "zIndex:997;background-color:#eeeeee;font-family:Arial,Courier;font-size:"+picTextFontSize+";font-weight:bold;}");
-	style.push("img.hi-preview {border:0pt none #ffffff;z-index:998;}");
-	style.push("div.hi-wait {font-size:10pt;font-weight:bold; }");
-	style.push("div.hi-caption {font-size:"+picTextFontSize+";font-weight:bold;overflow:hidden;background-color:#eeeeee;z-index:999;}");
-	gmAddStyleGlobal(style);
-	return true;
+    // the main container
+    var style = new Array();
+    style.push("a.hi-dlink, a.hi-dlink:hover {z-index:990;text-decoration:none;padding:1pt 2pt;border:#ff6080 solid 1px;background-color:rgba(255, 255, 255, 0.5);color:#ffffff;font-size:8pt;font-weight:bold");
+    style.push("a.hi-dlink:hover {border:1pt #ff6080 solid;background-color:#ff6080;color:#ffffff}");
+    style.push("div.hi-preview {position:absolute;z-index:997;overflow:hidden;padding:0px;margin:0px;border:solid #cccccc 1px;"
+        + "zIndex:997;background-color:#eeeeee;font-family:Arial,Courier;font-size:"+picTextFontSize+";font-weight:bold;}");
+    style.push("img.hi-preview {border:0pt none #ffffff;z-index:998;}");
+    style.push("div.hi-wait {font-size:10pt;font-weight:bold; }");
+    style.push("div.hi-caption {font-size:"+picTextFontSize+";font-weight:bold;overflow:hidden;background-color:#eeeeee;z-index:999;}");
+    gmAddStyleGlobal(style);
+    return true;
 }
 
 /**
@@ -2056,54 +2053,54 @@ function lgm_addStyles() {
  * Can be left empty.
  */
 function lgm_addControls() {
-	var foundSite = gmFoundFilter2(currSite);
-	if (gmIsObject(foundSite)) {
-		img2Search = foundSite.url;
-		elemSearchUrl = foundSite.search;
-		elemReplUrl = foundSite.replace;
-		elemReplUrlLarge = foundSite.replace_large;
-		elemWithDownLink = foundSite.withDownload;
-	}
-	return true;
+    var foundSite = gmFoundFilter2(currSite);
+    if (gmIsObject(foundSite)) {
+        img2Search = foundSite.url;
+        elemSearchUrl = foundSite.search;
+        elemReplUrl = foundSite.replace;
+        elemReplUrlLarge = foundSite.replace_large;
+        elemWithDownLink = foundSite.withDownload;
+    }
+    return true;
 };
 
 /**
  * Now add the event handler.
  */
 function addHandlerOld(e) {
- 	var imgList = $("img");
-	var searchPattern = new RegExp(img2Search);
+     var imgList = $("img");
+    var searchPattern = new RegExp(img2Search);
 
-	for(var i=0; i < imgList.size(); i++) {
-//		var unId = new Date().getTime();
-		var imgObj = $(imgList.get(i));
-		var imgName = imgObj.attr("src");
-		var s = searchPattern.test(imgName);
+    for(var i=0; i < imgList.size(); i++) {
+//        var unId = new Date().getTime();
+        var imgObj = $(imgList.get(i));
+        var imgName = imgObj.attr("src");
+        var s = searchPattern.test(imgName);
 
-		if( s ) {
-			//alert(imgName);
-//			var tagdivid = "div" + unId;
-//			var tagimgid = "img" + unId;
-//			var divid = "#div" + unId;
-//			var imgid = "#img" + unId;
-			var [divid, imgid, tagdivid, tagimgid] = defineIds();
-//			var refid;
+        if( s ) {
+            //alert(imgName);
+//            var tagdivid = "div" + unId;
+//            var tagimgid = "img" + unId;
+//            var divid = "#div" + unId;
+//            var imgid = "#img" + unId;
+            var [divid, imgid, tagdivid, tagimgid] = defineIds();
+//            var refid;
 
-			imgObj.mouseover(
-				function(e) {
-					refid = this;
-					addMouseOver(e, divid, imgid, tagdivid, tagimgid);
-				});
+            imgObj.mouseover(
+                function(e) {
+                    refid = this;
+                    addMouseOver(e, divid, imgid, tagdivid, tagimgid);
+                });
 
-			addDLink(imgObj, tagdivid);
+            addDLink(imgObj, tagdivid);
 
-		};
-	}
-			$("body").mouseover(
-				function(e) {
-					addMouseOut(e, divid, imgid, tagdivid, tagimgid);
-//					refid = null;
-				});
+        };
+    }
+            $("body").mouseover(
+                function(e) {
+                    addMouseOut(e, divid, imgid, tagdivid, tagimgid);
+//                    refid = null;
+                });
 }
 
 /**
@@ -2111,30 +2108,30 @@ function addHandlerOld(e) {
  * Can be left empty.
  */
 function lgm_addInitAction() {
- 	var imgList = $("img");
-	var [divid, imgid, tagdivid, tagimgid] = defineIds();
- 	imgList.live("mouseover",
-		function(e) {
-			var searchPattern = new RegExp(img2Search);
-			var imgName = $(this).attr("src");
-			var s = searchPattern.test(imgName);
-			if (s) {
-				refid = this;
-				addMouseOver(e, divid, imgid, tagdivid, tagimgid);
-				addDLink($(refid), tagdivid);
-			};
- 		});
+     var imgList = $("img");
+    var [divid, imgid, tagdivid, tagimgid] = defineIds();
+     imgList.live("mouseover",
+        function(e) {
+            var searchPattern = new RegExp(img2Search);
+            var imgName = $(this).attr("src");
+            var s = searchPattern.test(imgName);
+            if (s) {
+                refid = this;
+                addMouseOver(e, divid, imgid, tagdivid, tagimgid);
+                addDLink($(refid), tagdivid);
+            };
+         });
 
-	$("body").mouseover(
-		function(e) {
-			addMouseOut(e, divid, imgid, tagdivid, tagimgid);
-		});
+    $("body").mouseover(
+        function(e) {
+            addMouseOut(e, divid, imgid, tagdivid, tagimgid);
+        });
 }
 
 //$(window).ready(
-//	function(e) {
-//		addHandler2(e);
-//	}
+//    function(e) {
+//        addHandler2(e);
+//    }
 //);
 
 gmInitEventHandler();

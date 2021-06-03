@@ -5,13 +5,12 @@
 // @namespace       http://userscripts.org/users/ollily
 // @author          ollily2907
 // @version         0.90.12
-// @date            $LastChangedDate: 2013-03-08 11:48:41 +0100 (Fri, 08 Mar 2013) $
-// @revision        $LastChangedRevision: 47 $
+// @date            2021-06-03 23:59:59 +0200
+// @revision        0
 // @source          http://userscripts.org/scripts/show/86396
 // @run-at          document-end
-// @licence         http://www.gnu.org/licenses/gpl-3.0.txt
-// @licence         http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license         (CC) by-nc-sa
+// @license         Apache License, Version 2.0
+// @license         https://www.apache.org/licenses/LICENSE-2.0.txt
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         https://*.xing.com/*
@@ -146,11 +145,11 @@ getFilter(currSite);
  * @return a server name
  */
 function getCurrentSite() {
-	currSite = document.location.host;
-	if (document.location.port) {
-		currSite += ":" + document.location.port;
-	}
-	return currSite;
+    currSite = document.location.host;
+    if (document.location.port) {
+        currSite += ":" + document.location.port;
+    }
+    return currSite;
 }
 
 /**
@@ -164,25 +163,25 @@ function getCurrentSite() {
  * @param withDownload - 1=will add a download-link beneath the picture, else 0
  */
 function addSite(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDownload) {
-	if (knownSite) {
-		var len = knownSite.length;
-		knownSite[len] = new Object();
-		knownSite[len].site = site;
-		if (!urlElem) {
-			var urlElem = ".+";
-		}
-		knownSite[len].url = urlElem;
-		if (!urlSearch) {
-			var urlSearch = "";
-		}
-		knownSite[len].search = urlSearch;
-		if (!urlReplace) {
-			var urlReplace = "";
-		}
-		knownSite[len].replace = urlReplace;
-		knownSite[len].replace_large = urlReplaceLarge;
-		knownSite[len].withDownload = withDownload;
-	}
+    if (knownSite) {
+        var len = knownSite.length;
+        knownSite[len] = new Object();
+        knownSite[len].site = site;
+        if (!urlElem) {
+            var urlElem = ".+";
+        }
+        knownSite[len].url = urlElem;
+        if (!urlSearch) {
+            var urlSearch = "";
+        }
+        knownSite[len].search = urlSearch;
+        if (!urlReplace) {
+            var urlReplace = "";
+        }
+        knownSite[len].replace = urlReplace;
+        knownSite[len].replace_large = urlReplaceLarge;
+        knownSite[len].withDownload = withDownload;
+    }
 }
 
 /**
@@ -192,21 +191,21 @@ function addSite(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDown
  * @return a pattern for the html-element to search in the page
  */
 function getFilter(site) {
-	var retFilter = "";
-	var init = 0;
-	if (knownSite && site) {
-		for (var i=0; i < knownSite.length; i++) {
-			if (site.search(knownSite[i].site) >= 0 ) {
-				retFilter = knownSite[i].url;
-				img2Search = knownSite[i].url;
-				elemSearchUrl = knownSite[i].search;
-				elemReplUrl = knownSite[i].replace;
-				elemReplUrlLarge = knownSite[i].replace_large;
-				elemWithDownLink = knownSite[i].withDownload;
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = "";
+    var init = 0;
+    if (knownSite && site) {
+        for (var i=0; i < knownSite.length; i++) {
+            if (site.search(knownSite[i].site) >= 0 ) {
+                retFilter = knownSite[i].url;
+                img2Search = knownSite[i].url;
+                elemSearchUrl = knownSite[i].search;
+                elemReplUrl = knownSite[i].replace;
+                elemReplUrlLarge = knownSite[i].replace_large;
+                elemWithDownLink = knownSite[i].withDownload;
+            }
+        }
+    }
+    return retFilter;
 }
 
 /**
@@ -216,13 +215,13 @@ function getFilter(site) {
  * @return an array with the leftOffset, topOffset
  */
 function cumulativeOffset(element) {
-	var valueT = 0, valueL = element.width || 0;
-	do {
-		valueT += element.offsetTop || 0;
-		valueL += element.offsetLeft || 0;
-		element = element.offsetParent;
-	} while (element);
-	return [valueL, valueT];
+    var valueT = 0, valueL = element.width || 0;
+    do {
+        valueT += element.offsetTop || 0;
+        valueL += element.offsetLeft || 0;
+        element = element.offsetParent;
+    } while (element);
+    return [valueL, valueT];
 }
 
 //alert(currSite + " " + img2Search + " " +  elemSearchUrl + " " + elemReplUrl + " " + elemReplUrlLarge);
@@ -263,72 +262,72 @@ var loopIdxWait = 300;
  */
 function showPreview(parentElem, hDiv, hImg, newImage) {
 
-	var offsetW = (cumulativeOffset(parentElem)[0]) + offSetLeftFix;
-	var offsetH = 0; //cumulativeOffset(parentElem)[1];
-	var ratio = parentElem.width / parentElem.height;
-	var iZoom = 1.33;
+    var offsetW = (cumulativeOffset(parentElem)[0]) + offSetLeftFix;
+    var offsetH = 0; //cumulativeOffset(parentElem)[1];
+    var ratio = parentElem.width / parentElem.height;
+    var iZoom = 1.33;
 
-	hDiv.css("cursor", "wait");
-	hImg.css("cursor", "wait");
-	var pE = $(parentElem);
-	pE.css("cursor", "wait");
+    hDiv.css("cursor", "wait");
+    hImg.css("cursor", "wait");
+    var pE = $(parentElem);
+    pE.css("cursor", "wait");
 
-	var iPoint = ["auto", "auto"];
+    var iPoint = ["auto", "auto"];
 
-	if (!newImage.complete && loopIdx <= loopIdxMax) {
-		// image not loaded
-		hImg.empty();
-		hImg.text(loopIdx);
-		loopIdx++;
-		offsetH = calcOffsetH(parentElem, iPoint, iZoom);
-		setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom);
-		window.setTimeout(function() { showPreview(parentElem, hDiv, hImg, newImage); }, loopIdxWait);
+    if (!newImage.complete && loopIdx <= loopIdxMax) {
+        // image not loaded
+        hImg.empty();
+        hImg.text(loopIdx);
+        loopIdx++;
+        offsetH = calcOffsetH(parentElem, iPoint, iZoom);
+        setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom);
+        window.setTimeout(function() { showPreview(parentElem, hDiv, hImg, newImage); }, loopIdxWait);
 
-	} else {
-		// set Image
-		hDiv.empty();
-		var hA = $("<a>");
-		hA.attr("id", "a" + hImg.attr("id"));
-		hA.attr("target", "#blank");
-		hDiv.append(hA);
-		hImg = $("<img>");
-		hImg.addClass("hi-preview");
-		hImg.attr("id", hA.attr("id"));
-		hA.append(hImg);
+    } else {
+        // set Image
+        hDiv.empty();
+        var hA = $("<a>");
+        hA.attr("id", "a" + hImg.attr("id"));
+        hA.attr("target", "#blank");
+        hDiv.append(hA);
+        hImg = $("<img>");
+        hImg.addClass("hi-preview");
+        hImg.attr("id", hA.attr("id"));
+        hA.append(hImg);
 
-		// get text
-		var picText = pE.attr("alt");
-		if (!picText || picText.length < 1) {
-			picText = pE.attr("title");
-		}
+        // get text
+        var picText = pE.attr("alt");
+        if (!picText || picText.length < 1) {
+            picText = pE.attr("title");
+        }
 
-		// set text
-		if (picText && picText.length >= 1) {
-			var objText = $("<div>");
-			objText.text(picText);
-			objText.attr("id", "cap" + hImg.attr("id"));
-			objText.addClass("hi-caption");
-			hDiv.append(objText);
-		}
-		hImg.attr("src", newImage.src);
-		hA.attr("href", getReplaceUrl(elemSearchUrl, elemReplUrlLarge, newImage.src));
+        // set text
+        if (picText && picText.length >= 1) {
+            var objText = $("<div>");
+            objText.text(picText);
+            objText.attr("id", "cap" + hImg.attr("id"));
+            objText.addClass("hi-caption");
+            hDiv.append(objText);
+        }
+        hImg.attr("src", newImage.src);
+        hA.attr("href", getReplaceUrl(elemSearchUrl, elemReplUrlLarge, newImage.src));
 
-		hA.attr("title", "[" + picText + "]");
-		hImg.attr("title", hA.attr("title"));
-		hImg.attr("alt", hImg.attr("title"));
+        hA.attr("title", "[" + picText + "]");
+        hImg.attr("title", hA.attr("title"));
+        hImg.attr("alt", hImg.attr("title"));
 
-		// set layout
-		iPoint = getImageSize(newImage);
-		offsetH = calcOffsetH(parentElem, iPoint, iZoom);
-		setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom);
-		setImgLayout(hDiv, hImg, iPoint, iZoom);
+        // set layout
+        iPoint = getImageSize(newImage);
+        offsetH = calcOffsetH(parentElem, iPoint, iZoom);
+        setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom);
+        setImgLayout(hDiv, hImg, iPoint, iZoom);
 
-		// remove hourglass
-		hDiv.css("cursor", "auto");
-		hImg.css("cursor", "pointer");
-		pE.css("cursor", "pointer");
-		hA.css("cursor", "pointer");
-	}
+        // remove hourglass
+        hDiv.css("cursor", "auto");
+        hImg.css("cursor", "pointer");
+        pE.css("cursor", "pointer");
+        hA.css("cursor", "pointer");
+    }
 }
 
 /**
@@ -338,23 +337,23 @@ function showPreview(parentElem, hDiv, hImg, newImage) {
  * @return the image metrics [width, height]
  */
 function getImageSize(newImage) {
-	var imageObjectWidth = 0;
-	var imageObjectHeight = 0;
+    var imageObjectWidth = 0;
+    var imageObjectHeight = 0;
 
-	if (newImage && newImage.width && newImage.width > 0) {
-		imageObjectWidth = newImage.width;
-		imageObjectHeight = newImage.height;
-	}
-	if (imageObjectWidth <= 0) {
-		imageObjectWidth = minWidth;
-	} else if (imageObjectWidth > maxWidth) {
-		imageObjectWidth = maxWidth;
-		imageObjectHeight = 0;
-	}
-	if (imageObjectHeight <= 0) {
-		imageObjectHeight = "auto";
-	}
-	return [imageObjectWidth, imageObjectHeight];
+    if (newImage && newImage.width && newImage.width > 0) {
+        imageObjectWidth = newImage.width;
+        imageObjectHeight = newImage.height;
+    }
+    if (imageObjectWidth <= 0) {
+        imageObjectWidth = minWidth;
+    } else if (imageObjectWidth > maxWidth) {
+        imageObjectWidth = maxWidth;
+        imageObjectHeight = 0;
+    }
+    if (imageObjectHeight <= 0) {
+        imageObjectHeight = "auto";
+    }
+    return [imageObjectWidth, imageObjectHeight];
 }
 
 /**
@@ -367,40 +366,40 @@ function getImageSize(newImage) {
  * @param ratio - the aspect ratio of the image
  */
 function setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
-	var w = "auto";
-	var h = "auto";
-	var oH = "5px";
-	var oW = "5px";
+    var w = "auto";
+    var h = "auto";
+    var oH = "5px";
+    var oW = "5px";
 
-	if (isNaN(iZoom)) {
-		iZoom = 1;
-	}
-	if (!isNaN(iPoint[0])) {
-		w = iPoint[0] + 2;
-	}
-	if (isNaN(iPoint[1])) {
-		if (isNaN(hDiv.width())) {
-			h = (hDiv.width() / ratio) + 2;// + picTextHeight;
-		}
-	} else {
-		h = (iPoint[1] + 2); // + picTextHeight;
-	}
-	if (!isNaN(offsetH)) {
-		oH = offsetH + "px";
-	}
-	if (!isNaN(offsetW)) {
-		oW = offsetW + "px";
-	}
-	if (!isNaN(w)) {
-		w *= iZoom;
-	}
-	if (!isNaN(h)) {
-		h *= iZoom;
-	}
-	hDiv.width(w);
-	hDiv.height(h);
-	hDiv.css("top", oH);
-	hDiv.css("left", oW);
+    if (isNaN(iZoom)) {
+        iZoom = 1;
+    }
+    if (!isNaN(iPoint[0])) {
+        w = iPoint[0] + 2;
+    }
+    if (isNaN(iPoint[1])) {
+        if (isNaN(hDiv.width())) {
+            h = (hDiv.width() / ratio) + 2;// + picTextHeight;
+        }
+    } else {
+        h = (iPoint[1] + 2); // + picTextHeight;
+    }
+    if (!isNaN(offsetH)) {
+        oH = offsetH + "px";
+    }
+    if (!isNaN(offsetW)) {
+        oW = offsetW + "px";
+    }
+    if (!isNaN(w)) {
+        w *= iZoom;
+    }
+    if (!isNaN(h)) {
+        h *= iZoom;
+    }
+    hDiv.width(w);
+    hDiv.height(h);
+    hDiv.css("top", oH);
+    hDiv.css("left", oW);
 }
 
 /**
@@ -412,30 +411,30 @@ function setDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
  * @param iZoom - the zoom factor 1= Originalsize
  */
 function setImgLayout(hDiv, hImg, iPoint, iZoom) {
-	var h = "auto";
-	var w = "auto";
+    var h = "auto";
+    var w = "auto";
 
-	if (isNaN(iZoom)) {
-		iZoom = 1;
-	}
-	if (!isNaN(iPoint[0])) {
-		w = iPoint[0];
-	}
-	if (isNaN(iPoint[1])) {
-		if (isNaN(hImg.width())) {
-			h = hImg.width() / ratio;
-		}
-	} else {
-		h = iPoint[1];
-	}
-	if (!isNaN(w)) {
-		w *= iZoom;
-	}
-	if (!isNaN(h)) {
-		h *= iZoom;
-	}
-	hImg.width(w);
-	hImg.height(h);
+    if (isNaN(iZoom)) {
+        iZoom = 1;
+    }
+    if (!isNaN(iPoint[0])) {
+        w = iPoint[0];
+    }
+    if (isNaN(iPoint[1])) {
+        if (isNaN(hImg.width())) {
+            h = hImg.width() / ratio;
+        }
+    } else {
+        h = iPoint[1];
+    }
+    if (!isNaN(w)) {
+        w *= iZoom;
+    }
+    if (!isNaN(h)) {
+        h *= iZoom;
+    }
+    hImg.width(w);
+    hImg.height(h);
 }
 
 /**
@@ -447,16 +446,16 @@ function setImgLayout(hDiv, hImg, iPoint, iZoom) {
  * @returns the horizontal offset
  */
 function calcOffsetH(parentElem, iPoint, iZoom) {
-	if (isNaN(iZoom)) {
-		iZoom = 1;
-	}
-	var offsetH = cumulativeOffset(parentElem)[1];
-	if (!isNaN(offsetH)) {
-		if (!isNaN(iPoint[1])) {
-			offsetH = offsetH - (iPoint[1] * iZoom) + parentElem.height;
-		}
-	}
-	return offsetH;
+    if (isNaN(iZoom)) {
+        iZoom = 1;
+    }
+    var offsetH = cumulativeOffset(parentElem)[1];
+    if (!isNaN(offsetH)) {
+        if (!isNaN(iPoint[1])) {
+            offsetH = offsetH - (iPoint[1] * iZoom) + parentElem.height;
+        }
+    }
+    return offsetH;
 }
 
 /**
@@ -467,19 +466,19 @@ function calcOffsetH(parentElem, iPoint, iZoom) {
  * @param oldUrl - the URL to search in
  */
 function getReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
-	var newUrl = oldUrl;
-	if (searchForPattern != "") {
-		// there is something to replace
-		var patternReplace = new RegExp(searchForPattern);
-		newUrl = oldUrl.replace(patternReplace, replaceWithText);
-	}
-	return newUrl;
+    var newUrl = oldUrl;
+    if (searchForPattern != "") {
+        // there is something to replace
+        var patternReplace = new RegExp(searchForPattern);
+        newUrl = oldUrl.replace(patternReplace, replaceWithText);
+    }
+    return newUrl;
 }
 
 GM_addStyle("a.hi-dlink, a.hi-dlink:hover {position:relative;top:2px;text-decoration:none;padding:1pt 2pt;border:#000000 solid 1px;background-color:#ffffff;color:#000000;font-size:8pt;font-weight:bold");
 GM_addStyle("a.hi-dlink:hover {border:1pt #ff6080 solid;background-color:#ff6080;color:#ffffff}");
 GM_addStyle("div.hi-preview {position:absolute;overflow:hidden;padding:0px;margin:0px;border:solid #cccccc 1px;"
-	+ "z-index:1997;background-color:#eeeeee;font-family:Arial,Courier;font-size:"+picTextFontSize+";font-weight:bold;}");
+    + "z-index:1997;background-color:#eeeeee;font-family:Arial,Courier;font-size:"+picTextFontSize+";font-weight:bold;}");
 GM_addStyle("img.hi-preview {border:0pt none #ffffff;z-index:1998;}");
 GM_addStyle("div.hi-wait {font-size:10pt;font-weight:bold; }");
 GM_addStyle("div.hi-caption {font-size:"+picTextFontSize+";font-weight:bold;overflow:hidden;background-color:#eeeeee;z-index:1999;}");
@@ -488,109 +487,109 @@ GM_addStyle("div.hi-caption {font-size:"+picTextFontSize+";font-weight:bold;over
  * Now add the event handler.
  */
 function addHandler(e) {
- 	var imgList = document.getElementsByTagName("img");
- 	//alert(img2Search);
-	var searchPattern = new RegExp(img2Search);
+     var imgList = document.getElementsByTagName("img");
+     //alert(img2Search);
+    var searchPattern = new RegExp(img2Search);
 
-	for( i=0; i < imgList.length; i++) {
+    for( i=0; i < imgList.length; i++) {
 
-		var imgObj = $(imgList.item(i));
-		var imgName = imgObj.attr("src");
-		var s = searchPattern.test(imgName);
+        var imgObj = $(imgList.item(i));
+        var imgName = imgObj.attr("src");
+        var s = searchPattern.test(imgName);
 
-		if( s ) {
-			//alert(imgName);
-			var tagdivid = "div" + i;
-			var tagimgid = "img" + i;
-			var divid = "#div" + i;
-			var imgid = "#img" + i;
-			var refid;
-			var replaceUrl = getReplaceUrl(elemSearchUrl, elemReplUrlLarge, imgObj.attr("src"));
+        if( s ) {
+            //alert(imgName);
+            var tagdivid = "div" + i;
+            var tagimgid = "img" + i;
+            var divid = "#div" + i;
+            var imgid = "#img" + i;
+            var refid;
+            var replaceUrl = getReplaceUrl(elemSearchUrl, elemReplUrlLarge, imgObj.attr("src"));
 
-			imgObj.mouseover(
-				function(e) {
-					refid = this;
-					replaceUrl = getReplaceUrl(elemSearchUrl, elemReplUrl, this.src);
-					var newImage = new Image();
-					newImage.src = replaceUrl;
-					var hDiv;
-					var hImg;
-					if ($("body").find(imgid).is("img")) {
-						hDiv = $(divid);
-						hImg = $(imgid);
-					} else {
-						hDiv = $("<div id=\"" + tagdivid + "\" class=\"hi-preview\"></div>");
-						hImg = $("<div id=\"" + tagimgid + "\" class=\"hi-wait\">0</div>");
-						$("body").append(hDiv);
-						$(divid).empty().append(hImg);
-					}
-					hDiv.css("cursor", "wait");
-					hImg.css("cursor", "wait");
+            imgObj.mouseover(
+                function(e) {
+                    refid = this;
+                    replaceUrl = getReplaceUrl(elemSearchUrl, elemReplUrl, this.src);
+                    var newImage = new Image();
+                    newImage.src = replaceUrl;
+                    var hDiv;
+                    var hImg;
+                    if ($("body").find(imgid).is("img")) {
+                        hDiv = $(divid);
+                        hImg = $(imgid);
+                    } else {
+                        hDiv = $("<div id=\"" + tagdivid + "\" class=\"hi-preview\"></div>");
+                        hImg = $("<div id=\"" + tagimgid + "\" class=\"hi-wait\">0</div>");
+                        $("body").append(hDiv);
+                        $(divid).empty().append(hImg);
+                    }
+                    hDiv.css("cursor", "wait");
+                    hImg.css("cursor", "wait");
 
-					loopIdx = 0;
-					showPreview(this, hDiv, hImg, newImage, 0);
-				}
-			);
+                    loopIdx = 0;
+                    showPreview(this, hDiv, hImg, newImage, 0);
+                }
+            );
 
-			if (elemWithDownLink == 1) {
-				var dlLink = $("<a href=\"\" id=\"dl" + tagdivid + "\" class=\"hi-dlink\">Download</a>");
-				dlLink.attr({"target":"#blank","href":replaceUrl});
-				dlLink.attr("title","download ["+dlLink.attr("href") +"]");
-				imgObj.parent().after(dlLink);
-			}
+            if (elemWithDownLink == 1) {
+                var dlLink = $("<a href=\"\" id=\"dl" + tagdivid + "\" class=\"hi-dlink\">Download</a>");
+                dlLink.attr({"target":"#blank","href":replaceUrl});
+                dlLink.attr("title","download ["+dlLink.attr("href") +"]");
+                imgObj.parent().after(dlLink);
+            }
 
-			$("body").mouseover(
-				function(e) {
-					var bRemove = true;
-					var evTarget = e.target;
+            $("body").mouseover(
+                function(e) {
+                    var bRemove = true;
+                    var evTarget = e.target;
 
-					var tMsg = (evTarget.tagName + " " + new Date().toGMTString()) + " ";
+                    var tMsg = (evTarget.tagName + " " + new Date().toGMTString()) + " ";
 
-					if (evTarget != refid) {
-						var jDiv = $(divid);
-						var jDivChilds = $(divid).find("*");
-						if (jDiv.size() > 0 && jDivChilds.size() > 0) {
-							tMsg += jDiv.get(0).tagName + " " + evTarget.id + " " + jDivChilds.size();
-							if (evTarget == jDiv.get(0)) {
-								bRemove = false;
-							} else {
-								for ( var childIdx = 0; childIdx < jDivChilds.size(); childIdx++) {
-									var currChild = jDivChilds[childIdx];
-									if (evTarget == currChild) {
-										bRemove = false;
-										break;
-									}
-								}
-							}
-						}
-					} else {
-						bRemove = false;
-					}
-					tMsg += "" + bRemove;
+                    if (evTarget != refid) {
+                        var jDiv = $(divid);
+                        var jDivChilds = $(divid).find("*");
+                        if (jDiv.size() > 0 && jDivChilds.size() > 0) {
+                            tMsg += jDiv.get(0).tagName + " " + evTarget.id + " " + jDivChilds.size();
+                            if (evTarget == jDiv.get(0)) {
+                                bRemove = false;
+                            } else {
+                                for ( var childIdx = 0; childIdx < jDivChilds.size(); childIdx++) {
+                                    var currChild = jDivChilds[childIdx];
+                                    if (evTarget == currChild) {
+                                        bRemove = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        bRemove = false;
+                    }
+                    tMsg += "" + bRemove;
 
-					if (bRemove) {
-						if (jDiv.size() > 0) {
-							jDiv.css("cursor", "auto");
-							jDiv.remove();
-							tMsg += " remove";
-						}
-					}
-					$(this).css("cursor", "auto");
+                    if (bRemove) {
+                        if (jDiv.size() > 0) {
+                            jDiv.css("cursor", "auto");
+                            jDiv.remove();
+                            tMsg += " remove";
+                        }
+                    }
+                    $(this).css("cursor", "auto");
 
-					if (gm_debug) {
-						if ($("#se1").size() < 1) {
-							$("body").before("<span id='se1'>0</span>");
-						}
-						$("#se1").text(tMsg);
-					}
-				}
-			);
-		}
-	}
+                    if (gm_debug) {
+                        if ($("#se1").size() < 1) {
+                            $("body").before("<span id='se1'>0</span>");
+                        }
+                        $("#se1").text(tMsg);
+                    }
+                }
+            );
+        }
+    }
 }
 
 $(window).ready(
-	function(e) {
-		addHandler(e);
-	}
+    function(e) {
+        addHandler(e);
+    }
 );

@@ -1,5 +1,5 @@
-// @include			http://gmonkey.*.*/test/*
-// @include			http://devzone.*.*/test/gm/*
+// @include            http://gmonkey.*.*/test/*
+// @include            http://devzone.*.*/test/gm/*
 // ==/UserScript==
 
 /*

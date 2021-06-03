@@ -1,7 +1,6 @@
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 
-REM $Id: release-build.cmd 50 2013-03-25 07:31:39Z ollily $
 
 REM -----
 REM common settings
@@ -14,7 +13,7 @@ set GM_COMMON=%BASE%\gm_base\%TPL_BASE%
 
 set gmdir=%cd%
 if "%~1" NEQ "" (
-	set gmdir=%~dpn1
+    set gmdir=%~dpn1
 )
 
 set benv=%gmdir%\build_env.cmd
@@ -29,10 +28,10 @@ REM -----
 REM get script specific settings
 
 if exist "%benv%" (
-	call "%benv%"
+    call "%benv%"
 ) else (
-	echo settings mising "%bbenv%"
-	exit /B 12
+    echo settings mising "%bbenv%"
+    exit /B 12
 )
 
 REM -----
@@ -42,16 +41,16 @@ set gmfile=%gmdir%\%gmname%
 if "%gmname2%" NEQ "" set gmfile2=%gmdir%\%gmname2%
 
 if "%tpldir%" EQU "" (
-	set tpldir=%gmdir%\%TPL_BASE%
+    set tpldir=%gmdir%\%TPL_BASE%
 )
 
 if not exist "%gmdir%" (
-	echo "%gmdir%" not exists
-	exit /B 10
+    echo "%gmdir%" not exists
+    exit /B 10
 )
 if not exist "%tpldir%" (
-	echo "%tpldir%" not exists
-	exit /B 11
+    echo "%tpldir%" not exists
+    exit /B 11
 )
 
 echo.
@@ -76,15 +75,15 @@ echo //>>"%gmfile%"
 echo.>>"%gmfile%"
 
 for %%I in (1,2,3,4,5,6,7,8,9) do if "!C%%I!" NEQ "" (
-	if exist "%tpldir%\!C%%I!" (
-		type "%tpldir%\!C%%I!">>"%gmfile%"
-	) else (
-		if exist "!C%%I!" (
-			type "!C%%I!">>"%gmfile%"
-		) else (
-			echo NOT found : !C%%I!
-		)
-	)
+    if exist "%tpldir%\!C%%I!" (
+        type "%tpldir%\!C%%I!">>"%gmfile%"
+    ) else (
+        if exist "!C%%I!" (
+            type "!C%%I!">>"%gmfile%"
+        ) else (
+            echo NOT found : !C%%I!
+        )
+    )
 )
 
 echo.>>"%gmfile%"
@@ -103,15 +102,15 @@ echo //>>"%gmfile%"
 echo.>>"%gmfile%"
 
 for %%I in (1,2,3,4,5,6,7,8,9) do if "!P%%I!" NEQ "" (
-	if exist "%tpldir%\!P%%I!" (
-		type "%tpldir%\!P%%I!">>"%gmfile%"
-	) else (
-		if exist "!P%%I!" (
-			type "!P%%I!">>"%gmfile%"
-		) else (
-			echo NOT found : !P%%I!
-		)
-	)
+    if exist "%tpldir%\!P%%I!" (
+        type "%tpldir%\!P%%I!">>"%gmfile%"
+    ) else (
+        if exist "!P%%I!" (
+            type "!P%%I!">>"%gmfile%"
+        ) else (
+            echo NOT found : !P%%I!
+        )
+    )
 )
 
 echo.>>"%gmfile%"
@@ -132,8 +131,8 @@ REM copy file to browser target folder
 if "%gmfile2%" NEQ "" (
     echo copy from   : "%gmfile%"
     echo deploy-file : "%gmfile2%"
-	if exist "%gmfile2%" (rm "%gmfile2%")
-	copy /Y "%gmfile%" "%gmfile2%"
+    if exist "%gmfile2%" (rm "%gmfile2%")
+    copy /Y "%gmfile%" "%gmfile2%"
 )
 
 echo.

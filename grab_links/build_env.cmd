@@ -1,4 +1,3 @@
-REM $Id: build_env.cmd 50 2013-03-25 07:31:39Z ollily $
 
 REM set C1=%GM_COMMON%\%PRF%jquery.js
 set C1=%GM_COMMON%\%PRF%base-core.js

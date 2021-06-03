@@ -22,15 +22,15 @@ var maxWidth = 640;
  *            a path as regular expression (optional)
  */
 function gmAddSite(filter, site, path) {
-	if (knownSite) {
-		if (site && (site != "")) {
-			var len = knownSite.length;
-			knownSite[len] = new Object();
-			knownSite[len].site = site;
-			knownSite[len].filter = (filter != null ? filter : ".+");
-			knownSite[len].path = (path != null ? path : "");
-		}
-	}
+    if (knownSite) {
+        if (site && (site != "")) {
+            var len = knownSite.length;
+            knownSite[len] = new Object();
+            knownSite[len].site = site;
+            knownSite[len].filter = (filter != null ? filter : ".+");
+            knownSite[len].path = (path != null ? path : "");
+        }
+    }
 }
 
 /**
@@ -51,18 +51,18 @@ function gmAddSite(filter, site, path) {
  *            1=will add a download-link beneath the picture, else 0
  */
 function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDownload) {
-	if (knownSite) {
-		if (site && site.length > 0) {
-			var len = knownSite.length;
-			knownSite[len] = new Object();
-			knownSite[len].site = site;
-			knownSite[len].url = (urlElem != null ? urlElem : ".+");
-			knownSite[len].search = (urlSearch != null ? urlSearch : "");
-			knownSite[len].replace = (urlReplace != null ? urlReplace : "");
-			knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
-			knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
-		}
-	}
+    if (knownSite) {
+        if (site && site.length > 0) {
+            var len = knownSite.length;
+            knownSite[len] = new Object();
+            knownSite[len].site = site;
+            knownSite[len].url = (urlElem != null ? urlElem : ".+");
+            knownSite[len].search = (urlSearch != null ? urlSearch : "");
+            knownSite[len].replace = (urlReplace != null ? urlReplace : "");
+            knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
+            knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
+        }
+    }
 }
 
 /**
@@ -77,33 +77,33 @@ function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withD
  * @returns {String} the predefined searchtext
  */
 function gmFoundFilter(site, path) {
-	var retFilter = "";
-	var init = 0;
-	if (knownSite && site) {
-		if (!path) {
-			path = "";
-		}
-		// alert("site: " + site + "| path: " + path);
-		for ( var i = 0; i < knownSite.length; i++) {
-			// alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
-			if (site.search(knownSite[i].site) >= 0) {
-				if (init == 0 && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					init = 1;
-				}
-				var fIdx = path.search(knownSite[i].path);
-				//alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
-				if (path != "" && (fIdx >= 0)) {
-					retFilter = knownSite[i].filter;
-					break;
-				} else if (path == "" && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					break;
-				}
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = "";
+    var init = 0;
+    if (knownSite && site) {
+        if (!path) {
+            path = "";
+        }
+        // alert("site: " + site + "| path: " + path);
+        for ( var i = 0; i < knownSite.length; i++) {
+            // alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
+            if (site.search(knownSite[i].site) >= 0) {
+                if (init == 0 && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    init = 1;
+                }
+                var fIdx = path.search(knownSite[i].path);
+                //alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
+                if (path != "" && (fIdx >= 0)) {
+                    retFilter = knownSite[i].filter;
+                    break;
+                } else if (path == "" && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    break;
+                }
+            }
+        }
+    }
+    return retFilter;
 }
 
 /**
@@ -116,15 +116,15 @@ function gmFoundFilter(site, path) {
  * @return a pattern for the html-element to search in the page
  */
 function gmFoundFilter2(site) {
-	var retFilter = null;
-	if (knownSite != null && site != null) {
-		for (var i=0; i < knownSite.length; i++) {
-			if (site.search(knownSite[i].site) >= 0 ) {
-				retFilter = knownSite[i];
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = null;
+    if (knownSite != null && site != null) {
+        for (var i=0; i < knownSite.length; i++) {
+            if (site.search(knownSite[i].site) >= 0 ) {
+                retFilter = knownSite[i];
+            }
+        }
+    }
+    return retFilter;
 }
 
 var FL_TAG = "fltag";
@@ -140,69 +140,69 @@ var FL_ID = "_FL";
  * @returns {Array} an array with all found links
  */
 function gmFindLinksInPage(sea, withDesc) {
-	//
-	if (withDesc == null) {
-		withDesc = 0;
-	}
-	var pagelinks = new Array();
+    //
+    if (withDesc == null) {
+        withDesc = 0;
+    }
+    var pagelinks = new Array();
 
-	if (!sea || sea.length <= 0) {
-		sea = ".*";
-	} else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
-		sea = sea.substring(1, sea.length);
-		sea = sea.substring(0, sea.length -1);
-	} else {
-		sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-	}
-	//alert(sea);
-	sea = new RegExp(sea, "i");
-	for (var i=0; i < document.links.length; i++) {
-		var curlink = document.links[i];
-		var ne = 1;
+    if (!sea || sea.length <= 0) {
+        sea = ".*";
+    } else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
+        sea = sea.substring(1, sea.length);
+        sea = sea.substring(0, sea.length -1);
+    } else {
+        sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+    }
+    //alert(sea);
+    sea = new RegExp(sea, "i");
+    for (var i=0; i < document.links.length; i++) {
+        var curlink = document.links[i];
+        var ne = 1;
 
-		//var searchText = curlink.href;
-		var searchText = new Array();
-		searchText.push(gmGetAtI(curlink, "href"));
-		if (withDesc != 0) {
-			searchText.push(gmGetAtI(curlink, "alt"));
-			searchText.push(gmGetAtI(curlink, "title"));
-			searchText.push(gmGetAtI(curlink, "onmouseover"));
-			searchText.push(gmGetAtI(curlink, "onclick"));
-			searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-		}
-		var found = gmFindLinksInPage0(searchText, sea);
+        //var searchText = curlink.href;
+        var searchText = new Array();
+        searchText.push(gmGetAtI(curlink, "href"));
+        if (withDesc != 0) {
+            searchText.push(gmGetAtI(curlink, "alt"));
+            searchText.push(gmGetAtI(curlink, "title"));
+            searchText.push(gmGetAtI(curlink, "onmouseover"));
+            searchText.push(gmGetAtI(curlink, "onclick"));
+            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+        }
+        var found = gmFindLinksInPage0(searchText, sea);
 
-		if (found) {
-			if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
-				var htmllink = gmGetAtI(curlink, "href");
+        if (found) {
+            if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
+                var htmllink = gmGetAtI(curlink, "href");
 
-				for (var j=0; j < pagelinks.length; j++) {
-					if (htmllink == pagelinks[j][0]) {
-						// link allready added, avoiding duplicates
-						ne = 0; break;
-					}
-				}
-				if (ne == 1) {
+                for (var j=0; j < pagelinks.length; j++) {
+                    if (htmllink == pagelinks[j][0]) {
+                        // link allready added, avoiding duplicates
+                        ne = 0; break;
+                    }
+                }
+                if (ne == 1) {
 
-					var searchText = new Array();
-					searchText.push(curlink.text);
-					if (withDesc != 0) {
-						searchText.push(gmGetAtI(curlink, "alt"));
-						searchText.push(gmGetAtI(curlink, "title"));
-						searchText.push(gmGetAtI(curlink, "onmouseover"));
-						searchText.push(gmGetAtI(curlink, "onclick"));
-						searchText.push(curlink.innerHTML);
-					}
-					var htmltext = gmFindLinksInPage1(searchText);
+                    var searchText = new Array();
+                    searchText.push(curlink.text);
+                    if (withDesc != 0) {
+                        searchText.push(gmGetAtI(curlink, "alt"));
+                        searchText.push(gmGetAtI(curlink, "title"));
+                        searchText.push(gmGetAtI(curlink, "onmouseover"));
+                        searchText.push(gmGetAtI(curlink, "onclick"));
+                        searchText.push(curlink.innerHTML);
+                    }
+                    var htmltext = gmFindLinksInPage1(searchText);
 
-					//alert("L: "+htmllink + " T: " + htmltext);
-					var curlink = new Array(htmllink, htmltext);
-					pagelinks.push(curlink);
-				}
-			}
-		}
-	}
-	return pagelinks;
+                    //alert("L: "+htmllink + " T: " + htmltext);
+                    var curlink = new Array(htmllink, htmltext);
+                    pagelinks.push(curlink);
+                }
+            }
+        }
+    }
+    return pagelinks;
 }
 
 /**
@@ -213,23 +213,23 @@ function gmFindLinksInPage(sea, withDesc) {
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
 function gmFindLinksInPage0(arrText, sea) {
-	var found = false;
-	if (gmIsArray(arrText)) {
-		//alert(arrText.join("\n"));
-		for (var i=0; i < arrText.length; i++) {
-			var searchText = arrText[i];
-			try {
-				found = searchText.search(sea) != -1;
-			} catch (e) {
-				// ignored
-			}
-			//alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
-			if (found) {
-				break;
-			}
-		}
-	}
-	return found;
+    var found = false;
+    if (gmIsArray(arrText)) {
+        //alert(arrText.join("\n"));
+        for (var i=0; i < arrText.length; i++) {
+            var searchText = arrText[i];
+            try {
+                found = searchText.search(sea) != -1;
+            } catch (e) {
+                // ignored
+            }
+            //alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
+            if (found) {
+                break;
+            }
+        }
+    }
+    return found;
 }
 
 /**
@@ -239,64 +239,64 @@ function gmFindLinksInPage0(arrText, sea) {
  * @returns {String} the final link description
  */
 function gmFindLinksInPage1(arrText) {
-	var searchTextClean = new Array("", "", "");
-	if (gmIsArray(arrText)) {
-		//alert(arrText.join("\n"));
-		for (var idxST = 0; idxST < arrText.length; idxST++) {
-			var aEle = arrText[idxST];
-			if (aEle != null) {
-				try {
-					aEle = ("" + aEle).replace("\\n", "").replace("#", "").trim();
-					if (aEle != "") {
-						var tarIdx = -1;
-						switch (idxST) {
-						case 0:
-						case 1:
-						case 2:
-							tarIdx = 0;
-							break;
-						case 3:
-						case 4:
-							tarIdx = 1;
-							break;
-						case 5:
-							tarIdx = 2;
-							break;
-						default:
-							break;
-						}
-						if (tarIdx > -1) {
-							if (searchTextClean[tarIdx].search(aEle) == -1) {
-								if (searchTextClean[tarIdx] != "") {
-									searchTextClean[tarIdx] += "\n";
-								}
-								searchTextClean[tarIdx] += aEle;
-							}
-						}
-					}
-				} catch (e) {
-					// ignored
-				}
-			}
-		}
-	}
+    var searchTextClean = new Array("", "", "");
+    if (gmIsArray(arrText)) {
+        //alert(arrText.join("\n"));
+        for (var idxST = 0; idxST < arrText.length; idxST++) {
+            var aEle = arrText[idxST];
+            if (aEle != null) {
+                try {
+                    aEle = ("" + aEle).replace("\\n", "").replace("#", "").trim();
+                    if (aEle != "") {
+                        var tarIdx = -1;
+                        switch (idxST) {
+                        case 0:
+                        case 1:
+                        case 2:
+                            tarIdx = 0;
+                            break;
+                        case 3:
+                        case 4:
+                            tarIdx = 1;
+                            break;
+                        case 5:
+                            tarIdx = 2;
+                            break;
+                        default:
+                            break;
+                        }
+                        if (tarIdx > -1) {
+                            if (searchTextClean[tarIdx].search(aEle) == -1) {
+                                if (searchTextClean[tarIdx] != "") {
+                                    searchTextClean[tarIdx] += "\n";
+                                }
+                                searchTextClean[tarIdx] += aEle;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // ignored
+                }
+            }
+        }
+    }
 
-	var htmltext = "";
+    var htmltext = "";
 
-	if (searchTextClean.length > 0) {
-		//alert(searchTextClean.join("\n"));
-		if (searchTextClean[0] != "") {
-			htmltext = searchTextClean[0];
-		} else if (searchTextClean[1] != "") {
-			htmltext = searchTextClean[1];
-		} else if (searchTextClean[2] != "") {
-			htmltext = searchTextClean[2];
-		}
-	}
-	if (htmltext == null || htmltext == "") {
-		htmltext = "n/a";
-	}
-	return htmltext;
+    if (searchTextClean.length > 0) {
+        //alert(searchTextClean.join("\n"));
+        if (searchTextClean[0] != "") {
+            htmltext = searchTextClean[0];
+        } else if (searchTextClean[1] != "") {
+            htmltext = searchTextClean[1];
+        } else if (searchTextClean[2] != "") {
+            htmltext = searchTextClean[2];
+        }
+    }
+    if (htmltext == null || htmltext == "") {
+        htmltext = "n/a";
+    }
+    return htmltext;
 }
 
 /**
@@ -308,26 +308,26 @@ function gmFindLinksInPage1(arrText) {
  * @returns {Boolean} TRUE = if the script block could be set, else FALSE
  */
 function gmAddScriptGlobal(scc) {
-	var isSet = false;
-	if (gmIsObject(scc) || gmIsFunction(scc) || (scc && scc.length > 0)) {
-		var head = gmGetHead();
-		if (head) {
-			var script = gmCreateObj(head, "script");
-			script.type = 'text/javascript';
+    var isSet = false;
+    if (gmIsObject(scc) || gmIsFunction(scc) || (scc && scc.length > 0)) {
+        var head = gmGetHead();
+        if (head) {
+            var script = gmCreateObj(head, "script");
+            script.type = 'text/javascript';
 
-			var allscc = "";
-			if (gmIsArray(scc)) {
-				for ( var i = 0; i < scc.length; i++) {
-					allscc += scc[i] + " \n";
-				}
-			} else {
-				allscc = scc;
-			}
-			gmSetCoI(script, "\n" + allscc + "\n");
-			isSet = true;
-		}
-	}
-	return isSet;
+            var allscc = "";
+            if (gmIsArray(scc)) {
+                for ( var i = 0; i < scc.length; i++) {
+                    allscc += scc[i] + " \n";
+                }
+            } else {
+                allscc = scc;
+            }
+            gmSetCoI(script, "\n" + allscc + "\n");
+            isSet = true;
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -338,24 +338,24 @@ function gmAddScriptGlobal(scc) {
  *            Check
  */
 function gmAddScriptLinkGlobal(scLink) {
-	var isSet = false;
-	var head = gmGetHead();
-	if (head && scLink && scLink.length > 0) {
-		var allScLink = new Array();
-		if (gmIsArray(scLink)) {
-			allScLink = scLink;
-		} else {
-			allScLink = new Array(scLink);
-		}
+    var isSet = false;
+    var head = gmGetHead();
+    if (head && scLink && scLink.length > 0) {
+        var allScLink = new Array();
+        if (gmIsArray(scLink)) {
+            allScLink = scLink;
+        } else {
+            allScLink = new Array(scLink);
+        }
 
-		for ( var i = 0; i < allScLink.length; i++) {
-			var newScript = gmCreateObj(head, "script");
-			newScript.type = 'text/javascript';
-			newScript.src = allScLink[i];
-		}
-		isSet = true;
-	}
-	return isSet;
+        for ( var i = 0; i < allScLink.length; i++) {
+            var newScript = gmCreateObj(head, "script");
+            newScript.type = 'text/javascript';
+            newScript.src = allScLink[i];
+        }
+        isSet = true;
+    }
+    return isSet;
 }
 
 /**
@@ -366,26 +366,26 @@ function gmAddScriptLinkGlobal(scLink) {
  * @returns {Boolean} TRUE = if the style block could be set, else FALSE
  */
 function gmAddStyleGlobal(scc) {
-	var isSet = false;
-	if (gmIsObject(scc) || (scc && scc.length > 0)) {
-		var head = gmGetHead();
-		if (head) {
-			var style = gmCreateObj(head, "style");
-			style.type = 'text/css';
+    var isSet = false;
+    if (gmIsObject(scc) || (scc && scc.length > 0)) {
+        var head = gmGetHead();
+        if (head) {
+            var style = gmCreateObj(head, "style");
+            style.type = 'text/css';
 
-			var allscc = "";
-			if (gmIsArray(scc)) {
-				for ( var i = 0; i < scc.length; i++) {
-					allscc += scc[i] + " \n";
-				}
-			} else {
-				allscc = scc;
-			}
-			gmSetCoI(style, "\n" + allscc + "\n");
-			isSet = true;
-		}
-	}
-	return isSet;
+            var allscc = "";
+            if (gmIsArray(scc)) {
+                for ( var i = 0; i < scc.length; i++) {
+                    allscc += scc[i] + " \n";
+                }
+            } else {
+                allscc = scc;
+            }
+            gmSetCoI(style, "\n" + allscc + "\n");
+            isSet = true;
+        }
+    }
+    return isSet;
 }
 
 /**
@@ -396,23 +396,23 @@ function gmAddStyleGlobal(scc) {
  * @returns {Array} array of entries
  */
 function gmGenTestEntries(maxEntries) {
-	if (isNaN(maxEntries) || maxEntries == "") {
-		maxEntries = 1;
-	}
-	if (maxEntries < 0) {
-		maxEntries = 0;
-	} else if (maxEntries > 100) {
-		maxEntries = 100;
-	}
-	testArray = new Array();
-	for ( var i = 1; i <= maxEntries; i++) {
-		var curlink = "http://" + currSite + currPath + "/link-" + i;
-		var htmllink = curlink;
-		var htmltext = "linktext-" + i;
-		var curlink = new Array(htmllink, htmltext);
-		testArray.push(curlink);
-	}
-	return testArray;
+    if (isNaN(maxEntries) || maxEntries == "") {
+        maxEntries = 1;
+    }
+    if (maxEntries < 0) {
+        maxEntries = 0;
+    } else if (maxEntries > 100) {
+        maxEntries = 100;
+    }
+    testArray = new Array();
+    for ( var i = 1; i <= maxEntries; i++) {
+        var curlink = "http://" + currSite + currPath + "/link-" + i;
+        var htmllink = curlink;
+        var htmltext = "linktext-" + i;
+        var curlink = new Array(htmllink, htmltext);
+        testArray.push(curlink);
+    }
+    return testArray;
 }
 
 /**
@@ -424,17 +424,17 @@ function gmGenTestEntries(maxEntries) {
  *          topOffset FIXME:TEST
  */
 function gmCumulativeOffset(element) {
-	var valueT = 0;
-	var valueL = 0;
-	if (element) {
-		valueL = element.width || 0;
-		do {
-			valueT += element.offsetTop || 0;
-			valueL += element.offsetLeft || 0;
-			element = element.offsetParent;
-		} while (element);
-	}
-	return [ valueL, valueT ];
+    var valueT = 0;
+    var valueL = 0;
+    if (element) {
+        valueL = element.width || 0;
+        do {
+            valueT += element.offsetTop || 0;
+            valueL += element.offsetLeft || 0;
+            element = element.offsetParent;
+        } while (element);
+    }
+    return [ valueL, valueT ];
 }
 
 /**
@@ -450,19 +450,19 @@ function gmCumulativeOffset(element) {
  * @returns {Number} the horizontal offset or 0 FIXME:Test
  */
 function gmCalcOffsetH(parentElem, iPoint, iZoom) {
-	if (isNaN(iZoom)) {
-		iZoom = 1;
-	}
-	var offsetH = 0;
-	if (parentElem) {
-		offsetH = gmCumulativeOffset(parentElem)[1];
-		if (!isNaN(offsetH) && gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[1])) {
-				offsetH = offsetH - (iPoint[1] * iZoom) + (parentElem.height || 0);
-			}
-		}
-	}
-	return offsetH;
+    if (isNaN(iZoom)) {
+        iZoom = 1;
+    }
+    var offsetH = 0;
+    if (parentElem) {
+        offsetH = gmCumulativeOffset(parentElem)[1];
+        if (!isNaN(offsetH) && gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[1])) {
+                offsetH = offsetH - (iPoint[1] * iZoom) + (parentElem.height || 0);
+            }
+        }
+    }
+    return offsetH;
 }
 
 /**
@@ -477,18 +477,18 @@ function gmCalcOffsetH(parentElem, iPoint, iZoom) {
  * @returns {String} the url with replaced text
  */
 function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
-	var newUrl = oldUrl;
-	if (oldUrl != null) {
-		if (searchForPattern != "") {
-			// there is something to replace
-			if (replaceWithText == null) {
-				replaceWithText = "";
-			}
-			var patternReplace = new RegExp(searchForPattern);
-			newUrl = oldUrl.replace(patternReplace, replaceWithText);
-		}
-	}
-	return newUrl;
+    var newUrl = oldUrl;
+    if (oldUrl != null) {
+        if (searchForPattern != "") {
+            // there is something to replace
+            if (replaceWithText == null) {
+                replaceWithText = "";
+            }
+            var patternReplace = new RegExp(searchForPattern);
+            newUrl = oldUrl.replace(patternReplace, replaceWithText);
+        }
+    }
+    return newUrl;
 }
 
 /**
@@ -497,11 +497,11 @@ function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
  * @returns a server name
  */
 function gmGetCurrentSite() {
-	currSite = document.location.host;
-	if (document.location.port) {
-		currSite += ":" + document.location.port;
-	}
-	return currSite;
+    currSite = document.location.host;
+    if (document.location.port) {
+        currSite += ":" + document.location.port;
+    }
+    return currSite;
 }
 
 /**
@@ -512,23 +512,23 @@ function gmGetCurrentSite() {
  * @returns {Array[width, height]} the image metrics [width, height] in px
  */
 function gmGetImageSize(newImage) {
-	var imageObjectWidth = 0;
-	var imageObjectHeight = 0;
+    var imageObjectWidth = 0;
+    var imageObjectHeight = 0;
 
-	if (newImage && newImage.width && newImage.width > 0) {
-		imageObjectWidth = newImage.width;
-		imageObjectHeight = newImage.height;
-	}
-	if (imageObjectWidth <= 0) {
-		imageObjectWidth = minWidth;
-	} else if (imageObjectWidth > maxWidth) {
-		imageObjectWidth = maxWidth;
-		imageObjectHeight = 0;
-	}
-	if (imageObjectHeight <= 0) {
-		imageObjectHeight = "auto";
-	}
-	return [ imageObjectWidth, imageObjectHeight ];
+    if (newImage && newImage.width && newImage.width > 0) {
+        imageObjectWidth = newImage.width;
+        imageObjectHeight = newImage.height;
+    }
+    if (imageObjectWidth <= 0) {
+        imageObjectWidth = minWidth;
+    } else if (imageObjectWidth > maxWidth) {
+        imageObjectWidth = maxWidth;
+        imageObjectHeight = 0;
+    }
+    if (imageObjectHeight <= 0) {
+        imageObjectHeight = "auto";
+    }
+    return [ imageObjectWidth, imageObjectHeight ];
 }
 
 /**
@@ -547,50 +547,50 @@ function gmGetImageSize(newImage) {
  * @returns {Boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
-	var w = "auto";
-	var h = "auto";
-	var oH = "5px";
-	var oW = "5px";
+    var w = "auto";
+    var h = "auto";
+    var oH = "5px";
+    var oW = "5px";
 
-	var isSet = false;
-	if (gmIsObject(hDiv)) {
-		if (isNaN(iZoom)) {
-			iZoom = 1;
-		}
-		if (gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[0])) {
-				w = iPoint[0] + 2;
-			}
-			if (isNaN(iPoint[1])) {
-				h = (gmToNo(hDiv.style.width) / ratio) + 2;// + picTextHeight;
-			} else {
-				h = (iPoint[1] + 2); // + picTextHeight;
-			}
-		}
-		if (!isNaN(offsetH)) {
-			oH = offsetH + "px";
-		}
-		if (!isNaN(offsetW)) {
-			oW = offsetW + "px";
-		}
-		if (!isNaN(w)) {
-			w *= iZoom;
-			w = w + "px";
-		}
-		if (!isNaN(h)) {
-			h *= iZoom;
-			h = h + "px";
-		}
-		var css = gmGetAtI(hDiv, "style");
-		if (css == false) {
-			css = "";
-		}
-		css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW ;
-		gmSetAtI(hDiv, "style", css);
-		isSet = true;
-	}
+    var isSet = false;
+    if (gmIsObject(hDiv)) {
+        if (isNaN(iZoom)) {
+            iZoom = 1;
+        }
+        if (gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[0])) {
+                w = iPoint[0] + 2;
+            }
+            if (isNaN(iPoint[1])) {
+                h = (gmToNo(hDiv.style.width) / ratio) + 2;// + picTextHeight;
+            } else {
+                h = (iPoint[1] + 2); // + picTextHeight;
+            }
+        }
+        if (!isNaN(offsetH)) {
+            oH = offsetH + "px";
+        }
+        if (!isNaN(offsetW)) {
+            oW = offsetW + "px";
+        }
+        if (!isNaN(w)) {
+            w *= iZoom;
+            w = w + "px";
+        }
+        if (!isNaN(h)) {
+            h *= iZoom;
+            h = h + "px";
+        }
+        var css = gmGetAtI(hDiv, "style");
+        if (css == false) {
+            css = "";
+        }
+        css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW ;
+        gmSetAtI(hDiv, "style", css);
+        isSet = true;
+    }
 
-	return isSet;
+    return isSet;
 }
 
 /**
@@ -607,45 +607,45 @@ function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
  * @returns {Boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
-	var h = "auto";
-	var w = "auto";
+    var h = "auto";
+    var w = "auto";
 
-	var isSet = false;
-	if (gmIsObject(hDiv)) {
-		if (isNaN(iZoom)) {
-			iZoom = 1;
-		}
-		if (gmIsArray(iPoint)) {
-			if (!isNaN(iPoint[0])) {
-				w = iPoint[0];
-			}
-			if (isNaN(iPoint[1])) {
-				if (gmIsObject(hImg)) {
-					ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
-					h = (gmToNo(hDiv.style.width) / ratio);// + picTextHeight;
-				}
-			} else {
-				h = iPoint[1]; // + picTextHeight;
-			}
-		}
-		if (!isNaN(w)) {
-			w *= iZoom;
-			w = w + "px";
-		}
-		if (!isNaN(h)) {
-			h *= iZoom;
-			h = h + "px";
-		}
-		var css = gmGetAtI(hDiv, "style");
-		if (css == false) {
-			css = "";
-		}
-		css += ";width:" + w + ";height:" + h;
-		gmSetAtI(hDiv, "style", css);
-		isSet = true;
-	}
+    var isSet = false;
+    if (gmIsObject(hDiv)) {
+        if (isNaN(iZoom)) {
+            iZoom = 1;
+        }
+        if (gmIsArray(iPoint)) {
+            if (!isNaN(iPoint[0])) {
+                w = iPoint[0];
+            }
+            if (isNaN(iPoint[1])) {
+                if (gmIsObject(hImg)) {
+                    ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
+                    h = (gmToNo(hDiv.style.width) / ratio);// + picTextHeight;
+                }
+            } else {
+                h = iPoint[1]; // + picTextHeight;
+            }
+        }
+        if (!isNaN(w)) {
+            w *= iZoom;
+            w = w + "px";
+        }
+        if (!isNaN(h)) {
+            h *= iZoom;
+            h = h + "px";
+        }
+        var css = gmGetAtI(hDiv, "style");
+        if (css == false) {
+            css = "";
+        }
+        css += ";width:" + w + ";height:" + h;
+        gmSetAtI(hDiv, "style", css);
+        isSet = true;
+    }
 
-	return isSet;
+    return isSet;
 }
 
 /**
@@ -653,7 +653,7 @@ function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
  * @returns {Object} the object for the head in the page, or null
  */
 function gmGetHead() {
-	return gmGetEl("tagname", "head");
+    return gmGetEl("tagname", "head");
 }
 
 /**
@@ -661,7 +661,7 @@ function gmGetHead() {
  * @returns {Object} the object for the body in the page, or null
  */
 function gmGetBody() {
-	return gmGetEl("tagname", "body");
+    return gmGetEl("tagname", "body");
 }
 
 /**
@@ -669,16 +669,16 @@ function gmGetBody() {
  * @returns {Object} the css-style-object from that object
  */
 function gmGetStyle(obj) {
-	var res = null;
-	var oObj = gmGetElI(obj);
-	if (oObj) {
-		try {
-			res = oObj.style;
-		} catch (e) {
-			// ignored
-		}
-	}
-	return res;
+    var res = null;
+    var oObj = gmGetElI(obj);
+    if (oObj) {
+        try {
+            res = oObj.style;
+        } catch (e) {
+            // ignored
+        }
+    }
+    return res;
 }
 
 /**
@@ -692,8 +692,8 @@ function gmGetBodyHeight() {
         Dh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     if (D.documentElement) {
-    	D = D.documentElement;
-    	Eh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
+        D = D.documentElement;
+        Eh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     return Math.max(Dh, Eh);
 }

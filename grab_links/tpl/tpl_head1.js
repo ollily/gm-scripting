@@ -9,6 +9,5 @@
 // @downloadURL        http://userscripts.org/scripts/source/82191.user.js
 // @updateURL          http://userscripts.org/scripts/source/82191.meta.js
 // @run-at             document-end
-// @licence            http://www.gnu.org/licenses/gpl-3.0.txt
-// @licence            http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license            (CC) by-nc-sa
+// @license            Apache License, Version 2.0
+// @license            https://www.apache.org/licenses/LICENSE-2.0.txt

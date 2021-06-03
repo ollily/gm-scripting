@@ -37,33 +37,33 @@ if (null == gmPrivsManager()) {} else alert("gmPrivsManager-00 " + gmPrivsManage
 
 /* ------- */
 function testgmIsClipboardSupported(){
-	var res = null;
-	res = gmIsClipboardSupported();
-	if (res == true || res == false) {} else alert("gmIsClipboardSupported-00");
+    var res = null;
+    res = gmIsClipboardSupported();
+    if (res == true || res == false) {} else alert("gmIsClipboardSupported-00");
 }
 
 
 /* ------- */
 function testgmCopy2clipboard() {
-	var mustWork = gmIsClipboardSupported();
-	{
-		var expected = null;
-		var actual = gmCopy2clipboard(expected, true, null);
-		if (mustWork) {
-			if (expected == actual) {} else alert ("gmCopy2clipboard-00");
-		} else {
-			if (expected != actual) {} else alert ("gmCopy2clipboard-01");
-		}
-	}
-	{
-		var expected = new Date().toDateString();
-		var actual = gmCopy2clipboard(expected, true, null);
-		if (mustWork) {
-			if (expected == actual) {} else alert ("gmCopy2clipboard-10");
-		} else {
-			if (expected != actual) {} else alert ("gmCopy2clipboard-11");
-		}
-	}
+    var mustWork = gmIsClipboardSupported();
+    {
+        var expected = null;
+        var actual = gmCopy2clipboard(expected, true, null);
+        if (mustWork) {
+            if (expected == actual) {} else alert ("gmCopy2clipboard-00");
+        } else {
+            if (expected != actual) {} else alert ("gmCopy2clipboard-01");
+        }
+    }
+    {
+        var expected = new Date().toDateString();
+        var actual = gmCopy2clipboard(expected, true, null);
+        if (mustWork) {
+            if (expected == actual) {} else alert ("gmCopy2clipboard-10");
+        } else {
+            if (expected != actual) {} else alert ("gmCopy2clipboard-11");
+        }
+    }
 }
 
 /* ------- */
@@ -71,11 +71,11 @@ gmAddClipboardSupport();
 var pagescripts = document.getElementsByTagName("script");
 var script_added = false;
 for ( var inti = 0; inti < pagescripts.length; inti++) {
-	content = gmGetCoI(pagescripts[inti]);
-	if (content != null && content.indexOf("function " + "gmClipRef()") > -1) {
-		script_added = true;
-		break;
-	}
+    content = gmGetCoI(pagescripts[inti]);
+    if (content != null && content.indexOf("function " + "gmClipRef()") > -1) {
+        script_added = true;
+        break;
+    }
 }
 if (true == script_added) {} else alert("gmAddClipboardSupport-00");
 

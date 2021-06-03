@@ -4,14 +4,11 @@
 // @description        Lists all links on a page for clipboard copy
 // @namespace          http://userscripts.org/users/ollily
 // @author             ollily2907
-// @version            1.00.06
-// @date               $LastChangedDate: 2013-03-11 12:53:39 +0100 (Mo, 11 Mrz 2013) $
-// @revision           $LastChangedRevision: 49 $
+// @version            1.01.00
 // @source             http://userscripts.org/scripts/show/82191
 // @run-at             document-end
-// @licence            http://www.gnu.org/licenses/gpl-3.0.txt
-// @licence            http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license            (CC) by-nc-sa
+// @license            Apache License, Version 2.0
+// @license            https://www.apache.org/licenses/LICENSE-2.0.txt
 // @include            http://gmonkey.*.*/test/*
 // @include            http://devzone.*.*/test/gm/*
 // @include            /http(|s)\://(|.+?\.)youtube\..+?/.*/
@@ -88,13 +85,13 @@
 var knownSite = new Array();
 var currSite = document.location.host;
 if (document.location.port) {
-	currSite += ":" + document.location.port;
+    currSite += ":" + document.location.port;
 }
 var currPath = document.location.href.substring(document.location.href.indexOf(currSite) + currSite.length);
 
 var bTestMode = false;
 if (currSite == "localhost") {
-	bTestMode = true;
+    bTestMode = true;
 };
 
 // - General DHTML-Lib - Start
@@ -102,21 +99,21 @@ if (currSite == "localhost") {
 var DHTML = false, DOM = false, MSIE4 = false, NS4 = false, OP = false;
 
 if (document.getElementById) {
-	DHTML = true;
-	DOM = true;
+    DHTML = true;
+    DOM = true;
 } else {
-	if (document.all) {
-		DHTML = true;
-		MSIE4 = true;
-	} else {
-		if (document.layers) {
-			DHTML = true;
-			NS4 = true;
-		}
-	}
+    if (document.all) {
+        DHTML = true;
+        MSIE4 = true;
+    } else {
+        if (document.layers) {
+            DHTML = true;
+            NS4 = true;
+        }
+    }
 }
 if (window.opera) {
-	OP = true;
+    OP = true;
 }
 
 /**
@@ -127,7 +124,7 @@ if (window.opera) {
  * @returns {Object} the found object or null
  */
 function gm_getElementI(Identifier) {
-	return gm_getElement("id", Identifier, null);
+    return gm_getElement("id", Identifier, null);
 }
 
 /**
@@ -142,72 +139,72 @@ function gm_getElementI(Identifier) {
  * @returns {Object} the found object or null
  */
 function gm_getElement(Mode, Identifier, ElementNumber) {
-	var Element, ElementList;
-	if (DOM) {
-		if (Mode.toLowerCase() == "id") {
-			Element = document.getElementById(Identifier);
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		if (Mode.toLowerCase() == "name") {
-			ElementList = document.getElementsByName(Identifier);
-			Element = ElementList[ElementNumber];
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		if (Mode.toLowerCase() == "tagname") {
-			ElementList = document.getElementsByTagName(Identifier);
-			Element = ElementList[ElementNumber];
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		return false;
-	}
-	if (MSIE4) {
-		if (Mode.toLowerCase() == "id" || Mode.toLowerCase() == "name") {
-			Element = document.all(Identifier);
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		if (Mode.toLowerCase() == "tagname") {
-			ElementList = document.all.tags(Identifier);
-			Element = ElementList[ElementNumber];
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		return false;
-	}
-	if (NS4) {
-		if (Mode.toLowerCase() == "id" || Mode.toLowerCase() == "name") {
-			Element = document[Identifier];
-			if (!Element) {
-				Element = document.anchors[Identifier];
-			}
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		if (Mode.toLowerCase() == "layerindex") {
-			Element = document.layers[Identifier];
-			if (!Element) {
-				Element = false;
-			}
-			return Element;
-		}
-		return false;
-	}
-	return false;
+    var Element, ElementList;
+    if (DOM) {
+        if (Mode.toLowerCase() == "id") {
+            Element = document.getElementById(Identifier);
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        if (Mode.toLowerCase() == "name") {
+            ElementList = document.getElementsByName(Identifier);
+            Element = ElementList[ElementNumber];
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        if (Mode.toLowerCase() == "tagname") {
+            ElementList = document.getElementsByTagName(Identifier);
+            Element = ElementList[ElementNumber];
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        return false;
+    }
+    if (MSIE4) {
+        if (Mode.toLowerCase() == "id" || Mode.toLowerCase() == "name") {
+            Element = document.all(Identifier);
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        if (Mode.toLowerCase() == "tagname") {
+            ElementList = document.all.tags(Identifier);
+            Element = ElementList[ElementNumber];
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        return false;
+    }
+    if (NS4) {
+        if (Mode.toLowerCase() == "id" || Mode.toLowerCase() == "name") {
+            Element = document[Identifier];
+            if (!Element) {
+                Element = document.anchors[Identifier];
+            }
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        if (Mode.toLowerCase() == "layerindex") {
+            Element = document.layers[Identifier];
+            if (!Element) {
+                Element = false;
+            }
+            return Element;
+        }
+        return false;
+    }
+    return false;
 }
 
 /**
@@ -220,7 +217,7 @@ function gm_getElement(Mode, Identifier, ElementNumber) {
  * @returns {Object} returns the found attribute or false
  */
 function gm_getAttributeI(Identifier, AttributeName) {
-	return gm_getAttribute("id", Identifier, null, AttributeName);
+    return gm_getAttribute("id", Identifier, null, AttributeName);
 }
 
 /**
@@ -237,23 +234,23 @@ function gm_getAttributeI(Identifier, AttributeName) {
  * @returns {Object} returns the found attribute or false
  */
 function gm_getAttribute(Mode, Identifier, ElementNumber, AttributeName) {
-	var Attribute;
-	var Element = gm_getElement(Mode, Identifier, ElementNumber);
-	if (!Element) {
-		return false;
-	}
-	if (DOM || MSIE4) {
-		Attribute = Element.getAttribute(AttributeName);
-		return Attribute;
-	}
-	if (NS4) {
-		Attribute = Element[AttributeName];
-		if (!Attribute) {
-			Attribute = false;
-		}
-		return Attribute;
-	}
-	return false;
+    var Attribute;
+    var Element = gm_getElement(Mode, Identifier, ElementNumber);
+    if (!Element) {
+        return false;
+    }
+    if (DOM || MSIE4) {
+        Attribute = Element.getAttribute(AttributeName);
+        return Attribute;
+    }
+    if (NS4) {
+        Attribute = Element[AttributeName];
+        if (!Attribute) {
+            Attribute = false;
+        }
+        return Attribute;
+    }
+    return false;
 }
 
 /**
@@ -264,7 +261,7 @@ function gm_getAttribute(Mode, Identifier, ElementNumber, AttributeName) {
  * @returns {Object} returns the found content or false
  */
 function gm_getContentI(Identifier) {
-	return gm_getContent("id", Identifier, null);
+    return gm_getContent("id", Identifier, null);
 }
 
 /**
@@ -279,24 +276,24 @@ function gm_getContentI(Identifier) {
  * @returns {Object} returns the found content or false
  */
 function gm_getContent(Mode, Identifier, ElementNumber) {
-	var Content;
-	var Element = gm_getElement(Mode, Identifier, ElementNumber);
-	if (!Element) {
-		return false;
-	}
-	if (DOM && Element.firstChild) {
-		if (Element.firstChild.nodeType == 3) {
-			Content = Element.firstChild.nodeValue;
-		} else {
-			Content = "";
-		}
-		return Content;
-	}
-	if (MSIE4) {
-		Content = Element.innerText;
-		return Content;
-	}
-	return false;
+    var Content;
+    var Element = gm_getElement(Mode, Identifier, ElementNumber);
+    if (!Element) {
+        return false;
+    }
+    if (DOM && Element.firstChild) {
+        if (Element.firstChild.nodeType == 3) {
+            Content = Element.firstChild.nodeValue;
+        } else {
+            Content = "";
+        }
+        return Content;
+    }
+    if (MSIE4) {
+        Content = Element.innerText;
+        return Content;
+    }
+    return false;
 }
 
 /**
@@ -309,7 +306,7 @@ function gm_getContent(Mode, Identifier, ElementNumber) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gm_setContentI(Identifier, Text) {
-	return gm_setContent("id", Identifier, null, Text);
+    return gm_setContent("id", Identifier, null, Text);
 }
 
 /**
@@ -326,24 +323,24 @@ function gm_setContentI(Identifier, Text) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gm_setContent(Mode, Identifier, ElementNumber, Text) {
-	var Element = gm_getElement(Mode, Identifier, ElementNumber);
-	if (!Element) {
-		return false;
-	}
-	if (DOM && Element.firstChild) {
-		Element.firstChild.nodeValue = Text;
-		return true;
-	}
-	if (MSIE4) {
-		Element.innerText = Text;
-		return true;
-	}
-	if (NS4) {
-		Element.document.open();
-		Element.document.write(Text);
-		Element.document.close();
-		return true;
-	}
+    var Element = gm_getElement(Mode, Identifier, ElementNumber);
+    if (!Element) {
+        return false;
+    }
+    if (DOM && Element.firstChild) {
+        Element.firstChild.nodeValue = Text;
+        return true;
+    }
+    if (MSIE4) {
+        Element.innerText = Text;
+        return true;
+    }
+    if (NS4) {
+        Element.document.open();
+        Element.document.write(Text);
+        Element.document.close();
+        return true;
+    }
 }
 // - General DHTML-Lib - Start
 
@@ -358,16 +355,16 @@ function gm_setContent(Mode, Identifier, ElementNumber, Text) {
  *            a path as regular expression (optional)
  */
 function gm_addSite(filter, site, path) {
-	if (knownSite) {
-		var len = knownSite.length;
-		knownSite[len] = new Object();
-		knownSite[len].site = site;
-		knownSite[len].filter = filter;
-		if (!path) {
-			var path = "";
-		}
-		knownSite[len].path = path;
-	}
+    if (knownSite) {
+        var len = knownSite.length;
+        knownSite[len] = new Object();
+        knownSite[len].site = site;
+        knownSite[len].filter = filter;
+        if (!path) {
+            var path = "";
+        }
+        knownSite[len].path = path;
+    }
 }
 
 /**
@@ -381,32 +378,32 @@ function gm_addSite(filter, site, path) {
  * @returns {String} the predefined searchtext
  */
 function gm_foundFilter(site, path) {
-	var retFilter = "";
-	var init = 0;
-	if (knownSite && site) {
-		if (!path) {
-			var path = "";
-		}
-		// alert(site + " " + path);
-		for ( var i = 0; i < knownSite.length; i++) {
-			if (site.search(knownSite[i].site) >= 0) {
-				if (init == 0 && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					init = 1;
-				}
-				var fIdx = path.search(knownSite[i].path);
-				// alert(fIdx+" p:"+path+" k:"+knownSite[i].path);
-				if (path != "" && (fIdx >= 0)) {
-					retFilter = knownSite[i].filter;
-					break;
-				} else if (path == "" && knownSite[i].path == "") {
-					retFilter = knownSite[i].filter;
-					break;
-				}
-			}
-		}
-	}
-	return retFilter;
+    var retFilter = "";
+    var init = 0;
+    if (knownSite && site) {
+        if (!path) {
+            var path = "";
+        }
+        // alert(site + " " + path);
+        for ( var i = 0; i < knownSite.length; i++) {
+            if (site.search(knownSite[i].site) >= 0) {
+                if (init == 0 && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    init = 1;
+                }
+                var fIdx = path.search(knownSite[i].path);
+                // alert(fIdx+" p:"+path+" k:"+knownSite[i].path);
+                if (path != "" && (fIdx >= 0)) {
+                    retFilter = knownSite[i].filter;
+                    break;
+                } else if (path == "" && knownSite[i].path == "") {
+                    retFilter = knownSite[i].filter;
+                    break;
+                }
+            }
+        }
+    }
+    return retFilter;
 }
 
 /**
@@ -417,7 +414,7 @@ function gm_foundFilter(site, path) {
  * @returns {Boolean} TRUE=if object is an array, else FALSE
  */
 function gm_isArray(obj) {
-	return obj.constructor == Array;
+    return obj.constructor == Array;
 }
 
 /**
@@ -432,17 +429,17 @@ function gm_isArray(obj) {
  * @return {Object} the created object
  */
 function gm_createObj(par, objtyp, id) {
-	var obj = $("<" + objtyp + ">");
-	if (obj) {
-		if (id) {
-			obj.attr("id", id);
-			obj.attr("name", id);
-		}
-		if (par) {
-			$(par).append(obj);
-		}
-	}
-	return obj;
+    var obj = $("<" + objtyp + ">");
+    if (obj) {
+        if (id) {
+            obj.attr("id", id);
+            obj.attr("name", id);
+        }
+        if (par) {
+            $(par).append(obj);
+        }
+    }
+    return obj;
 }
 
 /**
@@ -463,22 +460,22 @@ function gm_createObj(par, objtyp, id) {
  * @return {Object} the object with added attributes
  */
 function gm_createObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
-	if (obj) {
-		obj.attr("title", tit);
-		if (ro) {
-			obj.attr("readonly", "readonly");
-		}
-		if (ev_click) {
-			obj.click(ev_click);
-		};
-		if (ev_focus) {
-			obj.focus(ev_focus);
-		};
-		if (caption) {
-			obj.append(caption);
-		}
-	}
-	return obj;
+    if (obj) {
+        obj.attr("title", tit);
+        if (ro) {
+            obj.attr("readonly", "readonly");
+        }
+        if (ev_click) {
+            obj.click(ev_click);
+        };
+        if (ev_focus) {
+            obj.focus(ev_focus);
+        };
+        if (caption) {
+            obj.append(caption);
+        }
+    }
+    return obj;
 }
 
 /**
@@ -499,9 +496,9 @@ function gm_createObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
  * @return {Object} the created DOM-Button
  */
 function gm_createButton(par, typ, id, caption, tit, ev_click) {
-	var obj = gm_createObj(par, "button", id);
-	obj = gm_createObjCommon(obj, caption, tit, null, ev_click, null);
-	return obj;
+    var obj = gm_createObj(par, "button", id);
+    obj = gm_createObjCommon(obj, caption, tit, null, ev_click, null);
+    return obj;
 }
 
 /**
@@ -526,15 +523,15 @@ function gm_createButton(par, typ, id, caption, tit, ev_click) {
  * @return {Object} the new DOM-Input
  */
 function gm_createInput(par, typ, id, initval, tit, ro, ev_click, ev_focus) {
-	var obj = gm_createObj(par, "input", id);
-	obj = gm_createObjCommon(obj, null, tit, ro, ev_click, ev_focus);
-	if (initval) {
-		obj.val(initval);
-	} else {
-		obj.val("");
-	}
+    var obj = gm_createObj(par, "input", id);
+    obj = gm_createObjCommon(obj, null, tit, ro, ev_click, ev_focus);
+    if (initval) {
+        obj.val(initval);
+    } else {
+        obj.val("");
+    }
 
-	return obj;
+    return obj;
 }
 
 /**
@@ -546,14 +543,14 @@ function gm_createInput(par, typ, id, initval, tit, ro, ev_click, ev_focus) {
  *            the new value for that element
  */
 function gm_setInput(id, initval) {
-	var obj = document.getElementById(id);
-	if (obj) {
-		if (initval) {
-			obj.setAttribute("value", initval);
-		} else {
-			obj.setAttribute("value", "");
-		}
-	}
+    var obj = document.getElementById(id);
+    if (obj) {
+        if (initval) {
+            obj.setAttribute("value", initval);
+        } else {
+            obj.setAttribute("value", "");
+        }
+    }
 }
 
 var FL_TAG = "fltag";
@@ -570,95 +567,95 @@ var FL_ID = "_FL";
  */
 function gm_findLinksInPage(sea, withDesc) {
 
-	var pagelinks = new Array();
+    var pagelinks = new Array();
 
-	for ( var i = 0; i < document.links.length; i++) {
-		var curlink = document.links[i];
+    for ( var i = 0; i < document.links.length; i++) {
+        var curlink = document.links[i];
 
-		var ne = -1;
-		if (!sea || sea.length <= 0) {
-			sea = ".*";
-		}
-		var searchText = curlink.href;
-		var found = searchText.search(sea) != -1;
-		// alert(searchText + " " + sea + " " + found);
+        var ne = -1;
+        if (!sea || sea.length <= 0) {
+            sea = ".*";
+        }
+        var searchText = curlink.href;
+        var found = searchText.search(sea) != -1;
+        // alert(searchText + " " + sea + " " + found);
 
-		if (withDesc != 0) {
-			if (!found && curlink.alt != null) {
-				searchText = curlink.alt;
-				found = searchText.search(sea) != -1;
-			}
-			if (!found && curlink.title != null) {
-				searchText = curlink.title;
-				found = searchText.search(sea) != -1;
-			}
-			if (!found && curlink.mouseover != null) {
-				searchText = "" + curlink.mouseover;
-				try {
-					found = searchText.search(sea) != -1;
-				} catch (e) {
-					// ignored
-				}
-			}
-			if (!found && curlink.onclick != null) {
-				searchText = "" + curlink.onclick;
-				try {
-					found = searchText.search(sea) != -1;
-				} catch (e) {
-					// ignored
-				}
-			}
-		}
-		if (found) {
-			if (gm_getAttributeI(curlink.id, FL_TAG) != FL_ID) {
-				var htmllink = curlink.href;
-				var htmltext = curlink.text;
+        if (withDesc != 0) {
+            if (!found && curlink.alt != null) {
+                searchText = curlink.alt;
+                found = searchText.search(sea) != -1;
+            }
+            if (!found && curlink.title != null) {
+                searchText = curlink.title;
+                found = searchText.search(sea) != -1;
+            }
+            if (!found && curlink.mouseover != null) {
+                searchText = "" + curlink.mouseover;
+                try {
+                    found = searchText.search(sea) != -1;
+                } catch (e) {
+                    // ignored
+                }
+            }
+            if (!found && curlink.onclick != null) {
+                searchText = "" + curlink.onclick;
+                try {
+                    found = searchText.search(sea) != -1;
+                } catch (e) {
+                    // ignored
+                }
+            }
+        }
+        if (found) {
+            if (gm_getAttributeI(curlink.id, FL_TAG) != FL_ID) {
+                var htmllink = curlink.href;
+                var htmltext = curlink.text;
 
-				if (withDesc != 0) {
-					if (htmltext == null) {
-						htmltext = "";
-					}
-					if (curlink.alt != null) {
-						htmltext += "\n" + curlink.alt;
-					}
-					if (curlink.title != null) {
-						htmltext += "\n" + curlink.title;
-					}
-					if (curlink.mouseover != null) {
-						try {
-							htmltext += "\n" + curlink.mouseover;
-						} catch (e) {
-							// ignored
-						}
-					}
-					if (curlink.onclick != null) {
-						try {
-							htmltext += "\n" + curlink.onclick;
-						} catch (e) {
-							// ignored
-						}
-					}
-				}
-				if (htmltext == null || htmltext == "" || htmltext.innerHTML == null) {
-					htmltext = curlink.innerHTML.replace("\\n", "").replace("#", "");
-				}
-				for ( var j = 0; j < pagelinks.length; j++) {
-					if (htmllink == pagelinks[j][0]) {
-						ne = j;
-						break;
-					}
-				}
-				if (ne == -1) {
-					var curlink = new Array(htmllink, htmltext);
-					pagelinks.push(curlink);
-					ne = pagelinks.length - 1;
-				} else {
-					pagelinks[ne][1] = htmltext + " " + pagelinks[ne][1];
-				}
-			}
-		}
-	}
-	return pagelinks;
+                if (withDesc != 0) {
+                    if (htmltext == null) {
+                        htmltext = "";
+                    }
+                    if (curlink.alt != null) {
+                        htmltext += "\n" + curlink.alt;
+                    }
+                    if (curlink.title != null) {
+                        htmltext += "\n" + curlink.title;
+                    }
+                    if (curlink.mouseover != null) {
+                        try {
+                            htmltext += "\n" + curlink.mouseover;
+                        } catch (e) {
+                            // ignored
+                        }
+                    }
+                    if (curlink.onclick != null) {
+                        try {
+                            htmltext += "\n" + curlink.onclick;
+                        } catch (e) {
+                            // ignored
+                        }
+                    }
+                }
+                if (htmltext == null || htmltext == "" || htmltext.innerHTML == null) {
+                    htmltext = curlink.innerHTML.replace("\\n", "").replace("#", "");
+                }
+                for ( var j = 0; j < pagelinks.length; j++) {
+                    if (htmllink == pagelinks[j][0]) {
+                        ne = j;
+                        break;
+                    }
+                }
+                if (ne == -1) {
+                    var curlink = new Array(htmllink, htmltext);
+                    pagelinks.push(curlink);
+                    ne = pagelinks.length - 1;
+                } else {
+                    pagelinks[ne][1] = htmltext + " " + pagelinks[ne][1];
+                }
+            }
+        }
+    }
+    return pagelinks;
 }
 
 /**
@@ -668,24 +665,24 @@ function gm_findLinksInPage(sea, withDesc) {
  *            a string or an array with the javascript code
  */
 function gm_addScriptGlobal(scc) {
-	var head, script;
-	head = document.getElementsByTagName('head')[0];
-	if (!head) {
-		return;
-	}
-	script = document.createElement('script');
-	script.type = 'text/javascript';
+    var head, script;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) {
+        return;
+    }
+    script = document.createElement('script');
+    script.type = 'text/javascript';
 
-	var allscc = "";
-	if (gm_isArray(scc)) {
-		for ( var i = 0; i < scc.length; i++) {
-			allscc += scc[i] + " \n";
-		}
-	} else {
-		allscc = scc;
-	}
-	script.innerHTML = "\n" + allscc + "\n";
-	head.appendChild(script);
+    var allscc = "";
+    if (gm_isArray(scc)) {
+        for ( var i = 0; i < scc.length; i++) {
+            allscc += scc[i] + " \n";
+        }
+    } else {
+        allscc = scc;
+    }
+    script.innerHTML = "\n" + allscc + "\n";
+    head.appendChild(script);
 }
 
 /**
@@ -695,25 +692,25 @@ function gm_addScriptGlobal(scc) {
  *            a string or an array with the url of the javascript-file
  */
 function gm_addScriptLinkGlobal(scLink) {
-	var head, script;
-	head = document.getElementsByTagName('head')[0];
-	if (!head) {
-		return;
-	}
+    var head, script;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) {
+        return;
+    }
 
-	var allscc = new Array();
-	if (gm_isArray(scLink)) {
-		allScLink = scLink;
-	} else {
-		allScLink = new Array(scLink);
-	}
+    var allscc = new Array();
+    if (gm_isArray(scLink)) {
+        allScLink = scLink;
+    } else {
+        allScLink = new Array(scLink);
+    }
 
-	for ( var i = 0; i < allScLink.length; i++) {
-		newScript = document.createElement('script');
-		newScript.type = 'text/javascript';
-		newScript.src = allScLink[i];
-		head.appendChild(newScript);
-	}
+    for ( var i = 0; i < allScLink.length; i++) {
+        newScript = document.createElement('script');
+        newScript.type = 'text/javascript';
+        newScript.src = allScLink[i];
+        head.appendChild(newScript);
+    }
 }
 
 /**
@@ -724,15 +721,15 @@ function gm_addScriptLinkGlobal(scLink) {
  * @return {String} the trimmed string
  */
 function ltrim(a) {
-	var ret = new String(a);
-	if (a) {
-		var pos = 0;
-		while (a.charAt(pos) == " ") {
-			pos++;
-		}
-		ret = a.substring(pos);
-	}
-	return ret;
+    var ret = new String(a);
+    if (a) {
+        var pos = 0;
+        while (a.charAt(pos) == " ") {
+            pos++;
+        }
+        ret = a.substring(pos);
+    }
+    return ret;
 }
 
 /**
@@ -743,15 +740,15 @@ function ltrim(a) {
  * @return {String} the trimmed string
  */
 function rtrim(a) {
-	var ret = new String(a);
-	if (a) {
-		var pos = a.length - 1;
-		while (a.charAt(pos) == " ") {
-			pos--;
-		}
-		ret = a.substring(0, pos + 1);
-	}
-	return ret;
+    var ret = new String(a);
+    if (a) {
+        var pos = a.length - 1;
+        while (a.charAt(pos) == " ") {
+            pos--;
+        }
+        ret = a.substring(0, pos + 1);
+    }
+    return ret;
 }
 
 /**
@@ -762,7 +759,7 @@ function rtrim(a) {
  * @return {String} the trimmed string
  */
 function trim(a) {
-	return ltrim(rtrim(a));
+    return ltrim(rtrim(a));
 }
 
 /**
@@ -777,110 +774,110 @@ function trim(a) {
  * @return {Boolean} always false
  */
 function gm_copy2clipboard(text, bQuite, refWindow) {
-	if (window.clipboardData) {
-		window.clipboardData.setData('text', text);
-		return true;
-	} else {
-		if (!refWindow) {
-			refWindow = unsafeWindow;
-		}
+    if (window.clipboardData) {
+        window.clipboardData.setData('text', text);
+        return true;
+    } else {
+        if (!refWindow) {
+            refWindow = unsafeWindow;
+        }
 
-		try {
-			refWindow.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-		} catch (ex) {
-			if (!bQuite) {
-				alert("Internet Security settings do not allow copying to clipboard!");
-			}
-			return false;
-		}
+        try {
+            refWindow.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        } catch (ex) {
+            if (!bQuite) {
+                alert("Internet Security settings do not allow copying to clipboard!");
+            }
+            return false;
+        }
 
-		try {
-			e = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
-			if (!e)
-				return;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("1:" + ex);
-			}
-			return false;
-		}
+        try {
+            e = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
+            if (!e)
+                return;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("1:" + ex);
+            }
+            return false;
+        }
 
-		try {
-			b = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
-			if (!b)
-				return;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("2:" + ex);
-			}
-			return false;
-		}
+        try {
+            b = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
+            if (!b)
+                return;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("2:" + ex);
+            }
+            return false;
+        }
 
-		b.addDataFlavor("text/unicode");
-		try {
-			o = Components.classes['@mozilla.org/supports-string;1'].createInstance(Components.interfaces.nsISupportsString);
-			if (!o)
-				return;
-			o.data = text;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("3:" + ex);
-			}
-			return false;
-		}
+        b.addDataFlavor("text/unicode");
+        try {
+            o = Components.classes['@mozilla.org/supports-string;1'].createInstance(Components.interfaces.nsISupportsString);
+            if (!o)
+                return;
+            o.data = text;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("3:" + ex);
+            }
+            return false;
+        }
 
-		b.setTransferData("text/unicode", o, text.length * 2);
-		try {
-			t = Components.interfaces.nsIClipboard;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("4:" + ex);
-			}
-			return false;
-		}
-		e.setData(b, null, t.kGlobalClipboard);
-		return true;
-	}
-	if (!bQuite) {
-		alert('Copy doesn\'t work!');
-	}
-	return false;
+        b.setTransferData("text/unicode", o, text.length * 2);
+        try {
+            t = Components.interfaces.nsIClipboard;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("4:" + ex);
+            }
+            return false;
+        }
+        e.setData(b, null, t.kGlobalClipboard);
+        return true;
+    }
+    if (!bQuite) {
+        alert('Copy doesn\'t work!');
+    }
+    return false;
 }
 
 /**
  * Adds copy to clipboard support to the page.
  */
 function gm_addClipboardSupport() {
-	var script = document.createElement('script');
-	script.type = 'text/javascript';
-	script.innerHTML = '\nfunction copyPostToClipboard(copytext){\n';
-	if (gm_isClipboardSupported()) {
-		script.innerHTML += '\t var clipboard, transferable,clipboardID, str;\n\t try{\n\t\t netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");\n\t } catch(e){\n\t\t alert(e);\n\t }\n\t try{\n\t\t clipboard=Components.classes["@mozilla.org/widget/clipboard;1"].createInstance(Components.interfaces.nsIClipboard);\n\t }catch(e){\n\t\t alert(e);\n\t }\n\t try{\n\t\t transferable=Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);\n\t }catch(e){\n\t\t alert(e);\n }\n\t transferable.addDataFlavor("text/unicode");\n\t str=Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);\n\t str.data=copytext;\n\t transferable.setTransferData("text/unicode",str,str.data.length*2);\n\t try{\n\t\t clipboardID=Components.interfaces.nsIClipboard;\n\t } catch(e){\n\t\t alert(e);\n\t }\n\t clipboard.setData(transferable,null,clipboardID.kGlobalClipboard);\n';
-	} else {
-		script.innerHTML += '\n'
-	}
-	script.innerHTML += '\n\t }\n';
-	document.body.appendChild(script);
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.innerHTML = '\nfunction copyPostToClipboard(copytext){\n';
+    if (gm_isClipboardSupported()) {
+        script.innerHTML += '\t var clipboard, transferable,clipboardID, str;\n\t try{\n\t\t netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");\n\t } catch(e){\n\t\t alert(e);\n\t }\n\t try{\n\t\t clipboard=Components.classes["@mozilla.org/widget/clipboard;1"].createInstance(Components.interfaces.nsIClipboard);\n\t }catch(e){\n\t\t alert(e);\n\t }\n\t try{\n\t\t transferable=Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);\n\t }catch(e){\n\t\t alert(e);\n }\n\t transferable.addDataFlavor("text/unicode");\n\t str=Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);\n\t str.data=copytext;\n\t transferable.setTransferData("text/unicode",str,str.data.length*2);\n\t try{\n\t\t clipboardID=Components.interfaces.nsIClipboard;\n\t } catch(e){\n\t\t alert(e);\n\t }\n\t clipboard.setData(transferable,null,clipboardID.kGlobalClipboard);\n';
+    } else {
+        script.innerHTML += '\n'
+    }
+    script.innerHTML += '\n\t }\n';
+    document.body.appendChild(script);
 }
 
 /**
  * @returns {Boolean} TRUE=using clipboard is supported, else FALSE
  */
 function gm_isClipboardSupported() {
-	var isOK = false;
-	var nsPm = null;
-	try {
-		nsPm = unsafeWindow.netscape.security.PrivilegeManager;
-	} catch (ignored) {
-	}
-	try {
-		if (nsPm != null) {
-			nsPm.enablePrivilege("UniversalXPConnect");
-			isOK = true;
-		}
-	} catch (ex) {
-	}
-	return isOK;
+    var isOK = false;
+    var nsPm = null;
+    try {
+        nsPm = unsafeWindow.netscape.security.PrivilegeManager;
+    } catch (ignored) {
+    }
+    try {
+        if (nsPm != null) {
+            nsPm.enablePrivilege("UniversalXPConnect");
+            isOK = true;
+        }
+    } catch (ex) {
+    }
+    return isOK;
 }
 
 /**
@@ -890,9 +887,9 @@ function gm_isClipboardSupported() {
  *            the element containing the text
  */
 function gm_selectInput(inputElem) {
-	if (inputElem) {
-		inputElem.select();
-	}
+    if (inputElem) {
+        inputElem.select();
+    }
 }
 
 /**
@@ -908,12 +905,12 @@ var SELECT_G = 1;
  * @returns {Number} which Selection of Text Modus is used
  */
 function gm_getTextSelectMode() {
-	if (document.selection && document.selection.createRange) {
-		return SELECT_IE;
-	} else if (document.createRange && window.getSelection) {
-		return SELECT_G;
-	}
-	return SELECT_IE;
+    if (document.selection && document.selection.createRange) {
+        return SELECT_IE;
+    } else if (document.createRange && window.getSelection) {
+        return SELECT_G;
+    }
+    return SELECT_IE;
 }
 /**
  * Constants Mode which is currently used for Selection of Text.
@@ -928,16 +925,16 @@ var SELECT_CURR = gm_getTextSelectMode();
  * @returns {String} the text which is currently selected.
  */
 function gm_getSelectedText() {
-	var selectedText = "";
-	if (SELECT_IE == SELECT_CURR) {
-		selectedText = document.selection.createRange().text;
-	} else if (SELECT_G == SELECT_CURR) {
-		selectedText = window.getSelection();
-	}
-	if (typeof selectedText == "object") {
-		selectedText = selectedText.toString();
-	}
-	return selectedText;
+    var selectedText = "";
+    if (SELECT_IE == SELECT_CURR) {
+        selectedText = document.selection.createRange().text;
+    } else if (SELECT_G == SELECT_CURR) {
+        selectedText = window.getSelection();
+    }
+    if (typeof selectedText == "object") {
+        selectedText = selectedText.toString();
+    }
+    return selectedText;
 }
 
 /**
@@ -948,14 +945,14 @@ function gm_getSelectedText() {
  * @returns {Range} a new Range-Object or null
  */
 function gm_getNewRange(elem) {
-	var textRange = null;
-	if (SELECT_IE == SELECT_CURR) {
-		var textRange = document.selection.createRange();
-	} else if (SELECT_G == SELECT_CURR) {
-		var textRange = document.createRange();
-		textRange.selectNode(elem);
-	}
-	return textRange;
+    var textRange = null;
+    if (SELECT_IE == SELECT_CURR) {
+        var textRange = document.selection.createRange();
+    } else if (SELECT_G == SELECT_CURR) {
+        var textRange = document.createRange();
+        textRange.selectNode(elem);
+    }
+    return textRange;
 }
 
 /**
@@ -968,26 +965,26 @@ function gm_getNewRange(elem) {
  * @returns {String} the selected text or an empty string
  */
 function gm_selectText(elem, bForceSelect) {
-	var currSel = gm_getSelectedText();
-	if (!bForceSelect && (currSel && currSel != "")) {
-		if (SELECT_IE == SELECT_CURR) {
-			document.selection.empty;
-		} else if (SELECT_G == SELECT_CURR) {
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-		}
-	} else {
-		var tRange = gm_getNewRange(elem);
-		if (SELECT_IE == SELECT_CURR) {
-			tRange.select();
-		} else if (SELECT_G == SELECT_CURR) {
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange(tRange);
-		}
-		currSel = gm_getSelectedText();
-	}
-	return currSel;
+    var currSel = gm_getSelectedText();
+    if (!bForceSelect && (currSel && currSel != "")) {
+        if (SELECT_IE == SELECT_CURR) {
+            document.selection.empty;
+        } else if (SELECT_G == SELECT_CURR) {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+    } else {
+        var tRange = gm_getNewRange(elem);
+        if (SELECT_IE == SELECT_CURR) {
+            tRange.select();
+        } else if (SELECT_G == SELECT_CURR) {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(tRange);
+        }
+        currSel = gm_getSelectedText();
+    }
+    return currSel;
 }
 
 /**
@@ -1000,11 +997,11 @@ function gm_selectText(elem, bForceSelect) {
  * @return {Array} the sorted array
  */
 function gm_sortArray(unsortedArray, sortmode) {
-	var sortedArray = unsortedArray;
-	if (sortmode) {
-		sortedArray.sort();
-	}
-	return sortedArray;
+    var sortedArray = unsortedArray;
+    if (sortmode) {
+        sortedArray.sort();
+    }
+    return sortedArray;
 }
 
 /**
@@ -1015,23 +1012,23 @@ function gm_sortArray(unsortedArray, sortmode) {
  * @return {Array} array of entries
  */
 function gm_genTestEntries(maxEntries) {
-	if (isNaN(maxEntries) || maxEntries == "") {
-		maxEntries = 1;
-	}
-	if (maxEntries < 0) {
-		maxEntries = 0;
-	} else if (maxEntries > 100) {
-		maxEntries = 100;
-	}
-	testArray = new Array();
-	for ( var i = 0; i < maxEntries; i++) {
-		var curlink = "http://" + currSite + currPath + "/link-" + i;
-		var htmllink = curlink;
-		var htmltext = "linktext-" + i;
-		var curlink = new Array(htmllink, htmltext);
-		testArray.push(curlink);
-	}
-	return testArray;
+    if (isNaN(maxEntries) || maxEntries == "") {
+        maxEntries = 1;
+    }
+    if (maxEntries < 0) {
+        maxEntries = 0;
+    } else if (maxEntries > 100) {
+        maxEntries = 100;
+    }
+    testArray = new Array();
+    for ( var i = 0; i < maxEntries; i++) {
+        var curlink = "http://" + currSite + currPath + "/link-" + i;
+        var htmllink = curlink;
+        var htmltext = "linktext-" + i;
+        var curlink = new Array(htmllink, htmltext);
+        testArray.push(curlink);
+    }
+    return testArray;
 }
 
 /**
@@ -1041,10 +1038,10 @@ function gm_genTestEntries(maxEntries) {
  *            the occuring event
  */
 function gm_addHandler(e) {
-	lgm_addKnownSites();
-	lgm_addStyles();
-	lgm_addControls();
-	lgm_addInitAction();
+    lgm_addKnownSites();
+    lgm_addStyles();
+    lgm_addControls();
+    lgm_addInitAction();
 }
 
 //
@@ -1080,99 +1077,99 @@ var h_off = -2;
  * Add Sites for the search.
  */
 function lgm_addKnownSites() {
-	//
-	// Add Sites for the search - START
-	//
-	gm_addSite("watch?", "(|.+?\.)youtube\..+?", ".*");
-	gm_addSite("watch", "(|.+?\.)myvideo\..+?", ".*");
-	gm_addSite("video", "(|.+?\.)dailymotion\..+?", ".*");
-	gm_addSite("watch", "(|.+?\.)metacafe\..+?", ".*");
-	gm_addSite("10", "devzone\\..+?\\.(net|eu)", "/test/gmonkey/.*");
+    //
+    // Add Sites for the search - START
+    //
+    gm_addSite("watch?", "(|.+?\.)youtube\..+?", ".*");
+    gm_addSite("watch", "(|.+?\.)myvideo\..+?", ".*");
+    gm_addSite("video", "(|.+?\.)dailymotion\..+?", ".*");
+    gm_addSite("watch", "(|.+?\.)metacafe\..+?", ".*");
+    gm_addSite("10", "devzone\\..+?\\.(net|eu)", "/test/gmonkey/.*");
 }
 
 /**
  * Add the CSS-Styles used for this script.
  */
 function lgm_addStyles() {
-	// the main container
-	GM_addStyle('#gl-container {position:fixed; top:0px; right:1px; margin:0px; padding:0px; text-align:left; vertical-align:top; width:225px; max-height:99.5% !important; overflow:hidden !important; z-index:9998 !important;}');
-	GM_addStyle('#gl-container {color: #000000; background-color: #E6E6E6; font-family:Courier New,Arial; font-size:11px;}');
-	// General Styles
-	GM_addStyle('#gl-container, #gl-container input, #gl-container button, #gl-resultplain, #gl-resultlink { -moz-border-radius: 5px; border-radius: 5px; }');
-	GM_addStyle('#gl-container input {margin-right:3px; width:auto; border:2px solid #BBBBBB; color:#000000; background-color:#ffffff; font-family:Arial, Courier New; font-size:11px; font-weight: bold;}');
-	GM_addStyle('#gl-container input:hover, #gl-container input:focus {background-color:#FFFFCC; }');
-	GM_addStyle('#gl-container button {border:2px solid #BBBBBB; color:#000000; background-color:#ffffff; margin:0px; padding:0px; font-family:Arial, Courier New; font-size:11px; font-weight: bold; }');
-	GM_addStyle('#gl-container button:hover {border:2px solid #ffffff; color:#ffffff; background-color:#BBBBBB; }');
-	// Search Box
-	GM_addStyle('#gl-container #gl-searchbox {position:relative; top:0px; left:0px; padding;0px; margin:0px; white-space:nowrap;}');
-	GM_addStyle('#gl-container #gl-searchform {margin:3px; padding;0px;}');
-	GM_addStyle('#gl-container #gl-searchbox #gl-scount {min-width:5px; max-width:30px; margin-left:3px; text-align:right; background-color:#E2E2E2; }');
+    // the main container
+    GM_addStyle('#gl-container {position:fixed; top:0px; right:1px; margin:0px; padding:0px; text-align:left; vertical-align:top; width:225px; max-height:99.5% !important; overflow:hidden !important; z-index:9998 !important;}');
+    GM_addStyle('#gl-container {color: #000000; background-color: #E6E6E6; font-family:Courier New,Arial; font-size:11px;}');
+    // General Styles
+    GM_addStyle('#gl-container, #gl-container input, #gl-container button, #gl-resultplain, #gl-resultlink { -moz-border-radius: 5px; border-radius: 5px; }');
+    GM_addStyle('#gl-container input {margin-right:3px; width:auto; border:2px solid #BBBBBB; color:#000000; background-color:#ffffff; font-family:Arial, Courier New; font-size:11px; font-weight: bold;}');
+    GM_addStyle('#gl-container input:hover, #gl-container input:focus {background-color:#FFFFCC; }');
+    GM_addStyle('#gl-container button {border:2px solid #BBBBBB; color:#000000; background-color:#ffffff; margin:0px; padding:0px; font-family:Arial, Courier New; font-size:11px; font-weight: bold; }');
+    GM_addStyle('#gl-container button:hover {border:2px solid #ffffff; color:#ffffff; background-color:#BBBBBB; }');
+    // Search Box
+    GM_addStyle('#gl-container #gl-searchbox {position:relative; top:0px; left:0px; padding;0px; margin:0px; white-space:nowrap;}');
+    GM_addStyle('#gl-container #gl-searchform {margin:3px; padding;0px;}');
+    GM_addStyle('#gl-container #gl-searchbox #gl-scount {min-width:5px; max-width:30px; margin-left:3px; text-align:right; background-color:#E2E2E2; }');
 
-	GM_addStyle('#gl-container #gl-actionbox {position:relative; top:0px; right:0px; padding: 0px 3px; margin: 0px; white-space:nowrap;}');
-	GM_addStyle('#gl-container #gl-actionbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
+    GM_addStyle('#gl-container #gl-actionbox {position:relative; top:0px; right:0px; padding: 0px 3px; margin: 0px; white-space:nowrap;}');
+    GM_addStyle('#gl-container #gl-actionbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
 
-	// Result Box
-	GM_addStyle('#gl-container #gl-resultbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
-	GM_addStyle('#gl-container #gl-resultbox {position:relative; top:0px; right:0px; padding: 0px 3px; margin: 0px; max-width:100%; max-height: 99.5%; height:99.5%; overflow:hidden;}');
-	GM_addStyle('#gl-container #gl-resultbox tr, #gl-container #gl-resultbox table {padding:0pt; margin:0pt;}');
-	GM_addStyle('#gl-container #gl-resultbox td, #gl-container #gl-resultbox a {font-family:Courier New, Arial; font-size:9pt !important; white-space:nowrap; padding: 0pt; margin 0pt; line-height:10pt !important}');
-	GM_addStyle('#gl-container #gl-resultbox #gl-resultplain {position:relative; top:0px; left:0px; padding: 0px; margin: 0px; max-width:100%; max-height: 97%; height: auto; overflow: auto; visibility:visible; z-index: 910;}');
-	GM_addStyle('#gl-container #gl-resultbox #gl-resultlink	{position:absolute; top:0px; left:0px; padding: 0px; margin: 0px; max-width:100%; max-height: 97%; height: auto; overflow: auto; visibility:hidden; z-index: 909; color:red;}');
-	GM_addStyle('#gl-container #gl-resultbox #gl-resultlink a { color:#000066; font-family:Arial,Courier New; line-height:120%;}');
-	GM_addStyle('#gl-container #gl-resultbox #gl-resultlink a:hover { color: #990000;}');
-	// GM_addStyle("#gl-container div{border: 0.1em black solid !important}");
+    // Result Box
+    GM_addStyle('#gl-container #gl-resultbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
+    GM_addStyle('#gl-container #gl-resultbox {position:relative; top:0px; right:0px; padding: 0px 3px; margin: 0px; max-width:100%; max-height: 99.5%; height:99.5%; overflow:hidden;}');
+    GM_addStyle('#gl-container #gl-resultbox tr, #gl-container #gl-resultbox table {padding:0pt; margin:0pt;}');
+    GM_addStyle('#gl-container #gl-resultbox td, #gl-container #gl-resultbox a {font-family:Courier New, Arial; font-size:9pt !important; white-space:nowrap; padding: 0pt; margin 0pt; line-height:10pt !important}');
+    GM_addStyle('#gl-container #gl-resultbox #gl-resultplain {position:relative; top:0px; left:0px; padding: 0px; margin: 0px; max-width:100%; max-height: 97%; height: auto; overflow: auto; visibility:visible; z-index: 910;}');
+    GM_addStyle('#gl-container #gl-resultbox #gl-resultlink    {position:absolute; top:0px; left:0px; padding: 0px; margin: 0px; max-width:100%; max-height: 97%; height: auto; overflow: auto; visibility:hidden; z-index: 909; color:red;}');
+    GM_addStyle('#gl-container #gl-resultbox #gl-resultlink a { color:#000066; font-family:Arial,Courier New; line-height:120%;}');
+    GM_addStyle('#gl-container #gl-resultbox #gl-resultlink a:hover { color: #990000;}');
+    // GM_addStyle("#gl-container div{border: 0.1em black solid !important}");
 }
 
 /**
  * Add the DOM-Objects used in this script.
  */
 function lgm_addControls() {
-	gm_addClipboardSupport();
-	contlinks = gm_createObj(null, "div", "gl-container");
-	odiv = gm_createObj(contlinks, "div", "gl-searchbox");
-	oact = gm_createObj(contlinks, "div", "gl-actionbox");
-	ores = gm_createObj(contlinks, "div", "gl-resultbox");
-	oform = gm_createObj(odiv, "form", "gl-searchform");
+    gm_addClipboardSupport();
+    contlinks = gm_createObj(null, "div", "gl-container");
+    odiv = gm_createObj(contlinks, "div", "gl-searchbox");
+    oact = gm_createObj(contlinks, "div", "gl-actionbox");
+    ores = gm_createObj(contlinks, "div", "gl-resultbox");
+    oform = gm_createObj(odiv, "form", "gl-searchform");
 
-	initFilter = gm_foundFilter(currSite, currPath);
+    initFilter = gm_foundFilter(currSite, currPath);
 
-	gm_createInput(oform, "text", "gl-searchtext", initFilter, "enter your search (you may use regular expression)", null, null,
-			function() {
-				return gm_selectInput(this);
-			});
-	gm_createButton(oform, "submit", "gl-sstart", "S", "start search", function() {
-		return lgm_filterURL('#gl-searchtext');
-	});
-	gm_createButton(oform, "button", "gl-sreset", "R", "clear search", function() {
-		return lgm_remall('#gl-searchtext');
-	});
-	gm_createButton(oform, "button", "gl-sshow", "\\/", "show/hide result", function() {
-		return lgm_showhide();
-	});
-	gm_createInput(oform, "text", "gl-scount", null, "number of hits", 1, null, null, null);
+    gm_createInput(oform, "text", "gl-searchtext", initFilter, "enter your search (you may use regular expression)", null, null,
+            function() {
+                return gm_selectInput(this);
+            });
+    gm_createButton(oform, "submit", "gl-sstart", "S", "start search", function() {
+        return lgm_filterURL('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sreset", "R", "clear search", function() {
+        return lgm_remall('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sshow", "\\/", "show/hide result", function() {
+        return lgm_showhide();
+    });
+    gm_createInput(oform, "text", "gl-scount", null, "number of hits", 1, null, null, null);
 
-	var selCap = "SA";
-	var selTit = "De-/Select All";
-	if (gm_isClipboardSupported()) {
-		selCap = "CA";
-		selTit = "Select & Copy All"
-	}
-	gm_createButton(oact, "button", "gl-aselect", selCap, selTit, function() {
-		return lgm_selectall('gl-resultplain', 'gl-resultlink');
-	});
-	gm_createButton(oact, "button", "gl-ashowplain", "PR", "Show Plain Results", function() {
-		lgm_show('gl-resultplain', 'gl-resultlink');
-	});
-	gm_createButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", function() {
-		lgm_show('gl-resultlink', 'gl-resultplain');
-	});
+    var selCap = "SA";
+    var selTit = "De-/Select All";
+    if (gm_isClipboardSupported()) {
+        selCap = "CA";
+        selTit = "Select & Copy All"
+    }
+    gm_createButton(oact, "button", "gl-aselect", selCap, selTit, function() {
+        return lgm_selectall('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowplain", "PR", "Show Plain Results", function() {
+        lgm_show('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", function() {
+        lgm_show('gl-resultlink', 'gl-resultplain');
+    });
 
-	gm_createObj(ores, "div", "gl-resultplain");
-	gm_createObj(ores, "div", "gl-resultlink");
+    gm_createObj(ores, "div", "gl-resultplain");
+    gm_createObj(ores, "div", "gl-resultlink");
 
-	// document.body.appendChild(contlinks);
-	$("body").append(contlinks);
-	lgm_showhide(h_off);
+    // document.body.appendChild(contlinks);
+    $("body").append(contlinks);
+    lgm_showhide(h_off);
 }
 
 /**
@@ -1182,7 +1179,7 @@ function lgm_addControls() {
  * @returns {Boolean} always true
  */
 function lgm_addInitAction() {
-	return true;
+    return true;
 }
 
 /**
@@ -1194,29 +1191,29 @@ function lgm_addInitAction() {
  *            the layer to put in the bakc
  */
 function lgm_show(f, b) {
-	var obf = document.getElementById(f).style;
-	var obb = document.getElementById(b).style;
-	if (obf && obb) {
-		var idxF = obf.zIndex;
-		var idxB = obb.zIndex;
-		if (!idxF || isNaN(idxF) || idxF == '') {
-			idxF = 910;
-		}
-		if (!idxB || isNaN(idxB) || idxB == '') {
-			idxB = idxF - 1;
-		}
-		if (idxF < idxB) {
-			var i = idxF;
-			idxF = idxB;
-			idxB = i;
-		}
-		obf.zIndex = idxF;
-		obf.visibility = 'visible';
-		obf.left = 0;
-		obb.zIndex = idxB;
-		obb.visibility = 'hidden';
-		obb.left = 2000;
-	}
+    var obf = document.getElementById(f).style;
+    var obb = document.getElementById(b).style;
+    if (obf && obb) {
+        var idxF = obf.zIndex;
+        var idxB = obb.zIndex;
+        if (!idxF || isNaN(idxF) || idxF == '') {
+            idxF = 910;
+        }
+        if (!idxB || isNaN(idxB) || idxB == '') {
+            idxB = idxF - 1;
+        }
+        if (idxF < idxB) {
+            var i = idxF;
+            idxF = idxB;
+            idxB = i;
+        }
+        obf.zIndex = idxF;
+        obf.visibility = 'visible';
+        obf.left = 0;
+        obb.zIndex = idxB;
+        obb.visibility = 'hidden';
+        obb.left = 2000;
+    }
 }
 
 /**
@@ -1232,47 +1229,47 @@ function lgm_show(f, b) {
  * @see #hmaxauto
  */
 function lgm_showhide(onoff) {
-	var c = $('#gl-container');
-	var c1 = $('#gl-resultbox');
-	var bts = $('#gl-sshow');
-	var ocountt = $("#gl-scount");
+    var c = $('#gl-container');
+    var c1 = $('#gl-resultbox');
+    var bts = $('#gl-sshow');
+    var ocountt = $("#gl-scount");
 
-	if (onoff) {
-		var h = onoff;
-	} else {
-		var h = c.css("height");
-	}
+    if (onoff) {
+        var h = onoff;
+    } else {
+        var h = c.css("height");
+    }
 
-	if (h == h_on || h == hmin) {
-		// if container should be shown or currently is at min size
-		h = hmax;
-		var cnt = ocountt.val();
-		if (!isNaN(cnt)) {
-			h = hmaxauto;
-		} else {
-			h = hmin;
-		}
-	} else {
-		h = hmin;
-	}
+    if (h == h_on || h == hmin) {
+        // if container should be shown or currently is at min size
+        h = hmax;
+        var cnt = ocountt.val();
+        if (!isNaN(cnt)) {
+            h = hmaxauto;
+        } else {
+            h = hmin;
+        }
+    } else {
+        h = hmin;
+    }
 
-	var btntext = bshow;
-	if (h == hmin) {
-		btntext = bshow;
-	} else {
-		btntext = bhide;
-	}
+    var btntext = bshow;
+    if (h == hmin) {
+        btntext = bshow;
+    } else {
+        btntext = bhide;
+    }
 
-	c.css("height", h);
-	c1.css("height", h);
-	if (c.height() > ($("body").height() - hmaxlh)) {
-		c.css("height", hmax);
-		c1.height(c1.height() - (hmaxlh / 2));
-	}
-	bts.empty();
-	bts.append(btntext);
+    c.css("height", h);
+    c1.css("height", h);
+    if (c.height() > ($("body").height() - hmaxlh)) {
+        c.css("height", hmax);
+        c1.height(c1.height() - (hmaxlh / 2));
+    }
+    bts.empty();
+    bts.append(btntext);
 
-	return false;
+    return false;
 }
 
 /**
@@ -1283,13 +1280,13 @@ function lgm_showhide(onoff) {
  * @returns {Boolean} always false
  */
 function lgm_remall(a) {
-	var oa = $(a);
-	if (oa) {
-		oa.val('');
-		lgm_filterURL(a);
-		oa.focus();
-	}
-	return false;
+    var oa = $(a);
+    if (oa) {
+        oa.val('');
+        lgm_filterURL(a);
+        oa.focus();
+    }
+    return false;
 }
 
 /**
@@ -1298,35 +1295,35 @@ function lgm_remall(a) {
  * @returns {Boolean} always false
  */
 function lgm_selectall(selElementA, selElementB) {
-	var osel = null;
+    var osel = null;
 
-	var oa = $("#" + selElementA);
-	if (oa && oa.css("visibility") == "visible") {
-		osel = oa;
-	} else {
-		var ob = $("#" + selElementB);
-		if (ob && ob.css("visibility") == "visible") {
-			osel = ob;
-		}
-	}
+    var oa = $("#" + selElementA);
+    if (oa && oa.css("visibility") == "visible") {
+        osel = oa;
+    } else {
+        var ob = $("#" + selElementB);
+        if (ob && ob.css("visibility") == "visible") {
+            osel = ob;
+        }
+    }
 
-	if (osel) {
-		var bForce = false;
-		if (gm_isClipboardSupported()) {
-			bForce = true;
-		}
-		var selText = gm_selectText(osel.get(0), bForce);
-		if (selText) {
-			try {
-				if (unsafeWindow) {
-					unsafeWindow.copyPostToClipboard(selText);
-				}
-			} catch (ignored) {
-				// ignored
-			}
-		}
-	}
-	return false;
+    if (osel) {
+        var bForce = false;
+        if (gm_isClipboardSupported()) {
+            bForce = true;
+        }
+        var selText = gm_selectText(osel.get(0), bForce);
+        if (selText) {
+            try {
+                if (unsafeWindow) {
+                    unsafeWindow.copyPostToClipboard(selText);
+                }
+            } catch (ignored) {
+                // ignored
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -1337,12 +1334,12 @@ function lgm_selectall(selElementA, selElementB) {
  * @returns {Boolean} always false
  */
 function lgm_filterURL(a) {
-	var oa = $(a);
-	if (oa) {
-		lgm_showLinks(oa.val());
-		lgm_showhide(h_on);
-	}
-	return false;
+    var oa = $(a);
+    if (oa) {
+        lgm_showLinks(oa.val());
+        lgm_showhide(h_on);
+    }
+    return false;
 }
 
 /**
@@ -1351,84 +1348,84 @@ function lgm_filterURL(a) {
  * @returns {Boolean} always false
  */
 function lgm_showLinks(sea) {
-	var oresplaind = $("#gl-resultplain");
-	var oreslinkd = $("#gl-resultlink");
-	var ocountt = $("#gl-scount");
+    var oresplaind = $("#gl-resultplain");
+    var oreslinkd = $("#gl-resultlink");
+    var ocountt = $("#gl-scount");
 
-	// search for all matching links in the page
-	var pagelinks = new Array();
-	if (bTestMode) {
-		pagelinks = gm_genTestEntries(sea);
-	} else {
-		pagelinks = gm_findLinksInPage(sea, 1);
-	}
+    // search for all matching links in the page
+    var pagelinks = new Array();
+    if (bTestMode) {
+        pagelinks = gm_genTestEntries(sea);
+    } else {
+        pagelinks = gm_findLinksInPage(sea, 1);
+    }
 
-	var linkstbl = null;
-	var alllinks = new Array();
-	var allcaps = "";
-	var curcapcomp = "";
+    var linkstbl = null;
+    var alllinks = new Array();
+    var allcaps = "";
+    var curcapcomp = "";
 
-	// alert(pagelinks.length);
-	pagelinks = gm_sortArray(pagelinks, null);
-	var tblrow = null;
+    // alert(pagelinks.length);
+    pagelinks = gm_sortArray(pagelinks, null);
+    var tblrow = null;
 
-	// now build the output
-	for ( var i = 0; i < pagelinks.length; i++) {
-		if (i % 50 == 0) {
-			ocountt.val(i);
-		}
-		var curlink = pagelinks[i][0];
-		var curcap = trim(pagelinks[i][1]);
+    // now build the output
+    for ( var i = 0; i < pagelinks.length; i++) {
+        if (i % 50 == 0) {
+            ocountt.val(i);
+        }
+        var curlink = pagelinks[i][0];
+        var curcap = trim(pagelinks[i][1]);
 
-		if (curcap != null) {
-			curcap = curcap.replace(/[\n\r]/g, '');
-			if (curcap.indexOf("<") >= 0) {
-				curcap = curcap.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
-			}
-		}
-		if (curcap == null || curcap == "" || curcap == "#") {
-			curcap = "n/a";
-		}
+        if (curcap != null) {
+            curcap = curcap.replace(/[\n\r]/g, '');
+            if (curcap.indexOf("<") >= 0) {
+                curcap = curcap.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
+            }
+        }
+        if (curcap == null || curcap == "" || curcap == "#") {
+            curcap = "n/a";
+        }
 
-		// row for plain text
-		tblrow = gm_createObj(null, "tr", null);
-		var plainlink = gm_createObj(tblrow, "td", null);
-		plainlink.attr("title", curcap + "\n[" + curlink + "]");
-		plainlink.append(curlink);
+        // row for plain text
+        tblrow = gm_createObj(null, "tr", null);
+        var plainlink = gm_createObj(tblrow, "td", null);
+        plainlink.attr("title", curcap + "\n[" + curlink + "]");
+        plainlink.append(curlink);
 
-		if (!linkstbl) {
-			linkstbl = tblrow;
-		} else {
-			linkstbl = linkstbl.add(tblrow);
-		}
+        if (!linkstbl) {
+            linkstbl = tblrow;
+        } else {
+            linkstbl = linkstbl.add(tblrow);
+        }
 
-		// row for htmllink
-		var alink = "<a id=\'" + scriptID + i + "\' " + FL_TAG + "=\'" + FL_ID + "\' title=\'" + curcap + "\' href=\'" + curlink
-				+ "\' target=\'_blank\'>" + curcap + "<\/a><br\/>\n";
-		var pcap = curcap + "<br\/>";
+        // row for htmllink
+        var alink = "<a id=\'" + scriptID + i + "\' " + FL_TAG + "=\'" + FL_ID + "\' title=\'" + curcap + "\' href=\'" + curlink
+                + "\' target=\'_blank\'>" + curcap + "<\/a><br\/>\n";
+        var pcap = curcap + "<br\/>";
 
-		allcaps += pcap;
-		alllinks.push(alink);
-	}
+        allcaps += pcap;
+        alllinks.push(alink);
+    }
 
-	if (oresplaind) {
-		oresplaind.empty();
-		oresplaind.append($("<table>").append(linkstbl)).append($("<br>"));
-	}
-	;
-	if (oreslinkd) {
-		oreslinkd.empty();
-		alllinks.sort();
-		oreslinkd.append(alllinks.join("\n"));
-		oreslinkd.append(gm_createObj(oreslinkd, "br", null));
-	}
-	;
-	if (ocountt) {
-		ocountt.val(pagelinks.length);
-	}
-	;
+    if (oresplaind) {
+        oresplaind.empty();
+        oresplaind.append($("<table>").append(linkstbl)).append($("<br>"));
+    }
+    ;
+    if (oreslinkd) {
+        oreslinkd.empty();
+        alllinks.sort();
+        oreslinkd.append(alllinks.join("\n"));
+        oreslinkd.append(gm_createObj(oreslinkd, "br", null));
+    }
+    ;
+    if (ocountt) {
+        ocountt.val(pagelinks.length);
+    }
+    ;
 
-	return false;
+    return false;
 }
 
 //
@@ -1439,5 +1436,5 @@ function lgm_showLinks(sea) {
  * Now add the event handler.
  */
 $(window).ready(function(e) {
-	gm_addHandler(e);
+    gm_addHandler(e);
 });
