@@ -221,3 +221,4 @@ function defineIds() {
 	return [divid, imgid, tagdivid, tagimgid];
 }
 
+
