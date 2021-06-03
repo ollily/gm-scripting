@@ -49,3 +49,4 @@ if "%tgtroot%" NEQ "" (
 		)
 ) else (
 	echo targetroot missing "%tgtroot%"
+)

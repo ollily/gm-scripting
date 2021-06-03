@@ -11,11 +11,9 @@
 // @run-at             document-end
 // @licence            http://www.gnu.org/licenses/gpl-3.0.txt
 // @licence            http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license            (CC) by-nc-sa
-// @version            2.00.02
-// @date               $LastChangedDate: 2014-06-08 16:35:42 +0200 (Sun, 08 Jun 2014) $
-// @revision           $LastChangedRevision: 62 $
-// @grant              unsafeWindow
+// @license            (CC) by-nc-sa// @version            2.00.02
+// @date               $LastChangedDate: 2014-05-28 21:58:21 +0200 (Wed, 28 May 2014) $
+// @revision           $LastChangedRevision: 59 $// @grant              unsafeWindow
 // @include            http://gmonkey.*.*/test/*
 // @include            http://devzone.*.*/test/gm/*
 // @include            /http(|s)\://(|.+?\.)youtube\..+?/.*/
@@ -68,7 +66,6 @@
  2010-07-24
  - Initial Release
  */
-
 //
 // Global Code - START
 //
@@ -606,69 +603,25 @@ function trim(a) {
  */
 function gmToNo(a) {
 	var numFound = "";
-	if (a && a.length > 0) {
-		for ( var int = 0; int < a.length; int++) {
-			var a_ele = a[int];
-			if (!isNaN(a_ele)) {
-				numFound += a_ele;
-			} else {
+	if (isNaN(a)) {
+		if (a && a.length > 0) {
+			for ( var int = 0; int < a.length; int++) {
+				var a_ele = a[int];
+				if (!isNaN(a_ele)) {
+					numFound += a_ele;
+				} else {
+				}
 			}
 		}
+	} else {
+		numFound = a;
 	}
-	return eval(numFound);
-}
-/**
- * Sorts an array by a specific sort order (alphanumeric).
- *
- * @param unsortedArray -
- *            the aray which should be sorted
- * @param sortmode -
- *            the sort order or leave null to ignore sorting
- * @returns {Array} the sorted array
- */
-function gmSortArray(unsortedArray, sortmode) {
-	var sortedArray = unsortedArray;
-	if (sortmode == null) {
-		sortmode = false;
+	newNum = new Number(numFound).valueOf();
+	if (typeof(newNum) != "number") {
+		newNum = 0;
 	}
-	if (sortmode) {
-		sortedArray.sort();
-	}
-	return sortedArray;
+	return newNum;
 }
-
-/**
- * The start point for all gmonkey scripts.
- *
- * @param e -
- *            the occuring event
- * @returns {Boolean} TRUE = if all handler are succesfull done, else FALSE
- */
-function gmAddHandler(e) {
-	var isDone = false;
-	lgm_addKnownSites();
-	lgm_addStyles();
-	lgm_addControls();
-	lgm_addInitAction();
-	isDone = true;
-	return isDone;
-}
-
-
-/**
-* Now add the event handler.
-*/
-function gmInitEventHandler() {
-	if (INIT_ONLOAD) {
-		window.addEventListener("load",  function(e) {
-			gmAddHandler(e);
-		});
-	}
-}
-
-// ---------------
-// base-core.js - END
-// ---------------
 // ---------------
 // base-object.js - START
 // ---------------
@@ -1777,11 +1730,11 @@ function gmGetBodyHeight() {
  *          unsafeWindow
  */
 function gmClipRef() {
-	var refWindow = window;
-	if (!refWindow && unsafeWindow != null) {
-		refWindow = unsafeWindow;
-	}
-	return refWindow;
+    var refWindow = window;
+    if (!refWindow && unsafeWindow != null) {
+        refWindow = unsafeWindow;
+    }
+    return refWindow;
 }
 
 /**
@@ -1789,18 +1742,18 @@ function gmClipRef() {
  * @depricated since FF 16
  */
 function gmPrivsManager() {
-	var privsMan = null;
-	var wdw = gmClipRef();
-	if (gmIsObject(wdw)) {
-		try {
-			if (gmIsObject(wdw.netscape.security.PrivilegeManager)) {
-				privsMan = wdw.netscape.security.PrivilegeManager;
-			}
-		} catch (e) {
-			// ignored
-		}
-	}
-	return privsMan;
+    var privsMan = null;
+    var wdw = gmClipRef();
+    if (gmIsObject(wdw)) {
+        try {
+            if (gmIsObject(wdw.netscape.security.PrivilegeManager)) {
+                privsMan = wdw.netscape.security.PrivilegeManager;
+            }
+        } catch (e) {
+            // ignored
+        }
+    }
+    return privsMan;
 }
 
 /**
@@ -1816,78 +1769,75 @@ function gmPrivsManager() {
  */
 function gmCopy2clipboard(text, bQuite, refWindow) {
 
-	var resultText = text;
-	wdw = gmClipRef();
-	if (wdw.clipboardData) {
-		wdw.clipboardData.setData('text', text);
-		return resultText;
-	} else {
-		try {
-			wdw.netscape.security.PrivilegeManager
-					.enablePrivilege("UniversalXPConnect");
-		} catch (ex) {
-			if (!bQuite) {
-				alert("Internet Security settings do not allow copying to clipboard!");
-			}
-			return null;
-		}
+    var resultText = text;
+    wdw = gmClipRef();
+    if (wdw.clipboardData) {
+        wdw.clipboardData.setData('text', text);
+        return resultText;
+    } else {
+        try {
+            wdw.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        } catch (ex) {
+            if (!bQuite) {
+                alert("Internet Security settings do not allow copying to clipboard!");
+            }
+            return null;
+        }
 
-		try {
-			e = wdw.Components.classes['@mozilla.org/widget/clipboard;1']
-					.createInstance(wdw.Components.interfaces.nsIClipboard);
-			if (!e)
-				return null;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("1:" + ex);
-			}
-			return null;
-		}
+        try {
+            e = wdw.Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(wdw.Components.interfaces.nsIClipboard);
+            if (!e)
+                return null;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("1:" + ex);
+            }
+            return null;
+        }
 
-		try {
-			b = wdw.Components.classes['@mozilla.org/widget/transferable;1']
-					.createInstance(wdw.Components.interfaces.nsITransferable);
-			if (!b)
-				return null;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("2:" + ex);
-			}
-			return null;
-		}
+        try {
+            b = wdw.Components.classes['@mozilla.org/widget/transferable;1']
+                    .createInstance(wdw.Components.interfaces.nsITransferable);
+            if (!b)
+                return null;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("2:" + ex);
+            }
+            return null;
+        }
 
-		b.addDataFlavor("text/unicode");
-		try {
-			o = wdw.Components.classes['@mozilla.org/supports-string;1']
-					.createInstance(wdw.Components.interfaces.nsISupportsString);
-			if (!o)
-				return null;
-			o.data = text;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("3:" + ex);
-			}
-			return null;
-		}
+        b.addDataFlavor("text/unicode");
+        try {
+            o = wdw.Components.classes['@mozilla.org/supports-string;1']
+                    .createInstance(wdw.Components.interfaces.nsISupportsString);
+            if (!o)
+                return null;
+            o.data = text;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("3:" + ex);
+            }
+            return null;
+        }
 
-		b.setTransferData("text/unicode", o, (text == null ? 0
-				: text.length * 2));
+        b.setTransferData("text/unicode", o, (text == null ? 0 : text.length * 2));
 
-		try {
-			t = wdw.Components.interfaces.nsIClipboard;
-		} catch (ex) {
-			if (!bQuite) {
-				alert("4:" + ex);
-			}
-			return null;
-		}
-		e.setData(b, null, t.kGlobalClipboard);
-		return text;
-	}
-	if (!bQuite) {
-		alert('Copy doesn\'t work!');
-	}
-	return null;
+        try {
+            t = wdw.Components.interfaces.nsIClipboard;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("4:" + ex);
+            }
+            return null;
+        }
+        e.setData(b, null, t.kGlobalClipboard);
+        return text;
+    }
+    if (!bQuite) {
+        alert('Copy doesn\'t work!');
+    }
+    return null;
 }
 
 /**
@@ -1902,67 +1852,59 @@ function gmCopy2clipboard(text, bQuite, refWindow) {
  *            the text to copy to the clipboard
  */
 function copyPostToClipboard(text) {
-	var clipboard, transferable, clipboardID, str;
-	try {
-		netscape.security.PrivilegeManager
-				.enablePrivilege("UniversalXPConnect");
-	} catch (e) {
-		alert(e);
-	}
-	try {
-		clipboard = Components.classes["@mozilla.org/widget/clipboard;1"]
-				.createInstance(Components.interfaces.nsIClipboard);
-	} catch (e) {
-		alert(e);
-	}
-	try {
-		transferable = Components.classes["@mozilla.org/widget/transferable;1"]
-				.createInstance(Components.interfaces.nsITransferable);
-	} catch (e) {
-		alert(e);
-	}
-	transferable.addDataFlavor("text/unicode");
-	str = Components.classes["@mozilla.org/supports-string;1"]
-			.createInstance(Components.interfaces.nsISupportsString);
-	str.data = text;
-	transferable.setTransferData("text/unicode", str, str.data.length * 2);
-	try {
-		clipboardID = Components.interfaces.nsIClipboard;
-	} catch (e) {
-		alert(e);
-	}
-	clipboard.setData(transferable, null, clipboardID.kGlobalClipboard);
+    var clipboard = null, transferable = null, clipboardID = null;
+    try {
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+    } catch (e) {
+        alert(e);
+    }
+    try {
+        clipboard = Components.classes["@mozilla.org/widget/clipboard;1"].createInstance(Components.interfaces.nsIClipboard);
+    } catch (e) {
+        alert(e);
+    }
+    try {
+        transferable = Components.classes["@mozilla.org/widget/transferable;1"]
+                .createInstance(Components.interfaces.nsITransferable);
+    } catch (e) {
+        alert(e);
+    }
+    if (transferable) {
+        transferable.addDataFlavor("text/unicode");
+        var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+        str.data = text;
+        transferable.setTransferData("text/unicode", str, str.data.length * 2);
+        try {
+            clipboardID = Components.interfaces.nsIClipboard;
+        } catch (e) {
+            alert(e);
+        }
+        clipboard.setData(transferable, null, clipboardID.kGlobalClipboard);
+    }
 }
 
 /**
  * Adds the functions for using a "copy to clipboard" in a web-page.
  */
 function gmAddClipboardSupport() {
-	gmAddScriptGlobal(new Array(gmClipRef, gmCopy2clipboard,
-			gmIsClipboardSupported));
+    gmAddScriptGlobal(new Array(gmClipRef, gmCopy2clipboard, gmIsClipboardSupported));
 }
 
 /**
  * @returns {Boolean} TRUE=using clipboard is supported, else FALSE
  */
 function gmIsClipboardSupported() {
-	var isOK = false;
-	try {
-		privsMan = gmPrivsManager();
-		if (gmIsObject(privsMan)) {
-			privsMan.enablePrivilege("UniversalXPConnect");
-			isOK = true;
-		}
-	} catch (ex) {
-		alert("ERR: " + ex);
-	}
-	return isOK;
-}
-
-// ---------------
-// base-clipboard.js - END
-// ---------------
-
+    var isOK = false;
+    try {
+        privsMan = gmPrivsManager();
+        if (gmIsObject(privsMan)) {
+            privsMan.enablePrivilege("UniversalXPConnect");
+            isOK = true;
+        }
+    } catch (ex) {
+        alert("ERR: " + ex);
+    }
+    return isOK;
 //
 // Global Code - END
 //
@@ -2348,7 +2290,6 @@ function lgmShowLinks(sea) {
 
 	return false;
 }
-
 //
 //GM-Script specific code - END
 //

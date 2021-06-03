@@ -182,3 +182,8 @@ function gmIsClipboardSupported() {
         alert("ERR: " + ex);
     }
     return isOK;
+}
+
+// ---------------
+// base-clipboard.js - END
+// ---------------

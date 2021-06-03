@@ -303,3 +303,26 @@ if (2 == gmToNo("2")) {} else alert("gmToNo-03 " + gmToNo("2"));
 if (3 == gmToNo(new Number(3))) {} else alert("gmToNo-04 " + gmToNo(new Number(3)));
 if (4 == gmToNo(new Number(4))) {} else alert("gmToNo-05 " + gmToNo(new Number(4)));
 if (0 == gmToNo(new Object())) {} else alert("gmToNo-06 " + gmToNo(new Object()));
+
+
+/* ------- */
+var uarr = new Array(3, 1, 99, 10, 19);
+var sarr = new Array(1, 10, 19, 3, 99);
+
+if (null == gmSortArray(null)) {} else alert("gmSortArray-00");
+if ("" == gmSortArray("")) {} else alert("gmSortArray-01");
+if (null != gmSortArray(new Object())) {} else alert("gmSortArray-02");
+
+if (uarr.toString() == gmSortArray(uarr).toString()) {} else alert("gmSortArray-10");
+if (sarr.toString() == gmSortArray(uarr, true).toString()) {} else alert("gmSortArray-11");
+if (uarr.toString() == gmSortArray(uarr, false).toString()) {} else alert("gmSortArray-12");
+
+
+/* ------- */
+if (true == gmAddHandler()) {} else alert("gmAddHandler-00");
+if (true == gmAddHandler("")) {} else alert("gmAddHandler-01");
+if (true == gmAddHandler(new Object())) {} else alert("gmAddHandler-02");
+
+</script>
+</body>
+</html>
