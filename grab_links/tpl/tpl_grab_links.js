@@ -1,7 +1,7 @@
 /**
  * Define the global variables used for this script.
  */
-var scriptID = "GM-GL";
+const scriptID = "GM-GL";
 
 var contlinks;
 var odiv;
@@ -10,20 +10,28 @@ var o1;
 var oform;
 var initFilter;
 
-var bshow = '\\/';
-var bhide = '/\\';
-var hmin = '27px';
-var hmax = '99%';
-var hmaxauto = '99%';
-var hmaxlh = 14;
-var h_on = -1;
-var h_off = -2;
-var bDescA = "D";
-var tDescA = "search in link & description";
-var vDescA = "1";
-var bDescD = "L";
-var tDescD = "search in link ONLY";
-var vDescD = "0";
+const bshow = 'SR';
+const bshowDesc = 'show result';
+const bhide = 'HR';
+const bhideDesc = 'hide result';
+const hmin = '20px';
+const hmax = '99%';
+const hmaxauto = 'auto';
+const hmaxlh = 14;
+const h_on = -1;
+const h_off = -2;
+const bDescA = "D";
+const tDescA = "search in link & description";
+const vDescA = "1";
+const bDescD = "L";
+const tDescD = "search in link ONLY";
+const vDescD = "0";
+const contWidthWide = "50%";
+const contWidthSmall = "225px";
+const resWidthWide = "100%"
+const resWidthSmall = "";
+const divWidthWide = '99%';
+const divWidthSmall = "";
 
 /**
  * Add the DOM-Objects used in this script.
@@ -52,7 +60,7 @@ function lgmAddControlsGrabLinks() {
     gmCreateButton(oform, "button", "gl-sreset", "R", "clear search", null, function() {
         return lgmRemall('gl-searchtext');
     });
-    gmCreateButton(oform, "button", "gl-sshow", bshow, "show/hide result", null, function() {
+    gmCreateButton(oform, "button", "gl-sshow", bshow, bshowDesc, null, function() {
         return lgmShowhide();
     });
     //var odiv = gmCreateObj(oform, "label", "gl-ldesc");
@@ -75,6 +83,9 @@ function lgmAddControlsGrabLinks() {
     });
     gmCreateButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
         lgmShow('gl-resultlink', 'gl-resultplain');
+    });
+    gmCreateButton(oact, "button", "gl-awide", "WL", "Wide List", null, function() {
+        lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink');
     });
 
     gmCreateObj(ores, "div", "gl-resultplain");
@@ -119,7 +130,7 @@ function lgmShow(f, b) {
         gmSetAtI(obf, "left", 0);
         gmSetAtI(obb, "index", idxB);
         gmSetAtI(obb, "visibility", "hidden");
-        gmSetAtI(obf, "left", 2000);
+        gmSetAtI(obb, "left", 2000);
     }
 }
 
@@ -141,6 +152,37 @@ function lgmToggleSearchDesc(button) {
             gmSetAtI(oBut, "value", vDescD);
             gmSetAtI(oBut, "title", tDescD);
         }
+    }
+}
+
+function lgmToggleContainer(container, result, resDibP, resDibL) {
+    var oCont = gmGetElI(container);
+    var oRes = gmGetElI(result);
+    if (oCont && oRes) {
+        var styleCont = gmGetStyle(oCont);
+        var styleRes = gmGetStyle(oRes);
+        var styleDivP = gmGetStyle(resDibP);
+        var styleDivL = gmGetStyle(resDibL);
+
+        var newWidth = contWidthWide;
+        var newResWidth = resWidthWide;
+        var newDivWidth = divWidthWide;
+
+        var curValue = gmGetAtI(styleCont, "width");
+        if (curValue == contWidthWide) {
+            newWidth = contWidthSmall;
+            newResWidth = resWidthSmall;
+            newDivWidth = divWidthSmall;
+        }
+
+        gmSetAtI(styleCont, "width", newWidth);
+        gmSetAtI(styleCont, "max-width", newWidth);
+        gmSetAtI(styleRes, "width", newResWidth);
+        gmSetAtI(styleRes, "max-width", newResWidth);
+        gmSetAtI(styleDivP, "width", newDivWidth);
+        gmSetAtI(styleDivP, "max-width", newDivWidth);
+        gmSetAtI(styleDivL, "width", newDivWidth);
+        gmSetAtI(styleDivL, "max-width", newDivWidth);
     }
 }
 
@@ -180,10 +222,11 @@ function lgmShowhide(onoff) {
         //alert("will be maximize " + h);
         h = hmax;
         var cnt = gmGetAtI(ocountt, "value");
-        if (!isNaN(cnt)) {
+        //alert(cnt);
+        if (isNaN(cnt)) {
             h = hmaxauto;
-        } else {
-            h = hmin;
+//        } else {
+ //           h = hmin;
         }
     } else {
         //alert("will be mini" + h);
@@ -191,10 +234,13 @@ function lgmShowhide(onoff) {
     }
 
     var btntext = bshow;
+    var btntextDesc = bshowDesc;
     if (h == hmin) {
         btntext = bshow;
+        btntextDesc = bshowDesc;
     } else {
         btntext = bhide;
+        btntextDesc = bhideDesc;
     }
 
     gmSetAtI(styleC, "height", h);
@@ -202,6 +248,7 @@ function lgmShowhide(onoff) {
     //alert(h);
 
     gmSetCoI(bts, btntext);
+    gmSetAtI(bts, "title", btntextDesc);
 
     return false;
 }

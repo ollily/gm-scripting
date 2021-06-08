@@ -1,10 +1,16 @@
-// @grant              unsafeWindow
-// @include            http://gmonkey.*.*/test/*
-// @include            http://devzone.*.*/test/gm/*
-// @include            /http(|s)\://(|.+?\.)youtube\..+?/.*/
-// @include            /http(|s)\://(|.+?\.)myvideo\..+?/.*/
-// @include            /http(|s)\://(|.+?\.)dailymotion\..+?/.*/
-// @include            /http(|s)\://(|.+?\.)metacafe\..+?/.*/
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @require         http://share.glowa.eu/og/gm/gl_style.user.js
+// @grant           unsafeWindow
+// @grant           GM_addStyle
+// @grant           GM.addStyle
+// @grant           GM_getResourceText
+// @grant           GM.getResourceText
+// @include         http://gmonkey.*.*/test/*
+// @include         http://devzone.*.*/test/gm/*
+// @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)myvideo\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)dailymotion\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)metacafe\..+?/.*/
 // ==/UserScript==
 
 /*

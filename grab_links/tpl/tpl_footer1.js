@@ -14,6 +14,13 @@ function lgm_addKnownSites() {
  * Adds CSS-Styles for this script.
  * Can be left empty.
  */
+
+function lgm_addStyles() {
+    GM_addStyle(CSS_STYLE);
+    return true;
+}
+
+/*
 function lgm_addStyles() {
     // the main container
     var style = new Array();
@@ -46,6 +53,7 @@ function lgm_addStyles() {
     gmAddStyleGlobal(style);
     return true;
 };
+*/
 
 /**
  * Adds HTML-Objects for this script.
