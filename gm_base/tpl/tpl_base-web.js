@@ -133,73 +133,79 @@ var FL_ID = "_FL";
 /**
  * Search for all matching links in the page.
  *
- * @param sea -
+ * @param searchPattern -
  *            the search pattern or leave "" to get all
  * @param withDesc -
  *            0 = search only in links, 1 = search also in link description
  * @returns {Array} an array with all found links
  */
-function gmFindLinksInPage(sea, withDesc) {
+function gmFindLinksInPage(searchPattern, withDesc) {
     //
     if (withDesc == null) {
         withDesc = 0;
     }
     var pagelinks = new Array();
 
-    if (!sea || sea.length <= 0) {
-        sea = ".*";
-    } else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
-        sea = sea.substring(1, sea.length);
-        sea = sea.substring(0, sea.length -1);
-    } else {
-        sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-    }
-    //alert(sea);
-    sea = new RegExp(sea, "i");
+//    if (!searchPattern || searchPattern.length <= 0) {
+//        searchPattern = ".*";
+//    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+//        searchPattern = searchPattern.substring(1, searchPattern.length);
+//        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+//    } else {
+//        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+//    }
+//    //alert(searchPattern);
+//    searchPattern = new RegExp(searchPattern, "i");
+    searchPattern = gmCreateSearchRegExp(searchPattern);
+
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
         var ne = 1;
 
-        //var searchText = curlink.href;
-        var searchText = new Array();
-        searchText.push(gmGetAtI(curlink, "href"));
-        if (withDesc != 0) {
-            searchText.push(gmGetAtI(curlink, "title"));
-            searchText.push(gmGetAtI(curlink, "aria-label"));
-            searchText.push(gmGetAtI(curlink, "alt"));
-            searchText.push(gmGetAtI(curlink, "onmouseover"));
-            searchText.push(gmGetAtI(curlink, "onclick"));
-            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-        }
-        var found = gmFindLinksInPage0(searchText, sea);
+        var searchText = gmCreateSearchAttribute(curlink, withDesc);
+//        var searchText = new Array();
+//        searchText.push(gmGetAtI(curlink, "href"));
+//        if (withDesc != 0) {
+//            searchText.push(gmGetAtI(curlink, "title"));
+//            searchText.push(gmGetAtI(curlink, "aria-label"));
+//            searchText.push(gmGetAtI(curlink, "alt"));
+//            searchText.push(gmGetAtI(curlink, "onmouseover"));
+//            searchText.push(gmGetAtI(curlink, "onclick"));
+//            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+//        }
+//        //alert(searchText.join("|\n|"));
 
+        var found = gmFindLinksInPage0(searchText, searchPattern);
         if (found) {
             if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
                 var htmllink = gmGetAtI(curlink, "href");
-
+                //alert(htmllink);
                 for (var j=0; j < pagelinks.length; j++) {
+                    //alert(pagelinks[j].join("|\n|"));
                     if (htmllink == pagelinks[j][0]) {
                         // link allready added, avoiding duplicates
                         ne = 0; break;
                     }
                 }
                 if (ne == 1) {
-
-                    var searchText = new Array();
-                    searchText.push(curlink.text);
-                    if (withDesc != 0) {
-                        searchText.push(gmGetAtI(curlink, "title"));
-                        searchText.push(gmGetAtI(curlink, "alt"));
-                        searchText.push(gmGetAtI(curlink, "aria-label"));
-                        searchText.push(gmGetAtI(curlink, "onmouseover"));
-                        searchText.push(gmGetAtI(curlink, "onclick"));
-                        searchText.push(curlink.innerHTML);
-                    }
+//                    var searchText = new Array();
+//                    searchText.push(curlink.text);
+//                    if (withDesc != 0) {
+//                        searchText.push(gmGetAtI(curlink, "title"));
+//                        searchText.push(gmGetAtI(curlink, "alt"));
+//                        searchText.push(gmGetAtI(curlink, "aria-label"));
+//                        searchText.push(gmGetAtI(curlink, "onmouseover"));
+//                        searchText.push(gmGetAtI(curlink, "onclick"));
+//                        searchText.push(curlink.innerHTML);
+//                    }
+                    var searchText = gmCreateSearchAttribute2(curlink, withDesc);
                     var htmltext = gmFindLinksInPage1(searchText);
 
                     //alert("L: "+htmllink + " T: " + htmltext);
                     var curlink = new Array(htmllink, htmltext);
                     pagelinks.push(curlink);
+                } else {
+                    //alert("== FL_ID");
                 }
             }
         }
@@ -207,25 +213,68 @@ function gmFindLinksInPage(sea, withDesc) {
     return pagelinks;
 }
 
+function gmCreateSearchAttribute(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(gmGetAtI(curlink, "href"));
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+    }
+    //alert(searchText.join("|\n|"));
+    return searchText;
+}
+
+function gmCreateSearchAttribute2(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(curlink.text);
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML);
+    }
+    return searchText;
+}
+
+function gmCreateSearchRegExp(searchPattern) {
+    if (!searchPattern || searchPattern.length <= 0) {
+        searchPattern = ".*";
+    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+        searchPattern = searchPattern.substring(1, searchPattern.length);
+        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+    } else {
+        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+    }
+    //alert(searchPattern);
+    searchPattern = new RegExp(searchPattern, "i");
+    return searchPattern;
+}
+
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
  * @param arrText - an array texts to search in
- * @param sea - a search text (might be a regular expression)
+ * @param searchPattern - a search text (might be a regular expression)
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmFindLinksInPage0(arrText, sea) {
+function gmFindLinksInPage0(arrText, searchPattern) {
     var found = false;
     if (gmIsArray(arrText)) {
         //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
-                found = searchText.search(sea) != -1;
+                found = searchText.search(searchPattern) != -1;
             } catch (e) {
                 // ignored
             }
-            //alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
+            //alert("i:" + i + " S:" + searchPattern + " F:" + found + " T:" + searchText);
             if (found) {
                 break;
             }

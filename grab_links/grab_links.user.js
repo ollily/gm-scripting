@@ -1217,73 +1217,79 @@ var FL_ID = "_FL";
 /**
  * Search for all matching links in the page.
  *
- * @param sea -
+ * @param searchPattern -
  *            the search pattern or leave "" to get all
  * @param withDesc -
  *            0 = search only in links, 1 = search also in link description
  * @returns {Array} an array with all found links
  */
-function gmFindLinksInPage(sea, withDesc) {
+function gmFindLinksInPage(searchPattern, withDesc) {
     //
     if (withDesc == null) {
         withDesc = 0;
     }
     var pagelinks = new Array();
 
-    if (!sea || sea.length <= 0) {
-        sea = ".*";
-    } else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
-        sea = sea.substring(1, sea.length);
-        sea = sea.substring(0, sea.length -1);
-    } else {
-        sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-    }
-    //alert(sea);
-    sea = new RegExp(sea, "i");
+//    if (!searchPattern || searchPattern.length <= 0) {
+//        searchPattern = ".*";
+//    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+//        searchPattern = searchPattern.substring(1, searchPattern.length);
+//        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+//    } else {
+//        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+//    }
+//    //alert(searchPattern);
+//    searchPattern = new RegExp(searchPattern, "i");
+    searchPattern = gmCreateSearchRegExp(searchPattern);
+
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
         var ne = 1;
 
-        //var searchText = curlink.href;
-        var searchText = new Array();
-        searchText.push(gmGetAtI(curlink, "href"));
-        if (withDesc != 0) {
-            searchText.push(gmGetAtI(curlink, "title"));
-            searchText.push(gmGetAtI(curlink, "aria-label"));
-            searchText.push(gmGetAtI(curlink, "alt"));
-            searchText.push(gmGetAtI(curlink, "onmouseover"));
-            searchText.push(gmGetAtI(curlink, "onclick"));
-            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-        }
-        var found = gmFindLinksInPage0(searchText, sea);
+        var searchText = gmCreateSearchAttribute(curlink, withDesc);
+//        var searchText = new Array();
+//        searchText.push(gmGetAtI(curlink, "href"));
+//        if (withDesc != 0) {
+//            searchText.push(gmGetAtI(curlink, "title"));
+//            searchText.push(gmGetAtI(curlink, "aria-label"));
+//            searchText.push(gmGetAtI(curlink, "alt"));
+//            searchText.push(gmGetAtI(curlink, "onmouseover"));
+//            searchText.push(gmGetAtI(curlink, "onclick"));
+//            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+//        }
+//        //alert(searchText.join("|\n|"));
 
+        var found = gmFindLinksInPage0(searchText, searchPattern);
         if (found) {
             if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
                 var htmllink = gmGetAtI(curlink, "href");
-
+                //alert(htmllink);
                 for (var j=0; j < pagelinks.length; j++) {
+                    //alert(pagelinks[j].join("|\n|"));
                     if (htmllink == pagelinks[j][0]) {
                         // link allready added, avoiding duplicates
                         ne = 0; break;
                     }
                 }
                 if (ne == 1) {
-
-                    var searchText = new Array();
-                    searchText.push(curlink.text);
-                    if (withDesc != 0) {
-                        searchText.push(gmGetAtI(curlink, "title"));
-                        searchText.push(gmGetAtI(curlink, "alt"));
-                        searchText.push(gmGetAtI(curlink, "aria-label"));
-                        searchText.push(gmGetAtI(curlink, "onmouseover"));
-                        searchText.push(gmGetAtI(curlink, "onclick"));
-                        searchText.push(curlink.innerHTML);
-                    }
+//                    var searchText = new Array();
+//                    searchText.push(curlink.text);
+//                    if (withDesc != 0) {
+//                        searchText.push(gmGetAtI(curlink, "title"));
+//                        searchText.push(gmGetAtI(curlink, "alt"));
+//                        searchText.push(gmGetAtI(curlink, "aria-label"));
+//                        searchText.push(gmGetAtI(curlink, "onmouseover"));
+//                        searchText.push(gmGetAtI(curlink, "onclick"));
+//                        searchText.push(curlink.innerHTML);
+//                    }
+                    var searchText = gmCreateSearchAttribute2(curlink, withDesc);
                     var htmltext = gmFindLinksInPage1(searchText);
 
                     //alert("L: "+htmllink + " T: " + htmltext);
                     var curlink = new Array(htmllink, htmltext);
                     pagelinks.push(curlink);
+                } else {
+                    //alert("== FL_ID");
                 }
             }
         }
@@ -1291,25 +1297,68 @@ function gmFindLinksInPage(sea, withDesc) {
     return pagelinks;
 }
 
+function gmCreateSearchAttribute(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(gmGetAtI(curlink, "href"));
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+    }
+    //alert(searchText.join("|\n|"));
+    return searchText;
+}
+
+function gmCreateSearchAttribute2(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(curlink.text);
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML);
+    }
+    return searchText;
+}
+
+function gmCreateSearchRegExp(searchPattern) {
+    if (!searchPattern || searchPattern.length <= 0) {
+        searchPattern = ".*";
+    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+        searchPattern = searchPattern.substring(1, searchPattern.length);
+        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+    } else {
+        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+    }
+    //alert(searchPattern);
+    searchPattern = new RegExp(searchPattern, "i");
+    return searchPattern;
+}
+
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
  * @param arrText - an array texts to search in
- * @param sea - a search text (might be a regular expression)
+ * @param searchPattern - a search text (might be a regular expression)
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmFindLinksInPage0(arrText, sea) {
+function gmFindLinksInPage0(arrText, searchPattern) {
     var found = false;
     if (gmIsArray(arrText)) {
         //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
-                found = searchText.search(sea) != -1;
+                found = searchText.search(searchPattern) != -1;
             } catch (e) {
                 // ignored
             }
-            //alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
+            //alert("i:" + i + " S:" + searchPattern + " F:" + found + " T:" + searchText);
             if (found) {
                 break;
             }
@@ -1991,252 +2040,260 @@ function gmIsClipboardSupported() {
  */
 const scriptID = "GM-GL";
 
-var contlinks;
-var odiv;
-var ores;
-var o1;
-var oform;
+var glContainer;
+var glSearchDiv;
+var glResultDiv;
+var glActionDiv;
+var glFormTag;
 var initFilter;
 
-const bshow = 'SR';
-const bshowDesc = 'show result';
-const bhide = 'HR';
-const bhideDesc = 'hide result';
-const hmin = '20px';
-const hmax = '99%';
-const hmaxauto = 'auto';
-const hmaxlh = 14;
-const h_on = -1;
-const h_off = -2;
-const bDescA = "D";
-const tDescA = "search in link & description";
-const vDescA = "1";
-const bDescD = "L";
-const tDescD = "search in link ONLY";
-const vDescD = "0";
+const glBtnShowResultText = 'SR';
+const glBtnShowResultTextDesc = 'show result';
+const glBtnHideResultText = 'HR';
+const glBtnHideResultTextDesc = 'hide result';
+
+const glContainerHeightMin = '20px';
+const glContainerHeightMax = '99%';
+const glContainerHeightMaxAuto = 'auto';
+const glContainerLineHeight = 14;
+const RESULT_SHOW = -1;
+const RESULT_HIDE = -2;
+
+const glBtnSearchModeAText = "D";
+const glBtnSearchModeADesc = "search in link & description";
+const glBtnSearchModeAValue = "1";
+const glBtnSearchModeLText = "L";
+const glBtnSearchModeLDesc = "search in link ONLY";
+const glBtnSearchModeLValue = "0";
+
 const contWidthWide = "50%";
 const contWidthSmall = "225px";
 const resWidthWide = "100%"
-const resWidthSmall = "";
+const resWidthSmall = "225px";
 const divWidthWide = '99%';
-const divWidthSmall = "";
+const divWidthSmall = "225px";
+const descWidthWide = "Wide";
+const descWidthSmall = "Small";
+
+const searchText_Desc = "enter your search\nSimple Wildcards = (?, *)\nRegular Expression = /searchtext/";
 
 /**
  * Add the DOM-Objects used in this script.
  */
 function lgmAddControlsGrabLinks() {
-
     gmAddClipboardSupport();
-    contlinks = gmCreateObj(null, "div", "gl-container");
-    odiv = gmCreateObj(contlinks, "div", "gl-searchbox");
-    oact = gmCreateObj(contlinks, "div", "gl-actionbox");
-    ores = gmCreateObj(contlinks, "div", "gl-resultbox");
-    oform = gmCreateObj(odiv, "form", "gl-searchform");
 
+    // base layout
+    glContainer = gmCreateObj(null, "div", "gl-container");
+    glSearchDiv = gmCreateObj(glContainer, "div", "gl-searchbox");
+    glActionDiv = gmCreateObj(glContainer, "div", "gl-actionbox");
+    glResultDiv = gmCreateObj(glContainer, "div", "gl-resultbox");
+    glFormTag = gmCreateObj(glSearchDiv, "form", "gl-searchform");
+
+    gmSetAtI(glFormTag, "accept-charset", "utf-8");
+
+    // search fields
     initFilter = gmFoundFilter(currSite, currPath);
-    var searchText_Desc = "enter your search\n" +
-     "Simple Wildcards = (?, *)\n" +
-     "Regular Expression = /searchtext/";
-    gmCreateInput(oform, "text", "gl-searchtext", initFilter, searchText_Desc, null, null,
-            function() {
-                return gmSelectInput(this);
-            });
-
-    gmCreateButton(oform, "submit", "gl-sstart", "S", "start search", null, function() {
+    gmCreateInput(glFormTag, "text", "gl-searchtext", initFilter, searchText_Desc, null, null, function() {
+        return gmSelectInput(this);
+    });
+    gmCreateButton(glFormTag, "submit", "gl-sstart", "S", "start search", null, function() {
         return lgmFilterURL('gl-searchtext');
     });
-    gmCreateButton(oform, "button", "gl-sreset", "R", "clear search", null, function() {
+    gmCreateButton(glFormTag, "button", "gl-sreset", "R", "clear search", null, function() {
         return lgmRemall('gl-searchtext');
     });
-    gmCreateButton(oform, "button", "gl-sshow", bshow, bshowDesc, null, function() {
+    gmCreateButton(glFormTag, "button", "gl-sshow", glBtnShowResultText, glBtnShowResultTextDesc, null, function() {
         return lgmShowhide();
     });
-    //var odiv = gmCreateObj(oform, "label", "gl-ldesc");
-    gmCreateButton(oform, "button", "gl-sdesc", bDescA, tDescA, vDescA, function() {
+    gmCreateButton(glFormTag, "button", "gl-sdesc", glBtnSearchModeAText, glBtnSearchModeADesc, glBtnSearchModeAValue, function() {
         return lgmToggleSearchDesc('gl-sdesc');
     });
-    gmCreateInput(oform, "text", "gl-scount", "", "number of hits", 1, null, null, null);
+    gmCreateInput(glFormTag, "text", "gl-scount", "", "number of hits", 1, null, null, null);
 
+    // copy fields
     var selCap = "SA";
     var selTit = "De-/Select All";
     if (gmIsClipboardSupported()) {
         selCap = "CA";
         selTit = "Select & Copy All";
     }
-    gmCreateButton(oact, "button", "gl-aselect", selCap, selTit, null, function() {
+    gmCreateButton(glActionDiv, "button", "gl-aselect", selCap, selTit, null, function() {
         return lgmSelectall('gl-resultplain', 'gl-resultlink');
     });
-    gmCreateButton(oact, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function() {
+    gmCreateButton(glActionDiv, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function() {
         lgmShow('gl-resultplain', 'gl-resultlink');
     });
-    gmCreateButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
+    gmCreateButton(glActionDiv, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
         lgmShow('gl-resultlink', 'gl-resultplain');
     });
-    gmCreateButton(oact, "button", "gl-awide", "WL", "Wide List", null, function() {
-        lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink');
+    gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
+        lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
     });
 
-    gmCreateObj(ores, "div", "gl-resultplain");
-    gmCreateObj(ores, "div", "gl-resultlink");
+    // result fields
+    gmCreateObj(glResultDiv, "div", "gl-resultplain");
+    gmCreateObj(glResultDiv, "div", "gl-resultlink");
 
-    gmAddObj(contlinks, gmGetBody());
-    lgmShowhide(h_off);
+    // init
+    gmAddObj(glContainer, gmGetBody());
+    lgmShowhide(RESULT_HIDE);
+    //alert(glFormTag.outerHTML);
 }
 
 /**
- * Shows the layer in param f and hides the layer in param b.
+ * Shows the layer in param frontLayer and hides the layer in param behindLayer.
  *
- * @param f -
+ * @param frontLayer -
  *            the layer to put in front
- * @param b -
+ * @param behindLayer -
  *            the layer to put in the bakc
  */
-function lgmShow(f, b) {
-    var obf = gmGetStyle(f);
-    var obb = gmGetStyle(b);
+function lgmShow(frontLayer, behindLayer) {
+    var oFrontLayer = gmGetStyle(frontLayer);
+    var oBehindLayer = gmGetStyle(behindLayer);
 
-    if (obf && obb) {
+    if (oFrontLayer && oBehindLayer) {
+        var idxFront = gmGetAtI(oFrontLayer, "index");
+        var idxBehind = gmGetAtI(oBehindLayer, "index");
 
-        var idxF = gmGetAtI(obf, "index");
-        //var idxF = obf.zIndex;
-
-        var idxB = gmGetAtI(obb, "index");
-        //var idxB = obb.zIndex;
-        if (!idxF || isNaN(idxF) || idxF == '') {
-            idxF = 910;
+        if (!idxFront || isNaN(idxFront) || idxFront == '') {
+            idxFront = 910;
         }
-        if (!idxB || isNaN(idxB) || idxB == '') {
-            idxB = idxF - 1;
+        if (!idxBehind || isNaN(idxBehind) || idxBehind == '') {
+            idxBehind = idxFront - 1;
         }
-        if (idxF < idxB) {
-            var i = idxF;
-            idxF = idxB;
-            idxB = i;
+        if (idxFront < idxBehind) {
+            var i = idxFront;
+            idxFront = idxBehind;
+            idxBehind = i;
         }
-        gmSetAtI(obf, "index", idxF);
-        gmSetAtI(obf, "visibility", "visible");
-        gmSetAtI(obf, "left", 0);
-        gmSetAtI(obb, "index", idxB);
-        gmSetAtI(obb, "visibility", "hidden");
-        gmSetAtI(obb, "left", 2000);
+        gmSetAtI(oFrontLayer, "index", idxFront);
+        gmSetAtI(oFrontLayer, "visibility", "visible");
+        gmSetAtI(oFrontLayer, "left", 0);
+        gmSetAtI(oBehindLayer, "index", idxBehind);
+        gmSetAtI(oBehindLayer, "visibility", "hidden");
+        gmSetAtI(oBehindLayer, "left", 2000);
     }
 }
 
 /**
  * Switch the search mode.
  *
- * @param button - the button to read the current state from
+ * @param btnSearch - the button to read the current state from
  */
-function lgmToggleSearchDesc(button) {
-    var oBut = gmGetElI(button);
-    if (oBut){
-        var curValue = gmGetAtI(oBut, "value");
-        if (curValue == vDescD) {
-            gmSetCoI(oBut, bDescA);
-            gmSetAtI(oBut, "value", vDescA);
-            gmSetAtI(oBut, "title", tDescA);
+function lgmToggleSearchDesc(btnSearch) {
+    var oBtnSearch = gmGetElI(btnSearch);
+    if (oBtnSearch){
+        var curValue = gmGetAtI(oBtnSearch, "value");
+        if (curValue == glBtnSearchModeLValue) {
+            gmSetCoI(oBtnSearch, glBtnSearchModeAText);
+            gmSetAtI(oBtnSearch, "value", glBtnSearchModeAValue);
+            gmSetAtI(oBtnSearch, "title", glBtnSearchModeADesc);
         } else {
-            gmSetCoI(oBut, bDescD);
-            gmSetAtI(oBut, "value", vDescD);
-            gmSetAtI(oBut, "title", tDescD);
+            gmSetCoI(oBtnSearch, glBtnSearchModeLText);
+            gmSetAtI(oBtnSearch, "value", glBtnSearchModeLValue);
+            gmSetAtI(oBtnSearch, "title", glBtnSearchModeLDesc);
         }
     }
 }
 
-function lgmToggleContainer(container, result, resDibP, resDibL) {
-    var oCont = gmGetElI(container);
-    var oRes = gmGetElI(result);
-    if (oCont && oRes) {
-        var styleCont = gmGetStyle(oCont);
-        var styleRes = gmGetStyle(oRes);
-        var styleDivP = gmGetStyle(resDibP);
-        var styleDivL = gmGetStyle(resDibL);
+function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, btnAction) {
+    var oContDiv = gmGetElI(contDiv);
+    var oResultDiv = gmGetElI(resultDiv);
+    var oBtnAction = gmGetElI(btnAction);
 
-        var newWidth = contWidthWide;
-        var newResWidth = resWidthWide;
-        var newDivWidth = divWidthWide;
+    if (oContDiv && oResultDiv) {
+        var oContDivStyle = gmGetStyle(oContDiv);
+        var oResultDivStyle = gmGetStyle(oResultDiv);
+        var oResultPlainDivStyle = gmGetStyle(resultPlainDiv);
+        var oResultLinkDivStyle = gmGetStyle(resultLinkDiv);
 
-        var curValue = gmGetAtI(styleCont, "width");
+        var newContWidth = contWidthWide;
+        var newResultWidth = resWidthWide;
+        var newResultDivWidth = divWidthWide;
+        var newDescWidth = descWidthSmall;
+        var newBtnActionText = "S";
+
+        var curValue = gmGetAtI(oContDivStyle, "width");
         if (curValue == contWidthWide) {
-            newWidth = contWidthSmall;
-            newResWidth = resWidthSmall;
-            newDivWidth = divWidthSmall;
+            newContWidth = contWidthSmall;
+            newResultWidth = resWidthSmall;
+            newResultDivWidth = divWidthSmall;
+            newDescWidth = descWidthWide;
+            newBtnActionText = "W";
         }
 
-        gmSetAtI(styleCont, "width", newWidth);
-        gmSetAtI(styleCont, "max-width", newWidth);
-        gmSetAtI(styleRes, "width", newResWidth);
-        gmSetAtI(styleRes, "max-width", newResWidth);
-        gmSetAtI(styleDivP, "width", newDivWidth);
-        gmSetAtI(styleDivP, "max-width", newDivWidth);
-        gmSetAtI(styleDivL, "width", newDivWidth);
-        gmSetAtI(styleDivL, "max-width", newDivWidth);
+        gmSetAtI(oContDivStyle, "width", newContWidth);
+        gmSetAtI(oContDivStyle, "max-width", newContWidth);
+        gmSetAtI(oResultDivStyle, "width", newResultWidth);
+        gmSetAtI(oResultDivStyle, "max-width", newResultWidth);
+        gmSetAtI(oResultPlainDivStyle, "width", newResultDivWidth);
+        gmSetAtI(oResultPlainDivStyle, "max-width", newResultDivWidth);
+        gmSetAtI(oResultLinkDivStyle, "width", newResultDivWidth);
+        gmSetAtI(oResultLinkDivStyle, "max-width", newResultDivWidth);
+        if (oBtnAction) {
+            gmSetCoI(oBtnAction, newBtnActionText);
+            gmSetAtI(oBtnAction, "title", newDescWidth);
+        }
     }
 }
 
 /**
  * Shows the complete layer with a default size or special size.
  *
- * @param onoff -
+ * @param bOnOff -
  *            a numeric height, on, off or null
  * @returns {Boolean} always false
- * @see #h_on
- * @see #h_off
- * @see #hmin
- * @see #hmax
- * @see #hmaxauto
+ * @see #RESULT_SHOW
+ * @see #RESULT_HIDE
+ * @see #glContainerHeightMin
+ * @see #glContainerHeightMax
+ * @see #glContainerHeightMaxAuto
  */
-function lgmShowhide(onoff) {
-    var c = gmGetElI('gl-container');
-    var styleC = gmGetStyle(c);
+function lgmShowhide(bOnOff) {
+    var oCont = gmGetElI('gl-container');
+    var oContStyle = gmGetStyle(oCont);
+    var oCont1 = gmGetElI('gl-resultbox');
+    var oContStyle1 = gmGetStyle(oCont1);
+    var oBtnShow = gmGetElI('gl-sshow');
+    var oSearchCount = gmGetElI("gl-scount");
+    var currHeight;
 
-    var c1 = gmGetElI('gl-resultbox');
-    var styleC1 = gmGetStyle(c1);
-
-    var bts = gmGetElI('gl-sshow');
-    var ocountt = gmGetElI("gl-scount");
-
-    var h;
-
-    if (onoff) {
-        h = onoff;
+    if (bOnOff) {
+        currHeight = bOnOff;
     } else {
-        h = parseFloat(gmGetAtI(styleC, "height"));
-        //h = c.css("height");
+        currHeight = parseFloat(gmGetAtI(oContStyle, "height"));
     }
-
-    if (h == h_on || h == parseFloat(hmin)) {
+    if (currHeight == RESULT_SHOW || currHeight == parseFloat(glContainerHeightMin)) {
         // if container should be shown or currently is at min size
-        //alert("will be maximize " + h);
-        h = hmax;
-        var cnt = gmGetAtI(ocountt, "value");
-        //alert(cnt);
-        if (isNaN(cnt)) {
-            h = hmaxauto;
+        //alert("will be maximize " + currHeight);
+        currHeight = glContainerHeightMax;
+        var searchCnt = gmGetAtI(oSearchCount, "value");
+        //alert(searchCnt);
+        if (isNaN(searchCnt)) {
+            currHeight = glContainerHeightMaxAuto;
 //        } else {
- //           h = hmin;
+ //           currHeight = glContainerHeightMin;
         }
     } else {
-        //alert("will be mini" + h);
-        h = hmin;
+        //alert("will be mini" + currHeight);
+        currHeight = glContainerHeightMin;
     }
 
-    var btntext = bshow;
-    var btntextDesc = bshowDesc;
-    if (h == hmin) {
-        btntext = bshow;
-        btntextDesc = bshowDesc;
+    var buttonText = glBtnShowResultText;
+    var buttonTextDesc = glBtnShowResultTextDesc;
+    if (currHeight == glContainerHeightMin) {
+        buttonText = glBtnShowResultText;
+        buttonTextDesc = glBtnShowResultTextDesc;
     } else {
-        btntext = bhide;
-        btntextDesc = bhideDesc;
+        buttonText = glBtnHideResultText;
+        buttonTextDesc = glBtnHideResultTextDesc;
     }
-
-    gmSetAtI(styleC, "height", h);
-    gmSetAtI(styleC1, "height", h);
-    //alert(h);
-
-    gmSetCoI(bts, btntext);
-    gmSetAtI(bts, "title", btntextDesc);
+    gmSetAtI(oContStyle, "height", currHeight);
+    gmSetAtI(oContStyle1, "height", currHeight);
+    gmSetCoI(oBtnShow, buttonText);
+    gmSetAtI(oBtnShow, "title", buttonTextDesc);
 
     return false;
 }
@@ -2244,18 +2301,16 @@ function lgmShowhide(onoff) {
 /**
  * Clears any filter text and searchs again.
  *
- * @param a -
+ * @param searchField -
  *            the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmRemall(a) {
-
-    var oa = gmGetElI(a);
-
-    if (oa) {
-        gmSetAtI(oa, "value", "");
-        lgmFilterURL(oa);
-        oa.focus();
+function lgmRemall(searchField) {
+    var oSearchField = gmGetElI(searchField);
+    if (oSearchField) {
+        gmSetAtI(oSearchField, "value", "");
+        lgmFilterURL(oSearchField);
+        oSearchField.focus();
     }
     return false;
 }
@@ -2266,28 +2321,26 @@ function lgmRemall(a) {
  * @returns {Boolean} always false
  */
 function lgmSelectall(selElementA, selElementB) {
-    var osel = null;
+    var selectedElem = null;
+    var oSelElemA = gmGetElI(selElementA);
+    var oSelElemAStyle = gmGetStyle(oSelElemA);
 
-    var oa = gmGetElI(selElementA);
-    var styleOA = gmGetStyle(oa);
-
-    if (oa != null && gmGetAtI(styleOA, "visibility") == "visible") {
-        osel = oa;
+    if (oSelElemA != null && gmGetAtI(oSelElemAStyle, "visibility") == "visible") {
+        selectedElem = oSelElemA;
     } else {
-        var ob = gmGetElI(selElementB);
-        var styleOB = gmGetStyle(ob);
-
-        if (ob != null && gmGetAtI(styleOB, "visibility") == "visible") {
-            osel = ob;
+        var oSelElemB = gmGetElI(selElementB);
+        var oSelElemBStyle = gmGetStyle(oSelElemB);
+        if (oSelElemB != null && gmGetAtI(oSelElemBStyle, "visibility") == "visible") {
+            selectedElem = oSelElemB;
         }
     }
 
-    if (osel != null) {
+    if (selectedElem != null) {
         var bForce = false;
         if (gmIsClipboardSupported()) {
             bForce = true;
         }
-        var selText = gmSelectText(osel, bForce);
+        var selText = gmSelectText(selectedElem, bForce);
         if (selText) {
             try {
                 if (unsafeWindow) {
@@ -2308,15 +2361,13 @@ function lgmSelectall(selElementA, selElementB) {
  *            the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmFilterURL(a) {
-    var oa = gmGetElI(a);
-    //var oa = $(a);
-
-    if (oa) {
-        var sea = gmGetAtI(oa, "value");
-        lgmShowLinks(sea);
+function lgmFilterURL(searchField) {
+    var oSearchField = gmGetElI(searchField);
+    if (oSearchField) {
+        var searchText = gmGetAtI(oSearchField, "value");
+        lgmShowLinks(searchText);
         lgmShow('gl-resultplain', 'gl-resultlink');
-        lgmShowhide(h_on);
+        lgmShowhide(RESULT_SHOW);
     }
     return false;
 }
@@ -2326,88 +2377,144 @@ function lgmFilterURL(a) {
  *
  * @returns {Boolean} always false
  */
-function lgmShowLinks(sea) {
-    var oresplaind = gmGetElI("gl-resultplain");
-    var oreslinkd = gmGetElI("gl-resultlink");
-    var ocountt = gmGetElI("gl-scount");
+function lgmShowLinks(searchText) {
+    try {
+        var oResultPlainDiv = gmGetElI("gl-resultplain");
+        var oResultLinkDiv = gmGetElI("gl-resultlink");
+        var oResultCount = gmGetElI("gl-scount");
 
+        // search for all matching links in the page
+        var arrFoundInPage = lgmShowLinksCreateSearchLinks(searchText);
+    //    var arrFoundInPage = new Array();
+    //    if (bTestMode) {
+    //        arrFoundInPage = gmGenTestEntries(40);
+    //    } else {
+    //        var sMode = gmGetAtI("gl-sdesc", "value");
+    //        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
+    //    }
+
+        var arrLinksPlain = new Array();
+        var arrLinksLink = new Array();
+
+        //alert(arrFoundInPage.length);
+        arrFoundInPage = gmSortArray(arrFoundInPage, null);
+    //    var tblrow = null;
+
+        // now build the output
+        for ( var i = 0; i < arrFoundInPage.length; i++) {
+            if (i % 10 == 0) {
+                gmSetAtI(oResultCount, i);
+            }
+            var currLink = arrFoundInPage[i][0];
+            var currCaption = lgmShowLinksCreateCleanCaption(arrFoundInPage[i][1]);
+
+    //        var currCaption = trim(arrFoundInPage[i][1]);
+    //        if (currCaption != null) {
+    //            currCaption = currCaption.replace(/[\n\r]/g, '');
+    //            if (currCaption.indexOf("<") >= 0) {
+    //                currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
+    //            }
+    //        }
+    //        if (currCaption == null || currCaption == "" || currCaption == "#") {
+    //            currCaption = "n/a";
+    //        }
+
+            // row for plain text
+            var curPId = scriptID + "P" + i;
+//            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curPId);
+            lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption);
+    //        tblrow = gmCreateObj(null, "tr", null);
+    //        var plainlink = gmCreateObj(tblrow, "td", null);
+    //        gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
+    //        gmSetCoI(plainlink, currLink);
+    //        arrLinksPlain.push(tblrow);
+
+            // row for htmllink
+            var curLId = scriptID + "L" + i;
+            lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curLId);
+    //        var alink = gmCreateLink(null, scriptID + i, currLink, currCaption, currCaption, "_blank", null);
+    //        gmSetAtI(alink, FL_TAG, FL_ID);
+    //        arrLinksLink.push(alink);
+        }
+
+        if (oResultPlainDiv) {
+            lgmShowLinksAddPlain(oResultPlainDiv, arrLinksPlain);
+            gmCreateObj(oResultPlainDiv, "br", null);
+        }
+
+        if (oResultLinkDiv) {
+            arrLinksLink.sort();
+            lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink);
+            gmCreateObj(oResultLinkDiv, "br", null);
+        }
+
+        if (oResultCount) {
+            gmSetAtI(oResultCount, "value", arrFoundInPage.length);
+        }
+    } catch (ex) {
+        alert(ex);
+    }
+    return false;
+}
+
+function lgmShowLinksCreateSearchLinks(searchText) {
     // search for all matching links in the page
-    var pagelinks = new Array();
+    var arrFoundInPage = new Array();
     if (bTestMode) {
-        pagelinks = gmGenTestEntries(sea);
+        arrFoundInPage = gmGenTestEntries(40);
     } else {
         var sMode = gmGetAtI("gl-sdesc", "value");
-        pagelinks = gmFindLinksInPage(sea, sMode);
+        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
     }
+    return arrFoundInPage;
+}
 
-    var linkstbl = new Array();
-    var alllinks = new Array();
-
-    //alert(pagelinks.length);
-    pagelinks = gmSortArray(pagelinks, null);
-    var tblrow = null;
-
-    // now build the output
-    for ( var i = 0; i < pagelinks.length; i++) {
-        if (i % 50 == 0) {
-            gmSetAtI(ocountt, i);
+function lgmShowLinksCreateCleanCaption(currCaption) {
+    currCaption = trim(currCaption);
+    if (currCaption != null) {
+        currCaption = currCaption.replace(/[\n\r]/g, '');
+        if (currCaption.indexOf("<") >= 0) {
+            currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
         }
-        var curlink = pagelinks[i][0];
-        var curcap = trim(pagelinks[i][1]);
-
-        if (curcap != null) {
-            curcap = curcap.replace(/[\n\r]/g, '');
-            if (curcap.indexOf("<") >= 0) {
-                curcap = curcap.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
-            }
-        }
-        if (curcap == null || curcap == "" || curcap == "#") {
-            curcap = "n/a";
-        }
-
-        // row for plain text
-        tblrow = gmCreateObj(null, "tr", null);
-        var plainlink = gmCreateObj(tblrow, "td", null);
-
-        gmSetAtI(plainlink, "title", curcap + "\n[" + curlink + "]");
-        gmSetCoI(plainlink, curlink);
-
-        linkstbl.push(tblrow);
-
-        // row for htmllink
-        var alink = gmCreateLink(null, scriptID + i, curlink, curcap, curcap, "_blank", null);
-        gmSetAtI(alink, FL_TAG, FL_ID);
-
-        alllinks.push(alink);
     }
-
-    if (oresplaind) {
-        gmEmptyObj(oresplaind);
-
-        var tblPlain = gmCreateObj(oresplaind, "table", null);
-        for ( var idxLinks = 0; idxLinks < linkstbl.length; idxLinks++) {
-            gmAddObj(linkstbl[idxLinks], tblPlain);
-        }
-        gmCreateObj(oresplaind, "br", null);
+    if (currCaption == null || currCaption == "" || currCaption == "#") {
+        currCaption = "n/a";
     }
+    return currCaption;
+}
 
-    if (oreslinkd) {
-        gmEmptyObj(oreslinkd);
-        alllinks.sort();
+function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
+    // row for plain text
+//    var tblrow = gmCreateObj(null, "tr", null);
+//    var plainlink = gmCreateObj(tblrow, "td", null);
+    var plainlink = gmCreateObj(null, "span", null);
+    gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
+    gmSetCoI(plainlink, currLink);
+    arrLinksPlain.push(plainlink);
+    //arrLinksPlain.push(tblrow);
+}
 
-        for ( var idxLinks = 0; idxLinks < alllinks.length; idxLinks++) {
-            gmAddObj(alllinks[idxLinks], oreslinkd);
-            gmCreateObj(oreslinkd, "br", null);
-        }
+function lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curId) {
+    // row for htmllink
+    var alink = gmCreateLink(null, curId, currLink, currCaption, currCaption, "_blank", null);
+    gmSetAtI(alink, FL_TAG, FL_ID);
+    arrLinksLink.push(alink);
+}
 
-        gmCreateObj(oreslinkd, "br", null);
+function lgmShowLinksAddPTable(oResultPlainDiv, arrLinksPlain) {
+    gmEmptyObj(oResultPlainDiv);
+    var tblPlain = gmCreateObj(oResultPlainDiv, "table", null);
+    for ( var idxLinks = 0; idxLinks < arrLinksPlain.length; idxLinks++) {
+        gmAddObj(arrLinksPlain[idxLinks], tblPlain);
     }
+}
 
-    if (ocountt) {
-        gmSetAtI(ocountt, "value", pagelinks.length);
+function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
+    gmEmptyObj(oResultLinkDiv);
+    for ( var idxLinks = 0; idxLinks < arrLinksLink.length; idxLinks++) {
+        gmAddObj(arrLinksLink[idxLinks], oResultLinkDiv);
+        gmCreateObj(oResultLinkDiv, "br", null);
     }
-
-    return false;
 }
 
 //
@@ -2435,41 +2542,6 @@ function lgm_addStyles() {
     GM_addStyle(CSS_STYLE);
     return true;
 }
-
-/*
-function lgm_addStyles() {
-    // the main container
-    var style = new Array();
-    style.push('#gl-container {position:fixed; top:0px; right:1px; margin:0px; padding:0px !important; text-align:left; vertical-align:top; width:225px; max-height:99% !important; overflow: hidden !important; z-index:2999999999 !important;}');
-    style.push('#gl-container {color: #000000; background-color: #CED8F6; font-family:Courier New,Arial; font-size:11px;}');
-    // General Styles
-    style.push('#gl-container, #gl-container input, #gl-container button, #gl-resultplain, #gl-resultlink { -moz-border-radius: 5px; border-radius: 5px; }');
-    style.push('#gl-container input {margin-right:ßpx; width:auto; border:2px solid #819FF7; color:#000000; background-color:#ffffff; font-family:Arial, Courier New; font-size:11px !important; font-weight: bold; height:20px !important;}');
-    style.push('#gl-container input:hover, #gl-container input:focus {background-color:#FFFFCC; }');
-    style.push('#gl-container button {border:2px solid #819FF7; color:#000000; background-color:#ffffff; margin:0px; padding:4px 3px; font-family:Arial, Courier New; font-size:11px; font-weight: bold; }');
-    style.push('#gl-container button:hover {border:2px solid #ffffff; color:#ffffff; background-color:#819FF7; }');
-    // Search Box
-    style.push('#gl-container #gl-searchbox {position:relative; top:0px; left:0px; padding;0px; margin:0px; white-space:nowrap;}');
-    style.push('#gl-container #gl-searchform {margin:0px; padding;0px; height:20px !important}');
-    style.push('#gl-container #gl-searchform #gl-searchtext {min-width:50px; max-width:115px; height:20px !important}');
-    style.push('#gl-container #gl-searchbox #gl-scount {min-width:5px; max-width:25px; margin-left:0px; height:20px !important; text-align:right; background-color:#EFF2FB; }');
-    // Action box
-    style.push('#gl-container #gl-actionbox {position:relative; top:5px; right:0px; padding: 0px; margin: 0px; white-space:nowrap;}');
-    style.push('#gl-container #gl-actionbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
-    style.push('#gl-container #gl-actionbox button {padding:0px 2px; }');
-    // Result Box
-    style.push('#gl-container #gl-resultbox div {color: #000000; background-color: #ffffff; white-space:nowrap;}');
-    style.push('#gl-container #gl-resultbox {position:relative; top:5px; right:0px; padding: 0px; margin: 0px; border: transparent none ßpx; min-width: 97%; min-height: 92%; max-width: 99%; max-height: 92%; height: 93%; width: 99%; overflow: auto;}');
-    style.push('#gl-container #gl-resultbox tr, #gl-container #gl-resultbox table {padding:0pt; margin:0pt;}');
-    style.push('#gl-container #gl-resultbox td, #gl-container #gl-resultbox a {font-family:Courier New, Arial; font-size:9pt !important; white-space:nowrap; padding: 0pt; margin 0pt; line-height:10pt !important}');
-    style.push('#gl-container #gl-resultbox #gl-resultplain {position:absolute; top:0px; left:0px; padding: 0px; margin: 0px; border: transparent none 0pt; scrollbar-color: #819FF7 #e0e0e0; scrollbar-width: initial; min-width: 97%; min-height: 97%; max-width: 99%; max-height: 99%; height: 99%; width: 99%; overflow: auto; visibility:visible; z-index: 910;}');
-    style.push('#gl-container #gl-resultbox #gl-resultlink  {position:absolute; top:0px; left:0px; padding: 0px; margin: 0px; border: transparent none 0pt; scrollbar-color: #819FF7 #e0e0e0; scrollbar-width: initial; min-width: 97%; min-height: 97%; max-width: 99%; max-height: 99%; height: 99%; width: 99%; overflow: auto; visibility:hidden; z-index: 909; color:red;}');
-    style.push('#gl-container #gl-resultbox #gl-resultlink a { color:#000066; font-family:Arial,Courier New; line-height:120%;}');
-    style.push('#gl-container #gl-resultbox #gl-resultlink a:hover { color: #990000;}');
-    gmAddStyleGlobal(style);
-    return true;
-};
-*/
 
 /**
  * Adds HTML-Objects for this script.

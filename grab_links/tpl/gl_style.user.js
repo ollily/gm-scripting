@@ -7,8 +7,8 @@ const CLR_HOV = "#e0e0e0";
 const CLR_HOV_BG = "#A80000";
 const CLR_HOV2 = "#A80000";
 const CLR_FOC = "#FFFFCC";
-const SCRB_C1 = CLR_FRMS_BRD;
-const SCRB_C2 = "#A00000"; //"#e0e0e0";
+const SCRB_C1 = "#A00000"; //"#e0e0e0";
+const SCRB_C2 = CLR_FRMS_BRD;
 const FNT_FRMS = "Consolas"; //"Arial, Courier New";
 const FNT_FRMS_SZ = "10pt !important";
 
@@ -26,7 +26,7 @@ const CSS_STYLE = `
     min-height: 1%;
     max-height: 99%;
     min-width: 225px;
-    max-width: 225px;
+    max-width: 50%;
 		width: 225px;
     overflow: hidden;
     z-index: 2147483647;
@@ -148,6 +148,11 @@ const CSS_STYLE = `
 /* Result Box */
 #gl-container #gl-resultbox
 {
+    min-height: 1%;
+    max-height: 99%;
+    min-width: 225px;
+    max-width: 225px;
+		width: 225px;
     overflow: auto;
 }
 #gl-container #gl-resultbox #gl-resultplain, #gl-container #gl-resultbox #gl-resultlink
@@ -155,10 +160,17 @@ const CSS_STYLE = `
     position: absolute !important;
     top: 1px !important;
     left: 0 !important;
+    min-height: 1%;
+    max-height: 99%;
+    min-width: 225px;
+    max-width: 225px;
+		width: 225px;
+		height: 96%;
     border: transparent none 0;
     scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
     scrollbar-width: initial;
-    overflow: auto;
+    overflow-y: auto;
+		overflow-x: auto;
 		padding: 2px;
     color: `+CLR_FRMS_TX+`;
     background-color: `+CLR_FRMS_BG+`;
