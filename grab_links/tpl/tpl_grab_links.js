@@ -45,16 +45,13 @@ const searchText_Desc = "enter your search\nSimple Wildcards = (?, *)\nRegular E
  */
 function lgmAddControlsGrabLinks() {
     gmAddClipboardSupport();
-
     // base layout
     glContainer = gmCreateObj(null, "div", "gl-container");
     glSearchDiv = gmCreateObj(glContainer, "div", "gl-searchbox");
     glActionDiv = gmCreateObj(glContainer, "div", "gl-actionbox");
     glResultDiv = gmCreateObj(glContainer, "div", "gl-resultbox");
     glFormTag = gmCreateObj(glSearchDiv, "form", "gl-searchform");
-
     gmSetAtI(glFormTag, "accept-charset", "utf-8");
-
     // search fields
     initFilter = gmFoundFilter(currSite, currPath);
     gmCreateInput(glFormTag, "text", "gl-searchtext", initFilter, searchText_Desc, null, null, function() {
@@ -73,7 +70,6 @@ function lgmAddControlsGrabLinks() {
         return lgmToggleSearchDesc('gl-sdesc');
     });
     gmCreateInput(glFormTag, "text", "gl-scount", "", "number of hits", 1, null, null, null);
-
     // copy fields
     var selCap = "SA";
     var selTit = "De-/Select All";
@@ -93,11 +89,9 @@ function lgmAddControlsGrabLinks() {
     gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
         lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
     });
-
     // result fields
     gmCreateObj(glResultDiv, "div", "gl-resultplain");
     gmCreateObj(glResultDiv, "div", "gl-resultlink");
-
     // init
     gmAddObj(glContainer, gmGetBody());
     lgmShowhide(RESULT_HIDE);
@@ -106,16 +100,12 @@ function lgmAddControlsGrabLinks() {
 
 /**
  * Shows the layer in param frontLayer and hides the layer in param behindLayer.
- *
- * @param frontLayer -
- *            the layer to put in front
- * @param behindLayer -
- *            the layer to put in the bakc
+ * @param frontLayer  - the layer to put in front
+ * @param behindLayer - the layer to put in the bakc
  */
 function lgmShow(frontLayer, behindLayer) {
     var oFrontLayer = gmGetStyle(frontLayer);
     var oBehindLayer = gmGetStyle(behindLayer);
-
     if (oFrontLayer && oBehindLayer) {
         var idxFront = gmGetAtI(oFrontLayer, "index");
         var idxBehind = gmGetAtI(oBehindLayer, "index");
@@ -142,7 +132,6 @@ function lgmShow(frontLayer, behindLayer) {
 
 /**
  * Switch the search mode.
- *
  * @param btnSearch - the button to read the current state from
  */
 function lgmToggleSearchDesc(btnSearch) {
@@ -165,19 +154,16 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
     var oContDiv = gmGetElI(contDiv);
     var oResultDiv = gmGetElI(resultDiv);
     var oBtnAction = gmGetElI(btnAction);
-
     if (oContDiv && oResultDiv) {
         var oContDivStyle = gmGetStyle(oContDiv);
         var oResultDivStyle = gmGetStyle(oResultDiv);
         var oResultPlainDivStyle = gmGetStyle(resultPlainDiv);
         var oResultLinkDivStyle = gmGetStyle(resultLinkDiv);
-
         var newContWidth = contWidthWide;
         var newResultWidth = resWidthWide;
         var newResultDivWidth = divWidthWide;
         var newDescWidth = descWidthSmall;
         var newBtnActionText = "S";
-
         var curValue = gmGetAtI(oContDivStyle, "width");
         if (curValue == contWidthWide) {
             newContWidth = contWidthSmall;
@@ -186,7 +172,6 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
             newDescWidth = descWidthWide;
             newBtnActionText = "W";
         }
-
         gmSetAtI(oContDivStyle, "width", newContWidth);
         gmSetAtI(oContDivStyle, "max-width", newContWidth);
         gmSetAtI(oResultDivStyle, "width", newResultWidth);
@@ -204,9 +189,7 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
 
 /**
  * Shows the complete layer with a default size or special size.
- *
- * @param bOnOff -
- *            a numeric height, on, off or null
+ * @param bOnOff - a numeric height, on, off or null
  * @returns {Boolean} always false
  * @see #RESULT_SHOW
  * @see #RESULT_HIDE
@@ -222,7 +205,6 @@ function lgmShowhide(bOnOff) {
     var oBtnShow = gmGetElI('gl-sshow');
     var oSearchCount = gmGetElI("gl-scount");
     var currHeight;
-
     if (bOnOff) {
         currHeight = bOnOff;
     } else {
@@ -230,20 +212,17 @@ function lgmShowhide(bOnOff) {
     }
     if (currHeight == RESULT_SHOW || currHeight == parseFloat(glContainerHeightMin)) {
         // if container should be shown or currently is at min size
-        //alert("will be maximize " + currHeight);
         currHeight = glContainerHeightMax;
         var searchCnt = gmGetAtI(oSearchCount, "value");
         //alert(searchCnt);
         if (isNaN(searchCnt)) {
             currHeight = glContainerHeightMaxAuto;
-//        } else {
- //           currHeight = glContainerHeightMin;
+        //} else {
+        //    currHeight = glContainerHeightMin;
         }
     } else {
-        //alert("will be mini" + currHeight);
         currHeight = glContainerHeightMin;
     }
-
     var buttonText = glBtnShowResultText;
     var buttonTextDesc = glBtnShowResultTextDesc;
     if (currHeight == glContainerHeightMin) {
@@ -257,15 +236,12 @@ function lgmShowhide(bOnOff) {
     gmSetAtI(oContStyle1, "height", currHeight);
     gmSetCoI(oBtnShow, buttonText);
     gmSetAtI(oBtnShow, "title", buttonTextDesc);
-
     return false;
 }
 
 /**
  * Clears any filter text and searchs again.
- *
- * @param searchField -
- *            the search input containing the text-filter
+ * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
 function lgmRemall(searchField) {
@@ -279,6 +255,7 @@ function lgmRemall(searchField) {
 }
 
 /**
+ * Selects the content of element A or B.
  * @param selElementA
  * @param selElementB
  * @returns {Boolean} always false
@@ -287,7 +264,6 @@ function lgmSelectall(selElementA, selElementB) {
     var selectedElem = null;
     var oSelElemA = gmGetElI(selElementA);
     var oSelElemAStyle = gmGetStyle(oSelElemA);
-
     if (oSelElemA != null && gmGetAtI(oSelElemAStyle, "visibility") == "visible") {
         selectedElem = oSelElemA;
     } else {
@@ -297,7 +273,6 @@ function lgmSelectall(selElementA, selElementB) {
             selectedElem = oSelElemB;
         }
     }
-
     if (selectedElem != null) {
         var bForce = false;
         if (gmIsClipboardSupported()) {
@@ -319,9 +294,7 @@ function lgmSelectall(selElementA, selElementB) {
 
 /**
  * Search for all matching URLs and shows them the result.
- *
- * @param a -
- *            the search input containing the text-filter
+ * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
 function lgmFilterURL(searchField) {
@@ -337,7 +310,6 @@ function lgmFilterURL(searchField) {
 
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
- *
  * @returns {Boolean} always false
  */
 function lgmShowLinks(searchText) {
@@ -345,24 +317,12 @@ function lgmShowLinks(searchText) {
         var oResultPlainDiv = gmGetElI("gl-resultplain");
         var oResultLinkDiv = gmGetElI("gl-resultlink");
         var oResultCount = gmGetElI("gl-scount");
-
         // search for all matching links in the page
         var arrFoundInPage = lgmShowLinksCreateSearchLinks(searchText);
-    //    var arrFoundInPage = new Array();
-    //    if (bTestMode) {
-    //        arrFoundInPage = gmGenTestEntries(40);
-    //    } else {
-    //        var sMode = gmGetAtI("gl-sdesc", "value");
-    //        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
-    //    }
-
         var arrLinksPlain = new Array();
         var arrLinksLink = new Array();
-
         //alert(arrFoundInPage.length);
         arrFoundInPage = gmSortArray(arrFoundInPage, null);
-    //    var tblrow = null;
-
         // now build the output
         for ( var i = 0; i < arrFoundInPage.length; i++) {
             if (i % 10 == 0) {
@@ -370,47 +330,22 @@ function lgmShowLinks(searchText) {
             }
             var currLink = arrFoundInPage[i][0];
             var currCaption = lgmShowLinksCreateCleanCaption(arrFoundInPage[i][1]);
-
-    //        var currCaption = trim(arrFoundInPage[i][1]);
-    //        if (currCaption != null) {
-    //            currCaption = currCaption.replace(/[\n\r]/g, '');
-    //            if (currCaption.indexOf("<") >= 0) {
-    //                currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
-    //            }
-    //        }
-    //        if (currCaption == null || currCaption == "" || currCaption == "#") {
-    //            currCaption = "n/a";
-    //        }
-
             // row for plain text
             var curPId = scriptID + "P" + i;
-//            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curPId);
-            lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption);
-    //        tblrow = gmCreateObj(null, "tr", null);
-    //        var plainlink = gmCreateObj(tblrow, "td", null);
-    //        gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    //        gmSetCoI(plainlink, currLink);
-    //        arrLinksPlain.push(tblrow);
-
+            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption,curPId);
             // row for htmllink
             var curLId = scriptID + "L" + i;
-            lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curLId);
-    //        var alink = gmCreateLink(null, scriptID + i, currLink, currCaption, currCaption, "_blank", null);
-    //        gmSetAtI(alink, FL_TAG, FL_ID);
-    //        arrLinksLink.push(alink);
+            lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curLId);
         }
-
         if (oResultPlainDiv) {
             lgmShowLinksAddPlain(oResultPlainDiv, arrLinksPlain);
             gmCreateObj(oResultPlainDiv, "br", null);
         }
-
         if (oResultLinkDiv) {
             arrLinksLink.sort();
             lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink);
             gmCreateObj(oResultLinkDiv, "br", null);
         }
-
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
         }
@@ -447,17 +382,23 @@ function lgmShowLinksCreateCleanCaption(currCaption) {
 }
 
 function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
+    // row for table text
+    var tblrow = gmCreateObj(null, "tr", null);
+    var plainlink = gmCreateObj(tblrow, "td", null);
+    gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
+    gmSetCoI(plainlink, currLink);
+    arrLinksPlain.push(tblrow);
+}
+
+function lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curId) {
     // row for plain text
-//    var tblrow = gmCreateObj(null, "tr", null);
-//    var plainlink = gmCreateObj(tblrow, "td", null);
-    var plainlink = gmCreateObj(null, "span", null);
+    var plainlink = gmCreateObj(null, "span", curId);
     gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
     gmSetCoI(plainlink, currLink);
     arrLinksPlain.push(plainlink);
-    //arrLinksPlain.push(tblrow);
 }
 
-function lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curId) {
+function lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curId) {
     // row for htmllink
     var alink = gmCreateLink(null, curId, currLink, currCaption, currCaption, "_blank", null);
     gmSetAtI(alink, FL_TAG, FL_ID);

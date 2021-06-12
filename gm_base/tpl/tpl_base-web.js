@@ -140,42 +140,18 @@ var FL_ID = "_FL";
  * @returns {Array} an array with all found links
  */
 function gmFindLinksInPage(searchPattern, withDesc) {
-    //
     if (withDesc == null) {
         withDesc = 0;
     }
     var pagelinks = new Array();
-
-//    if (!searchPattern || searchPattern.length <= 0) {
-//        searchPattern = ".*";
-//    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
-//        searchPattern = searchPattern.substring(1, searchPattern.length);
-//        searchPattern = searchPattern.substring(0, searchPattern.length -1);
-//    } else {
-//        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-//    }
-//    //alert(searchPattern);
-//    searchPattern = new RegExp(searchPattern, "i");
     searchPattern = gmCreateSearchRegExp(searchPattern);
 
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
         var ne = 1;
-
         var searchText = gmCreateSearchAttribute(curlink, withDesc);
-//        var searchText = new Array();
-//        searchText.push(gmGetAtI(curlink, "href"));
-//        if (withDesc != 0) {
-//            searchText.push(gmGetAtI(curlink, "title"));
-//            searchText.push(gmGetAtI(curlink, "aria-label"));
-//            searchText.push(gmGetAtI(curlink, "alt"));
-//            searchText.push(gmGetAtI(curlink, "onmouseover"));
-//            searchText.push(gmGetAtI(curlink, "onclick"));
-//            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-//        }
-//        //alert(searchText.join("|\n|"));
-
         var found = gmFindLinksInPage0(searchText, searchPattern);
+
         if (found) {
             if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
                 var htmllink = gmGetAtI(curlink, "href");
@@ -188,19 +164,8 @@ function gmFindLinksInPage(searchPattern, withDesc) {
                     }
                 }
                 if (ne == 1) {
-//                    var searchText = new Array();
-//                    searchText.push(curlink.text);
-//                    if (withDesc != 0) {
-//                        searchText.push(gmGetAtI(curlink, "title"));
-//                        searchText.push(gmGetAtI(curlink, "alt"));
-//                        searchText.push(gmGetAtI(curlink, "aria-label"));
-//                        searchText.push(gmGetAtI(curlink, "onmouseover"));
-//                        searchText.push(gmGetAtI(curlink, "onclick"));
-//                        searchText.push(curlink.innerHTML);
-//                    }
                     var searchText = gmCreateSearchAttribute2(curlink, withDesc);
                     var htmltext = gmFindLinksInPage1(searchText);
-
                     //alert("L: "+htmllink + " T: " + htmltext);
                     var curlink = new Array(htmllink, htmltext);
                     pagelinks.push(curlink);

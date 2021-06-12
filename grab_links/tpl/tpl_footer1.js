@@ -14,7 +14,6 @@ function lgm_addKnownSites() {
  * Adds CSS-Styles for this script.
  * Can be left empty.
  */
-
 function lgm_addStyles() {
     GM_addStyle(CSS_STYLE);
     return true;
