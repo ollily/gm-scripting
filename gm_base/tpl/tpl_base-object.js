@@ -49,9 +49,13 @@ function gmCreateObj(par, objtyp, id) {
  *            a javascript-call for the click-event
  * @param ev_focus -
  *            a javascript-call for the focus-event
+ * @param ev_mOver -
+ *			  a javascript-call for the mouseover-event
+ * @param ev_mOut -
+ *			  a javascript-call for the mouseout-event
  * @returns {Object} the object with added attributes FIXME: Check
  */
-function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
+function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut) {
     if (obj) {
         // obj.attr("title", tit);
         gmSetAtI(obj, "title", tit);
@@ -70,6 +74,14 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
         if (ev_focus) {
             // obj.focus(ev_focus);
             obj.onfocus = ev_focus;
+        };
+        if (ev_mOver) {
+            // obj.hover(ev_mOver);
+            obj.onmouseover = ev_mOver;
+        };
+        if (ev_mOut) {
+            // obj.hover(ev_mOut);
+            obj.onmouseout = ev_mOut;
         };
     }
     return obj;

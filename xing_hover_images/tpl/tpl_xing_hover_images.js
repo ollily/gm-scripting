@@ -1,12 +1,3 @@
-
-//
-// Global Code - END
-//
-
-//
-// GM-Script specific code - START
-//
-
 /* -------------------------------- */
 /**
  * Switch for debug-mode

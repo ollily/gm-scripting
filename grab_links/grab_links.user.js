@@ -1,20 +1,26 @@
 // ==UserScript==
 // @name            Grab Links
+// @name:en         Grab Links
+// @name:de         Links Schnapper
 // @fullname        Grab Links
 // @description     Lists all links on a page for clipboard copy
+// @description:en  Lists all links on a page for clipboard copy
+// @description:de  Listet alle links in einer Seite, zum Kopieren, auf.
 // @namespace       http://userscripts.org/users/ollily
 // @author          ollily2907
-// homepageURL
-// @source          http://userscripts.org/scripts/show/82191
-// @installURL      http://userscripts.org/scripts/source/82191.user.js
-// @downloadURL     http://userscripts.org/scripts/source/82191.user.js
-// @updateURL       http://userscripts.org/scripts/source/82191.meta.js
+// @icon			https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/resource/gl_logo.png
+// @compatible      chrome
+// @compatible      firefox
+// @homepageURL		https://github.com/ollily/gm-scripting
+// @supportURL		https://github.com/ollily/gm-scripting
+// @source          https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @installURL      https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @downloadURL     https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
 // @run-at          document-end
 // @license         Apache License, Version 2.0
 // @license         https://www.apache.org/licenses/LICENSE-2.0.txt
-// @version         2.01.000
-// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @require         http://share.glowa.eu/og/gm/gl_style.user.js
+// @version         2.02.000
 // @grant           unsafeWindow
 // @grant           GM_addStyle
 // @grant           GM.addStyle
@@ -737,9 +743,13 @@ function gmCreateObj(par, objtyp, id) {
  *            a javascript-call for the click-event
  * @param ev_focus -
  *            a javascript-call for the focus-event
+ * @param ev_mOver -
+ *			  a javascript-call for the mouseover-event
+ * @param ev_mOut -
+ *			  a javascript-call for the mouseout-event
  * @returns {Object} the object with added attributes FIXME: Check
  */
-function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
+function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut) {
     if (obj) {
         // obj.attr("title", tit);
         gmSetAtI(obj, "title", tit);
@@ -758,6 +768,14 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus) {
         if (ev_focus) {
             // obj.focus(ev_focus);
             obj.onfocus = ev_focus;
+        };
+        if (ev_mOver) {
+            // obj.hover(ev_mOver);
+            obj.onmouseover = ev_mOver;
+        };
+        if (ev_mOut) {
+            // obj.hover(ev_mOut);
+            obj.onmouseout = ev_mOut;
         };
     }
     return obj;
@@ -1224,42 +1242,18 @@ var FL_ID = "_FL";
  * @returns {Array} an array with all found links
  */
 function gmFindLinksInPage(searchPattern, withDesc) {
-    //
     if (withDesc == null) {
         withDesc = 0;
     }
     var pagelinks = new Array();
-
-//    if (!searchPattern || searchPattern.length <= 0) {
-//        searchPattern = ".*";
-//    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
-//        searchPattern = searchPattern.substring(1, searchPattern.length);
-//        searchPattern = searchPattern.substring(0, searchPattern.length -1);
-//    } else {
-//        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-//    }
-//    //alert(searchPattern);
-//    searchPattern = new RegExp(searchPattern, "i");
     searchPattern = gmCreateSearchRegExp(searchPattern);
 
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
         var ne = 1;
-
         var searchText = gmCreateSearchAttribute(curlink, withDesc);
-//        var searchText = new Array();
-//        searchText.push(gmGetAtI(curlink, "href"));
-//        if (withDesc != 0) {
-//            searchText.push(gmGetAtI(curlink, "title"));
-//            searchText.push(gmGetAtI(curlink, "aria-label"));
-//            searchText.push(gmGetAtI(curlink, "alt"));
-//            searchText.push(gmGetAtI(curlink, "onmouseover"));
-//            searchText.push(gmGetAtI(curlink, "onclick"));
-//            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-//        }
-//        //alert(searchText.join("|\n|"));
-
         var found = gmFindLinksInPage0(searchText, searchPattern);
+
         if (found) {
             if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
                 var htmllink = gmGetAtI(curlink, "href");
@@ -1272,19 +1266,8 @@ function gmFindLinksInPage(searchPattern, withDesc) {
                     }
                 }
                 if (ne == 1) {
-//                    var searchText = new Array();
-//                    searchText.push(curlink.text);
-//                    if (withDesc != 0) {
-//                        searchText.push(gmGetAtI(curlink, "title"));
-//                        searchText.push(gmGetAtI(curlink, "alt"));
-//                        searchText.push(gmGetAtI(curlink, "aria-label"));
-//                        searchText.push(gmGetAtI(curlink, "onmouseover"));
-//                        searchText.push(gmGetAtI(curlink, "onclick"));
-//                        searchText.push(curlink.innerHTML);
-//                    }
                     var searchText = gmCreateSearchAttribute2(curlink, withDesc);
                     var htmltext = gmFindLinksInPage1(searchText);
-
                     //alert("L: "+htmllink + " T: " + htmltext);
                     var curlink = new Array(htmllink, htmltext);
                     pagelinks.push(curlink);
@@ -2025,6 +2008,214 @@ function gmIsClipboardSupported() {
 // ---------------
 // base-clipboard.js - END
 // ---------------
+/**
+ * Adds site which should be known by this script.
+ * Can be left empty.
+ */
+function lgm_addKnownSites() {
+
+};
+
+/**
+ * Adds CSS-Styles for this script.
+ * Can be left empty.
+ */
+function lgm_addStyles() {
+
+};
+
+/**
+ * Adds HTML-Objects for this script.
+ * Can be left empty.
+ */
+function lgm_addControls() {
+    gm_addClipboardSupport();
+    contlinks = gm_createObj(null, "div", "gl-container");
+    odiv = gm_createObj(contlinks, "div", "gl-searchbox");
+    oact = gm_createObj(contlinks, "div", "gl-actionbox");
+    ores = gm_createObj(contlinks, "div", "gl-resultbox");
+    oform = gm_createObj(odiv, "form", "gl-searchform");
+
+    initFilter = gm_foundFilter(currSite, currPath);
+
+    gm_createInput(oform, "text", "gl-searchtext", initFilter, "enter your search (you may use regular expression)", null, null,
+            function() {
+                return gm_selectInput(this);
+            });
+    gm_createButton(oform, "submit", "gl-sstart", "S", "start search", function() {
+        return lgm_filterURL('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sreset", "R", "clear search", function() {
+        return lgm_remall('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sshow", "\\/", "show/hide result", function() {
+        return lgm_showhide();
+    });
+    gm_createInput(oform, "text", "gl-scount", null, "number of hits", 1, null, null, null);
+
+    var selCap = "SA";
+    var selTit = "De-/Select All";
+    if (gm_isClipboardSupported()) {
+        selCap = "CA";
+        selTit = "Select & Copy All";
+    }
+    gm_createButton(oact, "button", "gl-aselect", selCap, selTit, function() {
+        return lgm_selectall('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowplain", "PR", "Show Plain Results", function() {
+        lgm_show('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", function() {
+        lgm_show('gl-resultlink', 'gl-resultplain');
+    });
+
+    gm_createObj(ores, "div", "gl-resultplain");
+    gm_createObj(ores, "div", "gl-resultlink");
+
+    // document.body.appendChild(contlinks);
+    $("body").append(contlinks);
+    lgm_showhide(h_off);
+
+};
+
+/**
+ * The first action which should be excecuted in this script.
+ * Can be left empty.
+ */
+function lgm_addInitAction() {
+
+};
+/*
+This helper script bridges compatibility between the Greasemonkey 4 APIs and
+existing/legacy APIs.  Say for example your user script includes
+
+    // @grant GM_getValue
+
+And you'd like to be compatible with both Greasemonkey 3 and Greasemonkey 4
+(and for that matter all versions of Violentmonkey, Tampermonkey, and any other
+user script engine).  Add:
+
+    // @grant GM.getValue
+    // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+
+And switch to the new (GM-dot) APIs, which return promises.  If your script
+is running in an engine that does not provide the new asynchronous APIs, this
+helper will add them, based on the old APIs.
+
+If you use `await` at the top level, you'll need to wrap your script in an
+`async` function to be compatible with any user script engine besides
+Greasemonkey 4.
+
+    (async () => {
+    let x = await GM.getValue('x');
+    })();
+*/
+
+if (typeof GM == 'undefined') {
+  this.GM = {};
+}
+
+
+if (typeof GM_addStyle == 'undefined') {
+  this.GM_addStyle = (aCss) => {
+    'use strict';
+    let head = document.getElementsByTagName('head')[0];
+    if (head) {
+      let style = document.createElement('style');
+      style.setAttribute('type', 'text/css');
+      style.textContent = aCss;
+      head.appendChild(style);
+      return style;
+    }
+    return null;
+  };
+}
+
+
+if (typeof GM_registerMenuCommand == 'undefined') {
+  this.GM_registerMenuCommand = (caption, commandFunc, accessKey) => {
+    if (!document.body) {
+      if (document.readyState === 'loading'
+        && document.documentElement && document.documentElement.localName === 'html') {
+        new MutationObserver((mutations, observer) => {
+          if (document.body) {
+            observer.disconnect();
+            GM_registerMenuCommand(caption, commandFunc, accessKey);
+          }
+        }).observe(document.documentElement, {childList: true});
+      } else {
+        console.error('GM_registerMenuCommand got no body.');
+      }
+      return;
+    }
+    let contextMenu = document.body.getAttribute('contextmenu');
+    let menu = (contextMenu ? document.querySelector('menu#' + contextMenu) : null);
+    if (!menu) {
+      menu = document.createElement('menu');
+      menu.setAttribute('id', 'gm-registered-menu');
+      menu.setAttribute('type', 'context');
+      document.body.appendChild(menu);
+      document.body.setAttribute('contextmenu', 'gm-registered-menu');
+    }
+    let menuItem = document.createElement('menuitem');
+    menuItem.textContent = caption;
+    menuItem.addEventListener('click', commandFunc, true);
+    menu.appendChild(menuItem);
+  };
+}
+
+
+if (typeof GM_getResourceText == 'undefined') {
+  this.GM_getResourceText = (aRes) => {
+    'use strict';
+    return GM.getResourceUrl(aRes)
+      .then(url => fetch(url))
+      .then(resp => resp.text())
+      .catch(function(error) {
+        GM.log('Request failed', error);
+        return null;
+      });
+  };
+}
+
+
+Object.entries({
+  'log': console.log.bind(console),  // Pale Moon compatibility.  See #13.
+  'info': GM_info,
+}).forEach(([newKey, old]) => {
+  if (old && (typeof GM[newKey] == 'undefined')) {
+    GM[newKey] = old;
+  }
+});
+
+
+Object.entries({
+  'GM_addStyle': 'addStyle',
+  'GM_deleteValue': 'deleteValue',
+  'GM_getResourceURL': 'getResourceUrl',
+  'GM_getValue': 'getValue',
+  'GM_listValues': 'listValues',
+  'GM_notification': 'notification',
+  'GM_openInTab': 'openInTab',
+  'GM_registerMenuCommand': 'registerMenuCommand',
+  'GM_setClipboard': 'setClipboard',
+  'GM_setValue': 'setValue',
+  'GM_xmlhttpRequest': 'xmlHttpRequest',
+  'GM_getResourceText': 'getResourceText',
+}).forEach(([oldKey, newKey]) => {
+  let old = this[oldKey];
+  if (old && (typeof GM[newKey] == 'undefined')) {
+    GM[newKey] = function(...args) {
+      return new Promise((resolve, reject) => {
+        try {
+          resolve(old.apply(this, args));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    };
+  }
+});
 
 //
 // Global Code - END
@@ -2082,16 +2273,13 @@ const searchText_Desc = "enter your search\nSimple Wildcards = (?, *)\nRegular E
  */
 function lgmAddControlsGrabLinks() {
     gmAddClipboardSupport();
-
     // base layout
     glContainer = gmCreateObj(null, "div", "gl-container");
     glSearchDiv = gmCreateObj(glContainer, "div", "gl-searchbox");
     glActionDiv = gmCreateObj(glContainer, "div", "gl-actionbox");
     glResultDiv = gmCreateObj(glContainer, "div", "gl-resultbox");
     glFormTag = gmCreateObj(glSearchDiv, "form", "gl-searchform");
-
     gmSetAtI(glFormTag, "accept-charset", "utf-8");
-
     // search fields
     initFilter = gmFoundFilter(currSite, currPath);
     gmCreateInput(glFormTag, "text", "gl-searchtext", initFilter, searchText_Desc, null, null, function() {
@@ -2110,7 +2298,6 @@ function lgmAddControlsGrabLinks() {
         return lgmToggleSearchDesc('gl-sdesc');
     });
     gmCreateInput(glFormTag, "text", "gl-scount", "", "number of hits", 1, null, null, null);
-
     // copy fields
     var selCap = "SA";
     var selTit = "De-/Select All";
@@ -2130,11 +2317,9 @@ function lgmAddControlsGrabLinks() {
     gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
         lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
     });
-
     // result fields
     gmCreateObj(glResultDiv, "div", "gl-resultplain");
     gmCreateObj(glResultDiv, "div", "gl-resultlink");
-
     // init
     gmAddObj(glContainer, gmGetBody());
     lgmShowhide(RESULT_HIDE);
@@ -2143,16 +2328,12 @@ function lgmAddControlsGrabLinks() {
 
 /**
  * Shows the layer in param frontLayer and hides the layer in param behindLayer.
- *
- * @param frontLayer -
- *            the layer to put in front
- * @param behindLayer -
- *            the layer to put in the bakc
+ * @param frontLayer  - the layer to put in front
+ * @param behindLayer - the layer to put in the bakc
  */
 function lgmShow(frontLayer, behindLayer) {
     var oFrontLayer = gmGetStyle(frontLayer);
     var oBehindLayer = gmGetStyle(behindLayer);
-
     if (oFrontLayer && oBehindLayer) {
         var idxFront = gmGetAtI(oFrontLayer, "index");
         var idxBehind = gmGetAtI(oBehindLayer, "index");
@@ -2179,7 +2360,6 @@ function lgmShow(frontLayer, behindLayer) {
 
 /**
  * Switch the search mode.
- *
  * @param btnSearch - the button to read the current state from
  */
 function lgmToggleSearchDesc(btnSearch) {
@@ -2202,19 +2382,16 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
     var oContDiv = gmGetElI(contDiv);
     var oResultDiv = gmGetElI(resultDiv);
     var oBtnAction = gmGetElI(btnAction);
-
     if (oContDiv && oResultDiv) {
         var oContDivStyle = gmGetStyle(oContDiv);
         var oResultDivStyle = gmGetStyle(oResultDiv);
         var oResultPlainDivStyle = gmGetStyle(resultPlainDiv);
         var oResultLinkDivStyle = gmGetStyle(resultLinkDiv);
-
         var newContWidth = contWidthWide;
         var newResultWidth = resWidthWide;
         var newResultDivWidth = divWidthWide;
         var newDescWidth = descWidthSmall;
         var newBtnActionText = "S";
-
         var curValue = gmGetAtI(oContDivStyle, "width");
         if (curValue == contWidthWide) {
             newContWidth = contWidthSmall;
@@ -2223,7 +2400,6 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
             newDescWidth = descWidthWide;
             newBtnActionText = "W";
         }
-
         gmSetAtI(oContDivStyle, "width", newContWidth);
         gmSetAtI(oContDivStyle, "max-width", newContWidth);
         gmSetAtI(oResultDivStyle, "width", newResultWidth);
@@ -2241,9 +2417,7 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
 
 /**
  * Shows the complete layer with a default size or special size.
- *
- * @param bOnOff -
- *            a numeric height, on, off or null
+ * @param bOnOff - a numeric height, on, off or null
  * @returns {Boolean} always false
  * @see #RESULT_SHOW
  * @see #RESULT_HIDE
@@ -2259,7 +2433,6 @@ function lgmShowhide(bOnOff) {
     var oBtnShow = gmGetElI('gl-sshow');
     var oSearchCount = gmGetElI("gl-scount");
     var currHeight;
-
     if (bOnOff) {
         currHeight = bOnOff;
     } else {
@@ -2267,20 +2440,17 @@ function lgmShowhide(bOnOff) {
     }
     if (currHeight == RESULT_SHOW || currHeight == parseFloat(glContainerHeightMin)) {
         // if container should be shown or currently is at min size
-        //alert("will be maximize " + currHeight);
         currHeight = glContainerHeightMax;
         var searchCnt = gmGetAtI(oSearchCount, "value");
         //alert(searchCnt);
         if (isNaN(searchCnt)) {
             currHeight = glContainerHeightMaxAuto;
-//        } else {
- //           currHeight = glContainerHeightMin;
+        //} else {
+        //    currHeight = glContainerHeightMin;
         }
     } else {
-        //alert("will be mini" + currHeight);
         currHeight = glContainerHeightMin;
     }
-
     var buttonText = glBtnShowResultText;
     var buttonTextDesc = glBtnShowResultTextDesc;
     if (currHeight == glContainerHeightMin) {
@@ -2294,15 +2464,12 @@ function lgmShowhide(bOnOff) {
     gmSetAtI(oContStyle1, "height", currHeight);
     gmSetCoI(oBtnShow, buttonText);
     gmSetAtI(oBtnShow, "title", buttonTextDesc);
-
     return false;
 }
 
 /**
  * Clears any filter text and searchs again.
- *
- * @param searchField -
- *            the search input containing the text-filter
+ * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
 function lgmRemall(searchField) {
@@ -2316,6 +2483,7 @@ function lgmRemall(searchField) {
 }
 
 /**
+ * Selects the content of element A or B.
  * @param selElementA
  * @param selElementB
  * @returns {Boolean} always false
@@ -2324,7 +2492,6 @@ function lgmSelectall(selElementA, selElementB) {
     var selectedElem = null;
     var oSelElemA = gmGetElI(selElementA);
     var oSelElemAStyle = gmGetStyle(oSelElemA);
-
     if (oSelElemA != null && gmGetAtI(oSelElemAStyle, "visibility") == "visible") {
         selectedElem = oSelElemA;
     } else {
@@ -2334,7 +2501,6 @@ function lgmSelectall(selElementA, selElementB) {
             selectedElem = oSelElemB;
         }
     }
-
     if (selectedElem != null) {
         var bForce = false;
         if (gmIsClipboardSupported()) {
@@ -2356,9 +2522,7 @@ function lgmSelectall(selElementA, selElementB) {
 
 /**
  * Search for all matching URLs and shows them the result.
- *
- * @param a -
- *            the search input containing the text-filter
+ * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
 function lgmFilterURL(searchField) {
@@ -2374,7 +2538,6 @@ function lgmFilterURL(searchField) {
 
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
- *
  * @returns {Boolean} always false
  */
 function lgmShowLinks(searchText) {
@@ -2382,24 +2545,12 @@ function lgmShowLinks(searchText) {
         var oResultPlainDiv = gmGetElI("gl-resultplain");
         var oResultLinkDiv = gmGetElI("gl-resultlink");
         var oResultCount = gmGetElI("gl-scount");
-
         // search for all matching links in the page
         var arrFoundInPage = lgmShowLinksCreateSearchLinks(searchText);
-    //    var arrFoundInPage = new Array();
-    //    if (bTestMode) {
-    //        arrFoundInPage = gmGenTestEntries(40);
-    //    } else {
-    //        var sMode = gmGetAtI("gl-sdesc", "value");
-    //        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
-    //    }
-
         var arrLinksPlain = new Array();
         var arrLinksLink = new Array();
-
         //alert(arrFoundInPage.length);
         arrFoundInPage = gmSortArray(arrFoundInPage, null);
-    //    var tblrow = null;
-
         // now build the output
         for ( var i = 0; i < arrFoundInPage.length; i++) {
             if (i % 10 == 0) {
@@ -2407,47 +2558,22 @@ function lgmShowLinks(searchText) {
             }
             var currLink = arrFoundInPage[i][0];
             var currCaption = lgmShowLinksCreateCleanCaption(arrFoundInPage[i][1]);
-
-    //        var currCaption = trim(arrFoundInPage[i][1]);
-    //        if (currCaption != null) {
-    //            currCaption = currCaption.replace(/[\n\r]/g, '');
-    //            if (currCaption.indexOf("<") >= 0) {
-    //                currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
-    //            }
-    //        }
-    //        if (currCaption == null || currCaption == "" || currCaption == "#") {
-    //            currCaption = "n/a";
-    //        }
-
             // row for plain text
             var curPId = scriptID + "P" + i;
-//            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curPId);
-            lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption);
-    //        tblrow = gmCreateObj(null, "tr", null);
-    //        var plainlink = gmCreateObj(tblrow, "td", null);
-    //        gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    //        gmSetCoI(plainlink, currLink);
-    //        arrLinksPlain.push(tblrow);
-
+            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption,curPId);
             // row for htmllink
             var curLId = scriptID + "L" + i;
-            lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curLId);
-    //        var alink = gmCreateLink(null, scriptID + i, currLink, currCaption, currCaption, "_blank", null);
-    //        gmSetAtI(alink, FL_TAG, FL_ID);
-    //        arrLinksLink.push(alink);
+            lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curLId);
         }
-
         if (oResultPlainDiv) {
             lgmShowLinksAddPlain(oResultPlainDiv, arrLinksPlain);
             gmCreateObj(oResultPlainDiv, "br", null);
         }
-
         if (oResultLinkDiv) {
             arrLinksLink.sort();
             lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink);
             gmCreateObj(oResultLinkDiv, "br", null);
         }
-
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
         }
@@ -2484,17 +2610,28 @@ function lgmShowLinksCreateCleanCaption(currCaption) {
 }
 
 function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
-    // row for plain text
-//    var tblrow = gmCreateObj(null, "tr", null);
-//    var plainlink = gmCreateObj(tblrow, "td", null);
-    var plainlink = gmCreateObj(null, "span", null);
+    // row for table text
+    var tblrow = gmCreateObj(null, "tr", null);
+    var plainlink = gmCreateObj(tblrow, "td", null);
     gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
     gmSetCoI(plainlink, currLink);
-    arrLinksPlain.push(plainlink);
-    //arrLinksPlain.push(tblrow);
+    arrLinksPlain.push(tblrow);
 }
 
-function lgmShowLinksCreatePlainRow(arrLinksLink, currLink, currCaption, curId) {
+function lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curId) {
+    // row for plain text
+    var plainLink = gmCreateObj(null, "span", curId);
+	var plainText = currCaption + "\n[" + currLink + "]"
+	plainLink = gmCreateObjCommon(plainLink, currLink, plainText, null, 
+		function() { return lgmShowLinksSelEntry(this); },
+		null, null, null
+	);
+    //gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
+    //gmSetCoI(plainlink, currLink);
+    arrLinksPlain.push(plainLink);
+}
+
+function lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curId) {
     // row for htmllink
     var alink = gmCreateLink(null, curId, currLink, currCaption, currCaption, "_blank", null);
     gmSetAtI(alink, FL_TAG, FL_ID);
@@ -2517,6 +2654,230 @@ function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
     }
 }
 
+function lgmShowLinksSelEntry(oEntry) {
+  try {
+    gmSelectText(oEntry, false);
+  } catch (ex) {
+    alert(ex);
+  }
+}
+const CLR_BG = "#e0e0e0"; //"#CED8F6";
+const CLR_FRMS_BRD = "#808080"; //"#819FF7";
+const CLR_FRMS_BG = "#ffffff";
+const CLR_FRMS_TX = "#000000";
+const FRMS_HGT = "20px !important";
+const CLR_HOV = "#e0e0e0";
+const CLR_HOV_BG = "#A80000";
+const CLR_HOV2 = "#A80000";
+const CLR_HOV2_BG = "#ffffff";
+const CLR_FOC = "#FFFFCC";
+const SCRB_C1 = "#A00000"; //"#e0e0e0";
+const SCRB_C2 = CLR_FRMS_BRD;
+const FNT_FRMS = "Consolas"; //"Arial, Courier New";
+const FNT_FRMS_SZ = "10pt !important";
+
+const CSS_STYLE = `
+#gl-container
+{
+    position: fixed !important;
+    top: 0 !important;
+    right: 1px !important;
+    margin: 0;
+    padding: 0 2px;
+    text-align: left;
+    vertical-align: top;
+		display: block;
+    min-height: 1%;
+    max-height: 99%;
+    min-width: 225px;
+    max-width: 50%;
+		width: 225px;
+    overflow: hidden;
+    z-index: 2147483647;
+    color: `+CLR_FRMS_TX+`;
+    font-family: `+FNT_FRMS+`;
+    font-size: `+FNT_FRMS_SZ+`;
+    line-height: 15px;
+    white-space: nowrap;
+    scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
+    scrollbar-width: initial;
+    -moz-text-size-adjust: none;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: `+CLR_BG+`;
+    background-image: none;
+    background-origin: padding-box;
+    background-position: 0%;
+    background-repeat: repeat;
+    background-size: auto;
+}
+/* General Styles */
+#gl-container, #gl-container input, #gl-container button, #gl-container div, #gl-container a:hover
+{
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 0 none `+CLR_FRMS_BRD+`;
+    border-image-outset: 0;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 0;
+}
+#gl-container input, #gl-container button
+{
+    border: 2px solid `+CLR_FRMS_BRD+`;
+    color: `+CLR_FRMS_TX+`;
+    background-color: `+CLR_FRMS_BG+`;
+    font-family: `+FNT_FRMS+`;
+    font-size: `+FNT_FRMS_SZ+`;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    margin-right: 1px;
+    min-height: `+FRMS_HGT+`;
+    max-height: `+FRMS_HGT+`;
+    height: `+FRMS_HGT+`;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+#gl-container button
+{
+    padding: 0 3px;
+}
+#gl-container input:hover, #gl-container input:focus
+{
+    background-color: `+CLR_FOC+`;
+}
+#gl-container button:hover, #gl-container button:focus
+{
+    border-color: `+CLR_FRMS_BG+`;
+    color: `+CLR_HOV+`;
+    background-color: `+CLR_HOV_BG+`;
+}
+#gl-container a {
+    color: `+CLR_FRMS_TX+`;
+    font-family: `+FNT_FRMS+`;
+    background-color: `+CLR_FRMS_BG+`;
+		text-decoration: underline dotted `+CLR_FRMS_TX+`;
+    white-space: nowrap;
+}
+#gl-container a:hover {
+    color: `+CLR_HOV+`;
+    background-color: `+CLR_HOV_BG+`;
+		text-decoration: none transparent;
+}
+#gl-container #gl-searchbox, #gl-container #gl-actionbox, #gl-container #gl-resultbox
+{
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+		display: block;
+    padding: 0;
+    margin: 0;
+    border: transparent none 0;
+    white-space: nowrap;
+}
+#gl-container #gl-searchbox, #gl-container #gl-actionbox
+{
+    min-height: `+FRMS_HGT+`;
+    max-height: `+FRMS_HGT+`;
+    height: `+FRMS_HGT+`;
+}
+/* Search Box */
+#gl-container #gl-searchform input
+{
+    text-align: left;
+    padding: 0 3px;
+    min-height: `+FRMS_HGT+`;
+    max-height: `+FRMS_HGT+`;
+    height: `+FRMS_HGT+`;
+}
+#gl-container #gl-searchform #gl-searchtext
+{
+    min-width: 50px;
+    max-width: 115px;
+}
+#gl-container #gl-searchbox #gl-scount
+{
+    text-align: center;
+    background-color: `+CLR_BG+`;
+    min-width: 5px;
+    max-width: 25px;
+}
+/* Action Box */
+#gl-container #gl-actionbox #gl-awide
+{
+		margin-left: 6px;
+}
+/* Result Box */
+#gl-container #gl-resultbox
+{
+    min-height: 1%;
+    max-height: 99%;
+    min-width: 225px;
+    max-width: 225px;
+		width: 225px;
+    overflow: auto;
+}
+#gl-container #gl-resultbox #gl-resultplain, #gl-container #gl-resultbox #gl-resultlink
+{
+    position: absolute !important;
+    top: 1px !important;
+    left: 0 !important;
+    min-height: 1%;
+    max-height: 99%;
+    min-width: 225px;
+    max-width: 225px;
+		width: 225px;
+		height: 96%;
+    border: transparent none 0;
+    scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
+    scrollbar-width: initial;
+    overflow-y: auto;
+		overflow-x: auto;
+		padding: 2px;
+    color: `+CLR_FRMS_TX+`;
+    background-color: `+CLR_FRMS_BG+`;
+    white-space: nowrap;
+		display: block;
+}
+#gl-container #gl-resultbox #gl-resultplain
+{
+    visibility: visible;
+    z-index: 910;
+}
+#gl-container #gl-resultbox #gl-resultlink
+{
+    visibility:hidden;
+    z-index: 909;
+}
+#gl-container #gl-resultbox table, #gl-container #gl-resultbox tr, #gl-container #gl-resultbox td, #gl-container #gl-resultbox span
+{
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    color: `+CLR_FRMS_TX+`;
+    background-color: `+CLR_FRMS_BG+`;
+    font-family: `+FNT_FRMS+`;
+}
+#gl-container #gl-resultbox #gl-resultplain td, #gl-container #gl-resultbox #gl-resultplain span
+{
+    font-size: 9pt;
+    line-height: 10pt;
+}
+#gl-container #gl-resultbox #gl-resultplain td:hover, #gl-container #gl-resultbox #gl-resultplain span:hover
+{
+    background-color: `+CLR_HOV2+`;
+    background-color: `+CLR_HOV2_BG+`;
+}
+#gl-container #gl-resultbox #gl-resultlink a
+{
+    font-size: 10pt;
+    line-height:11pt;
+}
+`;
+
 //
 //GM-Script specific code - END
 //
@@ -2537,7 +2898,6 @@ function lgm_addKnownSites() {
  * Adds CSS-Styles for this script.
  * Can be left empty.
  */
-
 function lgm_addStyles() {
     GM_addStyle(CSS_STYLE);
     return true;
@@ -2560,3 +2920,8 @@ function lgm_addInitAction() {
 };
 
 gmInitEventHandler();
+
+//
+//GM-Script - END
+//
+

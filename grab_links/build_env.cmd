@@ -1,15 +1,12 @@
+set MODULE_NAME=grab_links
+set SRC_DIR=%~dp0\tpl
+set TARGET_NAME=%MODULE_NAME%.user.js
 
-REM set C1=%GM_COMMON%\%PRF%jquery.js
-set C1=%GM_COMMON%\%PRF%base-core.js
-set C2=%GM_COMMON%\%PRF%base-object.js
-set C3=%GM_COMMON%\%PRF%base-web.js
-set C4=%GM_COMMON%\%PRF%base-clipboard.js
+set DEPLOY_FOLDER=%MODULE_NAME%
+set DEPLOY_NAME=82191.user.js
 
-set P1=%PRF%grab_links.js
+set C1=%COMMON_DIR%\gm_base.user.js.RAW.js
+set C2=%TOOLS_DIR%\gm4-polyfill.user.js.RAW.js
 
-set gmname=grab_links.user.js
-set gmname2=82191.user.js
-set tpldir=%~dp0\tpl
-
-set tgtfolder=grab_links
-set tgtname=82191.user.js
+set P1=%FILE_PREFIX%%MODULE_NAME%.js
+set P2=%SRC_DIR%\gl-style.user.js

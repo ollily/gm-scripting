@@ -1,12 +1,3 @@
-
-//
-// Global Code - END
-//
-
-//
-// GM-Script specific code - START
-//
-
 /**
  * Adds site which should be known by this script.
  * Can be left empty.
@@ -84,7 +75,3 @@ function lgm_addControls() {
 function lgm_addInitAction() {
 
 };
-
-//
-// GM-Script specific code - END
-//

@@ -1,0 +1,9 @@
+set MODULE_NAME=gm4-polyfill
+set SRC_DIR=%~dp0\tpl
+set TARGET_NAME=%MODULE_NAME%.user.js
+
+
+set DEPLOY_FOLDER=%MODULE_NAME%
+set DEPLOY_NAME=
+
+set P1=%FILE_PREFIX%%MODULE_NAME%.js

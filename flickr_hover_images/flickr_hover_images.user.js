@@ -1212,71 +1212,44 @@ var FL_ID = "_FL";
 /**
  * Search for all matching links in the page.
  *
- * @param sea -
+ * @param searchPattern -
  *            the search pattern or leave "" to get all
  * @param withDesc -
  *            0 = search only in links, 1 = search also in link description
  * @returns {Array} an array with all found links
  */
-function gmFindLinksInPage(sea, withDesc) {
-    //
+function gmFindLinksInPage(searchPattern, withDesc) {
     if (withDesc == null) {
         withDesc = 0;
     }
     var pagelinks = new Array();
+    searchPattern = gmCreateSearchRegExp(searchPattern);
 
-    if (!sea || sea.length <= 0) {
-        sea = ".*";
-    } else if (sea.charAt(0) == "/" && sea.charAt(sea.length - 1) == "/") {
-        sea = sea.substring(1, sea.length);
-        sea = sea.substring(0, sea.length -1);
-    } else {
-        sea = sea.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
-    }
-    //alert(sea);
-    sea = new RegExp(sea, "i");
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
         var ne = 1;
-
-        //var searchText = curlink.href;
-        var searchText = new Array();
-        searchText.push(gmGetAtI(curlink, "href"));
-        if (withDesc != 0) {
-            searchText.push(gmGetAtI(curlink, "alt"));
-            searchText.push(gmGetAtI(curlink, "title"));
-            searchText.push(gmGetAtI(curlink, "onmouseover"));
-            searchText.push(gmGetAtI(curlink, "onclick"));
-            searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-        }
-        var found = gmFindLinksInPage0(searchText, sea);
+        var searchText = gmCreateSearchAttribute(curlink, withDesc);
+        var found = gmFindLinksInPage0(searchText, searchPattern);
 
         if (found) {
             if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
                 var htmllink = gmGetAtI(curlink, "href");
-
+                //alert(htmllink);
                 for (var j=0; j < pagelinks.length; j++) {
+                    //alert(pagelinks[j].join("|\n|"));
                     if (htmllink == pagelinks[j][0]) {
                         // link allready added, avoiding duplicates
                         ne = 0; break;
                     }
                 }
                 if (ne == 1) {
-
-                    var searchText = new Array();
-                    searchText.push(curlink.text);
-                    if (withDesc != 0) {
-                        searchText.push(gmGetAtI(curlink, "alt"));
-                        searchText.push(gmGetAtI(curlink, "title"));
-                        searchText.push(gmGetAtI(curlink, "onmouseover"));
-                        searchText.push(gmGetAtI(curlink, "onclick"));
-                        searchText.push(curlink.innerHTML);
-                    }
+                    var searchText = gmCreateSearchAttribute2(curlink, withDesc);
                     var htmltext = gmFindLinksInPage1(searchText);
-
                     //alert("L: "+htmllink + " T: " + htmltext);
                     var curlink = new Array(htmllink, htmltext);
                     pagelinks.push(curlink);
+                } else {
+                    //alert("== FL_ID");
                 }
             }
         }
@@ -1284,25 +1257,68 @@ function gmFindLinksInPage(sea, withDesc) {
     return pagelinks;
 }
 
+function gmCreateSearchAttribute(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(gmGetAtI(curlink, "href"));
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+    }
+    //alert(searchText.join("|\n|"));
+    return searchText;
+}
+
+function gmCreateSearchAttribute2(curlink, withDesc) {
+    var searchText = new Array();
+    searchText.push(curlink.text);
+    if (withDesc != 0) {
+        searchText.push(gmGetAtI(curlink, "title"));
+        searchText.push(gmGetAtI(curlink, "alt"));
+        searchText.push(gmGetAtI(curlink, "aria-label"));
+        searchText.push(gmGetAtI(curlink, "onmouseover"));
+        searchText.push(gmGetAtI(curlink, "onclick"));
+        searchText.push(curlink.innerHTML);
+    }
+    return searchText;
+}
+
+function gmCreateSearchRegExp(searchPattern) {
+    if (!searchPattern || searchPattern.length <= 0) {
+        searchPattern = ".*";
+    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+        searchPattern = searchPattern.substring(1, searchPattern.length);
+        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+    } else {
+        searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
+    }
+    //alert(searchPattern);
+    searchPattern = new RegExp(searchPattern, "i");
+    return searchPattern;
+}
+
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
  * @param arrText - an array texts to search in
- * @param sea - a search text (might be a regular expression)
+ * @param searchPattern - a search text (might be a regular expression)
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmFindLinksInPage0(arrText, sea) {
+function gmFindLinksInPage0(arrText, searchPattern) {
     var found = false;
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n"));
+        //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
-                found = searchText.search(sea) != -1;
+                found = searchText.search(searchPattern) != -1;
             } catch (e) {
                 // ignored
             }
-            //alert("i:" + i + " S:" + sea + " F:" + found + " T:" + searchText);
+            //alert("i:" + i + " S:" + searchPattern + " F:" + found + " T:" + searchText);
             if (found) {
                 break;
             }
@@ -1320,7 +1336,7 @@ function gmFindLinksInPage0(arrText, sea) {
 function gmFindLinksInPage1(arrText) {
     var searchTextClean = new Array("", "", "");
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n"));
+        //alert(arrText.join("\n----\n"));
         for (var idxST = 0; idxST < arrText.length; idxST++) {
             var aEle = arrText[idxST];
             if (aEle != null) {
@@ -1780,6 +1796,272 @@ function gmGetBodyHeight() {
 // ---------------
 // base-web.js - END
 // ---------------
+// ---------------
+// base-clipboard.js - START
+// ---------------
+
+/**
+ * @returns {Object} the reference to the base window, might be the greasemonkey
+ *          unsafeWindow
+ */
+function gmClipRef() {
+    var refWindow = window;
+    if (!refWindow && unsafeWindow != null) {
+        refWindow = unsafeWindow;
+    }
+    return refWindow;
+}
+
+/**
+ * @returns {Object} the reference to the the Security Manager or null
+ * @depricated since FF 16
+ */
+function gmPrivsManager() {
+    var privsMan = null;
+    var wdw = gmClipRef();
+    if (gmIsObject(wdw)) {
+        try {
+            if (gmIsObject(wdw.netscape.security.PrivilegeManager)) {
+                privsMan = wdw.netscape.security.PrivilegeManager;
+            }
+        } catch (e) {
+            // ignored
+        }
+    }
+    return privsMan;
+}
+
+/**
+ * Copies a text to clipboard.
+ *
+ * @param text -
+ *            the text to copy to the clipboard
+ * @param bQuite -
+ *            don't schow any alerts
+ * @param refWindow -
+ *            a reference on the page (optional)
+ * @returns {Boolean} text = if set to clipboard, else null
+ */
+function gmCopy2clipboard(text, bQuite, refWindow) {
+
+    var resultText = text;
+    wdw = gmClipRef();
+    if (wdw.clipboardData) {
+        wdw.clipboardData.setData('text', text);
+        return resultText;
+    } else {
+        try {
+            wdw.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        } catch (ex) {
+            if (!bQuite) {
+                alert("Internet Security settings do not allow copying to clipboard!");
+            }
+            return null;
+        }
+
+        try {
+            e = wdw.Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(wdw.Components.interfaces.nsIClipboard);
+            if (!e)
+                return null;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("1:" + ex);
+            }
+            return null;
+        }
+
+        try {
+            b = wdw.Components.classes['@mozilla.org/widget/transferable;1']
+                    .createInstance(wdw.Components.interfaces.nsITransferable);
+            if (!b)
+                return null;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("2:" + ex);
+            }
+            return null;
+        }
+
+        b.addDataFlavor("text/unicode");
+        try {
+            o = wdw.Components.classes['@mozilla.org/supports-string;1']
+                    .createInstance(wdw.Components.interfaces.nsISupportsString);
+            if (!o)
+                return null;
+            o.data = text;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("3:" + ex);
+            }
+            return null;
+        }
+
+        b.setTransferData("text/unicode", o, (text == null ? 0 : text.length * 2));
+
+        try {
+            t = wdw.Components.interfaces.nsIClipboard;
+        } catch (ex) {
+            if (!bQuite) {
+                alert("4:" + ex);
+            }
+            return null;
+        }
+        e.setData(b, null, t.kGlobalClipboard);
+        return text;
+    }
+    if (!bQuite) {
+        alert('Copy doesn\'t work!');
+    }
+    return null;
+}
+
+/**
+ * <p) Same as {@link #gmCopy2clipboard(text, bQuite, refWindow)}, but
+ * customized only for use in a webpage.
+ * </p>
+ * <p>
+ * Not usable for a greasemonkey script
+ * </p>
+ *
+ * @param text -
+ *            the text to copy to the clipboard
+ */
+function copyPostToClipboard(text) {
+    var clipboard = null, transferable = null, clipboardID = null;
+    try {
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+    } catch (e) {
+        alert(e);
+    }
+    try {
+        clipboard = Components.classes["@mozilla.org/widget/clipboard;1"].createInstance(Components.interfaces.nsIClipboard);
+    } catch (e) {
+        alert(e);
+    }
+    try {
+        transferable = Components.classes["@mozilla.org/widget/transferable;1"]
+                .createInstance(Components.interfaces.nsITransferable);
+    } catch (e) {
+        alert(e);
+    }
+    if (transferable) {
+        transferable.addDataFlavor("text/unicode");
+        var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+        str.data = text;
+        transferable.setTransferData("text/unicode", str, str.data.length * 2);
+        try {
+            clipboardID = Components.interfaces.nsIClipboard;
+        } catch (e) {
+            alert(e);
+        }
+        clipboard.setData(transferable, null, clipboardID.kGlobalClipboard);
+    }
+}
+
+/**
+ * Adds the functions for using a "copy to clipboard" in a web-page.
+ */
+function gmAddClipboardSupport() {
+    gmAddScriptGlobal(new Array(gmClipRef, gmCopy2clipboard, gmIsClipboardSupported));
+}
+
+/**
+ * @returns {Boolean} TRUE=using clipboard is supported, else FALSE
+ */
+function gmIsClipboardSupported() {
+    var isOK = false;
+    try {
+        privsMan = gmPrivsManager();
+        if (gmIsObject(privsMan)) {
+            privsMan.enablePrivilege("UniversalXPConnect");
+            isOK = true;
+        }
+    } catch (ex) {
+        alert("ERR: " + ex);
+    }
+    return isOK;
+}
+
+// ---------------
+// base-clipboard.js - END
+// ---------------
+/**
+ * Adds site which should be known by this script.
+ * Can be left empty.
+ */
+function lgm_addKnownSites() {
+
+};
+
+/**
+ * Adds CSS-Styles for this script.
+ * Can be left empty.
+ */
+function lgm_addStyles() {
+
+};
+
+/**
+ * Adds HTML-Objects for this script.
+ * Can be left empty.
+ */
+function lgm_addControls() {
+    gm_addClipboardSupport();
+    contlinks = gm_createObj(null, "div", "gl-container");
+    odiv = gm_createObj(contlinks, "div", "gl-searchbox");
+    oact = gm_createObj(contlinks, "div", "gl-actionbox");
+    ores = gm_createObj(contlinks, "div", "gl-resultbox");
+    oform = gm_createObj(odiv, "form", "gl-searchform");
+
+    initFilter = gm_foundFilter(currSite, currPath);
+
+    gm_createInput(oform, "text", "gl-searchtext", initFilter, "enter your search (you may use regular expression)", null, null,
+            function() {
+                return gm_selectInput(this);
+            });
+    gm_createButton(oform, "submit", "gl-sstart", "S", "start search", function() {
+        return lgm_filterURL('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sreset", "R", "clear search", function() {
+        return lgm_remall('#gl-searchtext');
+    });
+    gm_createButton(oform, "button", "gl-sshow", "\\/", "show/hide result", function() {
+        return lgm_showhide();
+    });
+    gm_createInput(oform, "text", "gl-scount", null, "number of hits", 1, null, null, null);
+
+    var selCap = "SA";
+    var selTit = "De-/Select All";
+    if (gm_isClipboardSupported()) {
+        selCap = "CA";
+        selTit = "Select & Copy All";
+    }
+    gm_createButton(oact, "button", "gl-aselect", selCap, selTit, function() {
+        return lgm_selectall('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowplain", "PR", "Show Plain Results", function() {
+        lgm_show('gl-resultplain', 'gl-resultlink');
+    });
+    gm_createButton(oact, "button", "gl-ashowlink", "RL", "Show Results as Link", function() {
+        lgm_show('gl-resultlink', 'gl-resultplain');
+    });
+
+    gm_createObj(ores, "div", "gl-resultplain");
+    gm_createObj(ores, "div", "gl-resultlink");
+
+    // document.body.appendChild(contlinks);
+    $("body").append(contlinks);
+    lgm_showhide(h_off);
+
+};
+
+/**
+ * The first action which should be excecuted in this script.
+ * Can be left empty.
+ */
+function lgm_addInitAction() {
+
+};
 
 //
 // Global Code - END
@@ -2135,3 +2417,8 @@ function lgm_addInitAction() {
 //);
 
 gmInitEventHandler();
+
+//
+//GM-Script - END
+//
+

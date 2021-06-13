@@ -392,10 +392,15 @@ function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
 
 function lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curId) {
     // row for plain text
-    var plainlink = gmCreateObj(null, "span", curId);
-    gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    gmSetCoI(plainlink, currLink);
-    arrLinksPlain.push(plainlink);
+    var plainLink = gmCreateObj(null, "span", curId);
+	var plainText = currCaption + "\n[" + currLink + "]"
+	plainLink = gmCreateObjCommon(plainLink, currLink, plainText, null, 
+		function() { return lgmShowLinksSelEntry(this); },
+		null, null, null
+	);
+    //gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
+    //gmSetCoI(plainlink, currLink);
+    arrLinksPlain.push(plainLink);
 }
 
 function lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curId) {
@@ -419,4 +424,12 @@ function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
         gmAddObj(arrLinksLink[idxLinks], oResultLinkDiv);
         gmCreateObj(oResultLinkDiv, "br", null);
     }
+}
+
+function lgmShowLinksSelEntry(oEntry) {
+  try {
+    gmSelectText(oEntry, false);
+  } catch (ex) {
+    alert(ex);
+  }
 }

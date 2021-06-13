@@ -1,12 +1,10 @@
+set MODULE_NAME=xing_hover_images
+set SRC_DIR=%~dp0\tpl
+set TARGET_NAME=%MODULE_NAME%.user.js
 
-set P1=%GM_COMMON%\%PRF%base-core.js
-set P2=%GM_COMMON%\%PRF%base-object.js
-set P3=%GM_COMMON%\%PRF%base-web.js
-set P5=%PRF%xing_hover_images.js
+set DEPLOY_FOLDER=%MODULE_NAME%
+set DEPLOY_NAME=86396.user.js
 
-set gmname=xing_hover_images.user.js
-set gmname2=86396.user.js
-set tpldir=%~dp0\tpl
+set C1=%COMMON_DIR%\gm_base.user.js.RAW.js
 
-set tgtfolder=xing_hover_images
-set tgtname=86396.user.js
+set P1=%FILE_PREFIX%%MODULE_NAME%.js

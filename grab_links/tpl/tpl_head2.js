@@ -1,5 +1,3 @@
-// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @require         http://share.glowa.eu/og/gm/gl_style.user.js
 // @grant           unsafeWindow
 // @grant           GM_addStyle
 // @grant           GM.addStyle

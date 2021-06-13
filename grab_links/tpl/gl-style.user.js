@@ -6,6 +6,7 @@ const FRMS_HGT = "20px !important";
 const CLR_HOV = "#e0e0e0";
 const CLR_HOV_BG = "#A80000";
 const CLR_HOV2 = "#A80000";
+const CLR_HOV2_BG = "#ffffff";
 const CLR_FOC = "#FFFFCC";
 const SCRB_C1 = "#A00000"; //"#e0e0e0";
 const SCRB_C2 = CLR_FRMS_BRD;
@@ -93,6 +94,7 @@ const CSS_STYLE = `
 }
 #gl-container a {
     color: `+CLR_FRMS_TX+`;
+    font-family: `+FNT_FRMS+`;
     background-color: `+CLR_FRMS_BG+`;
 		text-decoration: underline dotted `+CLR_FRMS_TX+`;
     white-space: nowrap;
@@ -187,7 +189,7 @@ const CSS_STYLE = `
     visibility:hidden;
     z-index: 909;
 }
-#gl-container #gl-resultbox table, #gl-container #gl-resultbox tr, #gl-container #gl-resultbox td
+#gl-container #gl-resultbox table, #gl-container #gl-resultbox tr, #gl-container #gl-resultbox td, #gl-container #gl-resultbox span
 {
     margin: 0;
     padding: 0;
@@ -196,23 +198,19 @@ const CSS_STYLE = `
     background-color: `+CLR_FRMS_BG+`;
     font-family: `+FNT_FRMS+`;
 }
-#gl-container #gl-resultbox #gl-resultplain td
+#gl-container #gl-resultbox #gl-resultplain td, #gl-container #gl-resultbox #gl-resultplain span
 {
     font-size: 9pt;
-    line-height: 100%;
+    line-height: 10pt;
 }
-#gl-container #gl-resultbox #gl-resultplain td:hover
+#gl-container #gl-resultbox #gl-resultplain td:hover, #gl-container #gl-resultbox #gl-resultplain span:hover
 {
-    color: `+CLR_HOV2+`;
+    background-color: `+CLR_HOV2+`;
+    background-color: `+CLR_HOV2_BG+`;
 }
 #gl-container #gl-resultbox #gl-resultlink a
 {
     font-size: 10pt;
-    line-height:120%;
-}
-#gl-container #gl-actionbo, #gl-container #gl-resultbo, #gl-container #gl-searchbo
-{
-    visibility: hidden !important;
-    display: none !important;
+    line-height:11pt;
 }
 `;

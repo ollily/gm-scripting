@@ -2417,8 +2417,3 @@ function lgm_addInitAction() {
 //);
 
 gmInitEventHandler();
-
-//
-//GM-Script - END
-//
-

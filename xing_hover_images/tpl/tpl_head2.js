@@ -46,8 +46,3 @@ Changes:
 Known Bugs:
 - search result, does not display the large preview
  */
-
-//
-// Global Code - START
-//
-

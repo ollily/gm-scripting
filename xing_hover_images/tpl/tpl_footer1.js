@@ -53,7 +53,3 @@ function lgm_addControls() {
 function lgm_addInitAction() {
     lgm_initScript(null);
 };
-
-//
-// GM-Script specific code - END
-//

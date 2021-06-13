@@ -1,14 +1,11 @@
+set MODULE_NAME=flickr_hover_images
+set SRC_DIR=%~dp0\tpl
+set TARGET_NAME=%MODULE_NAME%.user.js
 
-set C1=%GM_COMMON%\%PRF%jquery.js
-set C2=%GM_COMMON%\%PRF%base-core.js
-set C3=%GM_COMMON%\%PRF%base-object.js
-set C4=%GM_COMMON%\%PRF%base-web.js
+set DEPLOY_FOLDER=%MODULE_NAME%
+set DEPLOY_NAME=87112.user.js
 
-set P1=%PRF%flickr_hover_images.js
+set C1=%COMMON_DIR%\..\gm_tools\%SRC_BASE_NAME%\%FILE_PREFIX%jquery.js
+set C2=%COMMON_DIR%\gm_base.user.js.RAW.js
 
-set gmname=flickr_hover_images.user.js
-set gmname2=87112.user.js
-set tpldir=%~dp0\tpl
-
-set tgtfolder=flickr_hover_images
-set tgtname=87112.user.js
+set P1=%FILE_PREFIX%%MODULE_NAME%.js
