@@ -1,25 +1,27 @@
 // ==UserScript==
 // @name            Grab Links
-// @name:en         Grab Links
-// @name:de         Links Schnapper
 // @fullname        Grab Links
-// @description     Lists all links on a page for clipboard copy
-// @description:en  Lists all links on a page for clipboard copy
-// @description:de  Listet alle links in einer Seite, zum Kopieren, auf.
-// @namespace       http://userscripts.org/users/ollily
+// @description     Lists all links from one webpage, so you can copy them easily.
+// @name:en         Grab Links
+// @fullname:en     Grab Links
+// @description:en  Lists all links from one webpage, so you can copy them easily.
+// @name:de         Link Schnapper
+// @fullname:de     Link Schnapper
+// @description:de  Alle Links einer Webseite werden aufgelistet und du kannst sie einfach kopieren.
 // @author          ollily2907
-// @icon			https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/resource/gl_logo.png
-// @compatible      chrome
-// @compatible      firefox
-// @homepageURL		https://github.com/ollily/gm-scripting
-// @supportURL		https://github.com/ollily/gm-scripting
-// @source          https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
-// @installURL      https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
-// @downloadURL     https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
-// @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
-// @run-at          document-end
 // @license         Apache License, Version 2.0
 // @license         https://www.apache.org/licenses/LICENSE-2.0.txt
+// @homepageURL     https://github.com/ollily/gm-scripting
+// @supportURL      https://github.com/ollily/gm-scripting
+// @downloadURL     https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @installURL      https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @source          https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @icon            https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/resource/gl_logo.png
+// @compatible      chrome
+// @compatible      firefox
+// @namespace       http://userscripts.org/users/ollily
+// @run-at          document-end
 // @version         2.02.000
 // @grant           unsafeWindow
 // @grant           GM_addStyle
@@ -2668,8 +2670,8 @@ const CLR_FRMS_TX = "#000000";
 const FRMS_HGT = "20px !important";
 const CLR_HOV = "#e0e0e0";
 const CLR_HOV_BG = "#A80000";
-const CLR_HOV2 = "#A80000";
-const CLR_HOV2_BG = "#ffffff";
+const CLR_HOV2 = "#ffffff";
+const CLR_HOV2_BG = "#A80000";
 const CLR_FOC = "#FFFFCC";
 const SCRB_C1 = "#A00000"; //"#e0e0e0";
 const SCRB_C2 = CLR_FRMS_BRD;
@@ -2686,12 +2688,12 @@ const CSS_STYLE = `
     padding: 0 2px;
     text-align: left;
     vertical-align: top;
-		display: block;
+    display: block;
     min-height: 1%;
     max-height: 99%;
     min-width: 225px;
     max-width: 50%;
-		width: 225px;
+    width: 225px;
     overflow: hidden;
     z-index: 2147483647;
     color: `+CLR_FRMS_TX+`;
@@ -2759,20 +2761,20 @@ const CSS_STYLE = `
     color: `+CLR_FRMS_TX+`;
     font-family: `+FNT_FRMS+`;
     background-color: `+CLR_FRMS_BG+`;
-		text-decoration: underline dotted `+CLR_FRMS_TX+`;
+    text-decoration: underline dotted `+CLR_FRMS_TX+`;
     white-space: nowrap;
 }
 #gl-container a:hover {
     color: `+CLR_HOV+`;
     background-color: `+CLR_HOV_BG+`;
-		text-decoration: none transparent;
+    text-decoration: none transparent;
 }
 #gl-container #gl-searchbox, #gl-container #gl-actionbox, #gl-container #gl-resultbox
 {
     position: relative !important;
     top: 0 !important;
     left: 0 !important;
-		display: block;
+    display: block;
     padding: 0;
     margin: 0;
     border: transparent none 0;
@@ -2808,7 +2810,7 @@ const CSS_STYLE = `
 /* Action Box */
 #gl-container #gl-actionbox #gl-awide
 {
-		margin-left: 6px;
+    margin-left: 6px;
 }
 /* Result Box */
 #gl-container #gl-resultbox
@@ -2817,7 +2819,7 @@ const CSS_STYLE = `
     max-height: 99%;
     min-width: 225px;
     max-width: 225px;
-		width: 225px;
+    width: 225px;
     overflow: auto;
 }
 #gl-container #gl-resultbox #gl-resultplain, #gl-container #gl-resultbox #gl-resultlink
@@ -2829,18 +2831,18 @@ const CSS_STYLE = `
     max-height: 99%;
     min-width: 225px;
     max-width: 225px;
-		width: 225px;
-		height: 96%;
+    width: 225px;
+    height: 96%;
     border: transparent none 0;
     scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
     scrollbar-width: initial;
     overflow-y: auto;
-		overflow-x: auto;
-		padding: 2px;
+    overflow-x: auto;
+    padding: 2px;
     color: `+CLR_FRMS_TX+`;
     background-color: `+CLR_FRMS_BG+`;
     white-space: nowrap;
-		display: block;
+    display: block;
 }
 #gl-container #gl-resultbox #gl-resultplain
 {
@@ -2868,7 +2870,7 @@ const CSS_STYLE = `
 }
 #gl-container #gl-resultbox #gl-resultplain td:hover, #gl-container #gl-resultbox #gl-resultplain span:hover
 {
-    background-color: `+CLR_HOV2+`;
+    color: `+CLR_HOV2+`;
     background-color: `+CLR_HOV2_BG+`;
 }
 #gl-container #gl-resultbox #gl-resultlink a
