@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Test gm_base.user.js</title>
-<script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <title>Test gm_base.user.js</title>
+    <script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
 </head>
 <body>
 <div id="divid1" title="tit1-0"></div>
@@ -59,6 +59,7 @@ function lgm_addControls() {
 function lgm_addInitAction() {
 
 };
+
 </script>
 
 <script type="text/javascript">
@@ -211,7 +212,7 @@ if (false == gmIsArray(null)) {} else alert("gmIsArray-00");
 if (false == gmIsArray(0)) {} else alert("gmIsArray-01");
 if (false == gmIsArray(new String("h"))) {} else alert("gmIsArray-02");
 if (false == gmIsArray("HHH")) {} else alert("gmIsArray-03");
-if (true == gmIsArray(new Array())) {} else alert("gmIsArray-04");
+if (true == gmIsArray([])) {} else alert("gmIsArray-04");
 
 
 /* ------- */
@@ -220,7 +221,7 @@ if (false == gmIsObject(0)) {} else alert("gmIsObject-01");
 if (true == gmIsObject(new Object())) {} else alert("gmIsObject-02");
 if (true == gmIsObject(new String("h"))) {} else alert("gmIsObject-03");
 if (false == gmIsObject("HHH")) {} else alert("gmIsObject-04");
-if (true == gmIsObject(new Array())) {} else alert("gmIsObject-05");
+if (true == gmIsObject([])) {} else alert("gmIsObject-05");
 
 
 /* ------- */
@@ -229,7 +230,7 @@ if (false == gmIsInstanceOf(0)) {} else alert("gmIsInstanceOf-01");
 if (true == gmIsInstanceOf(new Object())) {} else alert("gmIsInstanceOf-02");
 if (false == gmIsInstanceOf(new String("h"))) {} else alert("gmIsInstanceOf-03");
 if (false == gmIsInstanceOf("HHH")) {} else alert("gmIsInstanceOf-04");
-if (false == gmIsInstanceOf(new Array())) {} else alert("gmIsInstanceOf-05");
+if (false == gmIsInstanceOf([])) {} else alert("gmIsInstanceOf-05");
 
 if (false == gmIsInstanceOf(null, "Object")) {} else alert("gmIsInstanceOf-10");
 if (false == gmIsInstanceOf(0, "Object")) {} else alert("gmIsInstanceOf-11");
@@ -239,7 +240,7 @@ if (false == gmIsInstanceOf(new Object(), "object")) {} else alert("gmIsInstance
 if (false == gmIsInstanceOf(null, "null")) {} else alert("gmIsInstanceOf-20");
 if (true == gmIsInstanceOf(0, "Number")) {} else alert("gmIsInstanceOf-21");
 if (true == gmIsInstanceOf("HHH", "String")) {} else alert("gmIsInstanceOf-22");
-if (true == gmIsInstanceOf(new Array(), "Array")) {} else alert("gmIsInstanceOf-23");
+if (true == gmIsInstanceOf([], "Array")) {} else alert("gmIsInstanceOf-23");
 if (false == gmIsInstanceOf(0, "String")) {} else alert("gmIsInstanceOf-24");
 if (false == gmIsInstanceOf("HHH", "Number")) {} else alert("gmIsInstanceOf-25");
 
@@ -322,6 +323,7 @@ if (uarr.toString() == gmSortArray(uarr, false).toString()) {} else alert("gmSor
 if (true == gmAddHandler()) {} else alert("gmAddHandler-00");
 if (true == gmAddHandler("")) {} else alert("gmAddHandler-01");
 if (true == gmAddHandler(new Object())) {} else alert("gmAddHandler-02");
+
 
 </script>
 </body>

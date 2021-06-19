@@ -96,7 +96,7 @@
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 var currHost = document.location.host;
 var currPort = document.location.port;
 
@@ -525,6 +525,9 @@ function gmIsFunction(obj) {
     return gmIsInstanceOf(obj, Function);
 }
 
+function gmIsUndefined(obj) {
+    return (obj == null ? true : (typeof obj == "undefined"));
+}
 /**
  * Verifies if an instance is an object.
  *
@@ -613,6 +616,14 @@ function trim(a) {
     return ltrim(rtrim(a));
 }
 
+function gmCleanText(dirtyText) {
+    var cleanText = "";
+    if (gmIsInstanceOf(dirtyText, String)) {
+        cleanText = dirtyText.replace(/\s\s/g, "").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/#/g, "");
+    }
+    return cleanText;
+}
+
 /**
  * Extracts a numeric value from a text. Supports only "full" numbers;
  *
@@ -642,24 +653,59 @@ function gmToNo(a) {
     return newNum;
 }
 
+const SORT_NO  = 0;
+const SORT_DEF = 1;
+const SORT_REV = 2;
+const SORT_NUM = 3;
 /**
  * Sorts an array by a specific sort order (alphanumeric).
  *
- * @param unsortedArray -
- *            the aray which should be sorted
- * @param sortmode -
- *            the sort order or leave null to ignore sorting
+ * @param unsortedArray - the aray which should be sorted
+ * @param sortMode      - the sort order or leave null to ignore sorting
  * @returns {Array} the sorted array
  */
-function gmSortArray(unsortedArray, sortmode) {
+function gmSortArray(unsortedArray, sortMode) {
     var sortedArray = unsortedArray;
-    if (sortmode == null) {
-        sortmode = false;
+    if (sortMode == null) {
+        sortMode = false;
     }
-    if (sortmode) {
+    if (sortMode == SORT_NUM) {
+        sortedArray.sort(function(aE, bE){
+            return aE - bE;
+        });
+    } else if (sortMode == SORT_REV) {
+        sortedArray.reverse();
+    } else if (sortMode || sortMode == SORT_DEF) {
         sortedArray.sort();
     }
     return sortedArray;
+}
+
+function gmSortObject(unsortedObjects, sortField) {
+    try {
+        if (gmIsArray(unsortedObjects)) {
+            unsortedObjects.sort(function(aElem, bElem) {
+              var x = aElem[sortField].toLowerCase();
+              var y = bElem[sortField].toLowerCase();
+              if (x < y) {return -1;}
+              if (x > y) {return 1;}
+              return 0;
+            }
+        )};
+    } catch (ex) {
+        alert(ex);
+    }
+    return unsortedObjects;
+}
+
+function gmOnlyUnique(arrArray) {
+    var arrUnique = [];
+    if (gmIsArray(arrArray)) {
+        arrUnique = arrArray.filter(function (value, index, self) {
+          return self.indexOf(value) === index;
+        });
+    }
+    return arrUnique;
 }
 
 /**
@@ -749,9 +795,11 @@ function gmCreateObj(par, objtyp, id) {
  *			  a javascript-call for the mouseover-event
  * @param ev_mOut -
  *			  a javascript-call for the mouseout-event
+ * @param ev_dblClick -
+ *			  a javascript-call for the doubleclick-event
  * @returns {Object} the object with added attributes FIXME: Check
  */
-function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut) {
+function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut, ev_dblClick) {
     if (obj) {
         // obj.attr("title", tit);
         gmSetAtI(obj, "title", tit);
@@ -766,6 +814,10 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, 
         if (ev_click) {
             // obj.click(ev_click);
             obj.onclick = ev_click;
+        };
+        if (ev_dblClick) {
+            // obj.click(ev_dblClick);
+            obj.ondblclick = ev_dblClick;
         };
         if (ev_focus) {
             // obj.focus(ev_focus);
@@ -804,7 +856,7 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, 
  */
 function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
     var obj = gmCreateObj(par, "button", id);
-    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click);
     if (!typ) {
         typ = "button";
     }
@@ -828,13 +880,16 @@ function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
  *            a W3C-conform title for that DOM
  * @param ev_click -
  *            a javascript-call for the click-event
+ * @param ev_dblClick -
+ *			  a javascript-call for the doubleclick-event
  * @returns {Object} the created DOM-Link
  */
-function gmCreateLink(par, id, href, caption, tit, target, ev_click) {
+function gmCreateLink(par, id, href, caption, tit, target, ev_click, ev_dblClick) {
     var obj = gmCreateObj(par, "a", id);
-    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null, null, null, ev_dblClick);
     if (href) {
         gmSetAtI(obj, "href", href);
+        gmSetAtI(obj, "data-href", href);
     }
     if (target) {
         gmSetAtI(obj, "target", target);
@@ -1231,87 +1286,54 @@ function gmFoundFilter2(site) {
     return retFilter;
 }
 
-var FL_TAG = "fltag";
+var FL_TAG = "result-list";
 var FL_ID = "_FL";
 
-/**
- * Search for all matching links in the page.
- *
- * @param searchPattern -
- *            the search pattern or leave "" to get all
- * @param withDesc -
- *            0 = search only in links, 1 = search also in link description
- * @returns {Array} an array with all found links
- */
-function gmFindLinksInPage(searchPattern, withDesc) {
-    if (withDesc == null) {
-        withDesc = 0;
+function gmPrepareLinkData(curlink, withDesc) {
+    var linkData = [];
+    linkData.push(gmGetAtI(curlink, "href"));
+    if (withDesc != 0) {
+        linkData.push(gmGetAtI(curlink, "title"));
+        linkData.push(gmGetAtI(curlink, "aria-label"));
+        linkData.push(gmGetAtI(curlink, "alt"));
+        linkData.push(gmGetAtI(curlink, "onmouseover"));
+        linkData.push(gmGetAtI(curlink, "onclick"));
+        linkData.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
     }
-    var pagelinks = new Array();
-    searchPattern = gmCreateSearchRegExp(searchPattern);
+    return linkData;
+}
 
-    for (var i=0; i < document.links.length; i++) {
-        var curlink = document.links[i];
-        var ne = 1;
-        var searchText = gmCreateSearchAttribute(curlink, withDesc);
-        var found = gmFindLinksInPage0(searchText, searchPattern);
-
-        if (found) {
-            if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
-                var htmllink = gmGetAtI(curlink, "href");
-                //alert(htmllink);
-                for (var j=0; j < pagelinks.length; j++) {
-                    //alert(pagelinks[j].join("|\n|"));
-                    if (htmllink == pagelinks[j][0]) {
-                        // link allready added, avoiding duplicates
-                        ne = 0; break;
-                    }
-                }
-                if (ne == 1) {
-                    var searchText = gmCreateSearchAttribute2(curlink, withDesc);
-                    var htmltext = gmFindLinksInPage1(searchText);
-                    //alert("L: "+htmllink + " T: " + htmltext);
-                    var curlink = new Array(htmllink, htmltext);
-                    pagelinks.push(curlink);
+function gmPrepareLinkTextData(curlink, withDesc) {
+    var linkTextData = [];
+    try {
+        var tmpTextData = [];
+        tmpTextData.push(curlink.text);
+        if (withDesc != 0) {
+            tmpTextData.push(gmGetAtI(curlink, "title"));
+            tmpTextData.push(gmGetAtI(curlink, "alt"));
+            tmpTextData.push(gmGetAtI(curlink, "aria-label"));
+            tmpTextData.push(gmGetAtI(curlink, "onmouseover"));
+            tmpTextData.push(gmGetAtI(curlink, "onclick"));
+            tmpTextData.push(curlink.innerHTML);
+            linkTextData = tmpTextData.map(function (value) {
+              	if (gmIsUndefined(value)) {
+                  return "";
+                } else if (gmIsObject(value)) {
+                    return value.toString();
+                } else if (gmIsInstanceOf(value, String)) {
+                	return gmCleanText(value);
                 } else {
-                    //alert("== FL_ID");
+                    return value;
                 }
-            }
+            });
         }
+    } catch (ex) {
+        alert(ex);
     }
-    return pagelinks;
+    return linkTextData;
 }
 
-function gmCreateSearchAttribute(curlink, withDesc) {
-    var searchText = new Array();
-    searchText.push(gmGetAtI(curlink, "href"));
-    if (withDesc != 0) {
-        searchText.push(gmGetAtI(curlink, "title"));
-        searchText.push(gmGetAtI(curlink, "aria-label"));
-        searchText.push(gmGetAtI(curlink, "alt"));
-        searchText.push(gmGetAtI(curlink, "onmouseover"));
-        searchText.push(gmGetAtI(curlink, "onclick"));
-        searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
-    }
-    //alert(searchText.join("|\n|"));
-    return searchText;
-}
-
-function gmCreateSearchAttribute2(curlink, withDesc) {
-    var searchText = new Array();
-    searchText.push(curlink.text);
-    if (withDesc != 0) {
-        searchText.push(gmGetAtI(curlink, "title"));
-        searchText.push(gmGetAtI(curlink, "alt"));
-        searchText.push(gmGetAtI(curlink, "aria-label"));
-        searchText.push(gmGetAtI(curlink, "onmouseover"));
-        searchText.push(gmGetAtI(curlink, "onclick"));
-        searchText.push(curlink.innerHTML);
-    }
-    return searchText;
-}
-
-function gmCreateSearchRegExp(searchPattern) {
+function gmPrepareSearchRegExp(searchPattern) {
     if (!searchPattern || searchPattern.length <= 0) {
         searchPattern = ".*";
     } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
@@ -1325,6 +1347,55 @@ function gmCreateSearchRegExp(searchPattern) {
     return searchPattern;
 }
 
+
+/**
+ * Search for all matching links in the page.
+ *
+ * @param searchPattern - the search pattern or leave "" to get all
+ * @param withDesc      - 0 = search only in links,
+ *                        1 = search also in link description
+ * @returns {Array} an array with all found links
+ */
+function gmFindLinksInPage(searchPattern, withDesc) {
+    var pagelinks = [];
+    if (withDesc == null) {
+        withDesc = 0;
+    }
+    if (bTestMode) {
+        pagelinks = gmGenTestEntries(40);
+    } else {
+        searchPattern = gmPrepareSearchRegExp(searchPattern);
+        for (var i=0; i < document.links.length; i++) {
+            var curlink = document.links[i];
+            var ne = -1;
+            var searchParamLink = gmPrepareLinkData(curlink, withDesc);
+            var found = gmLinkMatchesPattern(searchParamLink, searchPattern);
+            if (found) {
+                if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
+                    var htmllink = gmGetAtI(curlink, "href");
+                    var searchParamText = gmPrepareLinkTextData(curlink, withDesc);
+                    var htmltext = gmLinkGenerateLinkText(searchParamText);
+                    for (var j=0; j < pagelinks.length; j++) {
+                        if (htmllink == pagelinks[j][0]) {
+                            ne = j;
+                            break;
+                        }
+                    }
+                    if (ne > -1) {
+                        pagelinks[ne][1].push(htmltext);
+                        pagelinks[ne][1] = gmOnlyUnique(pagelinks[ne][1]);
+                        //alert(pagelinks[ne][1]);
+                    } else {
+                        var curlink = [htmllink, [htmltext]];
+                        pagelinks.push(curlink);
+                    }
+                }
+            }
+        }
+    }
+    return pagelinks;
+}
+
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
@@ -1332,10 +1403,9 @@ function gmCreateSearchRegExp(searchPattern) {
  * @param searchPattern - a search text (might be a regular expression)
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmFindLinksInPage0(arrText, searchPattern) {
+function gmLinkMatchesPattern(arrText, searchPattern) {
     var found = false;
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
@@ -1343,7 +1413,6 @@ function gmFindLinksInPage0(arrText, searchPattern) {
             } catch (e) {
                 // ignored
             }
-            //alert("i:" + i + " S:" + searchPattern + " F:" + found + " T:" + searchText);
             if (found) {
                 break;
             }
@@ -1358,73 +1427,23 @@ function gmFindLinksInPage0(arrText, searchPattern) {
  * @param arrText - an array with the possible link descriptions
  * @returns {String} the final link description
  */
-function gmFindLinksInPage1(arrText) {
-    var searchTextClean = new Array("", "", "");
+function gmLinkGenerateLinkText(arrText) {
+    var searchTextClean = [];
+    var htmlText = "";
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n----\n"));
         for (var idxST = 0; idxST < arrText.length; idxST++) {
-            var aEle = arrText[idxST];
-            if (aEle != null) {
-                try {
-                    aEle = ("" + aEle).replace("\\n", "").replace("#", "").trim();
-                    if (aEle != "") {
-                        var tarIdx = -1;
-                        switch (idxST) {
-                        case 0:
-                        case 1:
-                        case 2:
-                            tarIdx = 0;
-                            break;
-                        case 3:
-                        case 4:
-                            tarIdx = 1;
-                            break;
-                        case 5:
-                            tarIdx = 2;
-                            break;
-                        default:
-                            break;
-                        }
-                        if (tarIdx > -1) {
-                            if (searchTextClean[tarIdx].search(aEle) == -1) {
-                                if (searchTextClean[tarIdx] != "") {
-                                    searchTextClean[tarIdx] += "\n";
-                                }
-                                searchTextClean[tarIdx] += aEle;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    // ignored
-                }
-            }
+            arrText[idxST] = trim(gmCleanText(arrText[idxST]));
         }
+        htmlText = gmOnlyUnique(arrText).join("");
+        alert(htmlText);
     }
-
-    var htmltext = "";
-
-    if (searchTextClean.length > 0) {
-        //alert(searchTextClean.join("\n"));
-        if (searchTextClean[0] != "") {
-            htmltext = searchTextClean[0];
-        } else if (searchTextClean[1] != "") {
-            htmltext = searchTextClean[1];
-        } else if (searchTextClean[2] != "") {
-            htmltext = searchTextClean[2];
-        }
-    }
-    if (htmltext == null || htmltext == "") {
-        htmltext = "n/a";
-    }
-    return htmltext;
+    return htmlText;
 }
 
 /**
  * Adds a javascript block into the page.
  *
- * @param scc -
- *            a string, a function or an array with the javascript code or a
- *            function-list
+ * @param scc - a string, a function or an array with the javascript code or a function-list
  * @returns {Boolean} TRUE = if the script block could be set, else FALSE
  */
 function gmAddScriptGlobal(scc) {
@@ -1453,19 +1472,18 @@ function gmAddScriptGlobal(scc) {
 /**
  * Adds a link to a javascript file into the page.
  *
- * @param scLink -
- *            a string or an array with the url of the javascript-file FIXME:
- *            Check
+ * @param scLink - a string or an array with the url of the javascript-file
+ * FIXME: Check
  */
 function gmAddScriptLinkGlobal(scLink) {
     var isSet = false;
     var head = gmGetHead();
     if (head && scLink && scLink.length > 0) {
-        var allScLink = new Array();
+        var allScLink = [];
         if (gmIsArray(scLink)) {
             allScLink = scLink;
         } else {
-            allScLink = new Array(scLink);
+            allScLink = [scLink];
         }
 
         for ( var i = 0; i < allScLink.length; i++) {
@@ -1481,8 +1499,7 @@ function gmAddScriptLinkGlobal(scLink) {
 /**
  * Adds a style block into the page.
  *
- * @param scc -
- *            a string or an array with the css code
+ * @param scc - a string or an array with the css code
  * @returns {Boolean} TRUE = if the style block could be set, else FALSE
  */
 function gmAddStyleGlobal(scc) {
@@ -1511,8 +1528,7 @@ function gmAddStyleGlobal(scc) {
 /**
  * Generates some sample entries for testing.
  *
- * @param maxEntries -
- *            number of entries to generate
+ * @param maxEntries - number of entries to generate
  * @returns {Array} array of entries
  */
 function gmGenTestEntries(maxEntries) {
@@ -1524,12 +1540,12 @@ function gmGenTestEntries(maxEntries) {
     } else if (maxEntries > 100) {
         maxEntries = 100;
     }
-    testArray = new Array();
+    testArray = [];
     for ( var i = 1; i <= maxEntries; i++) {
         var curlink = "http://" + currSite + currPath + "/link-" + i;
         var htmllink = curlink;
         var htmltext = "linktext-" + i;
-        var curlink = new Array(htmllink, htmltext);
+        var curlink = [htmllink, htmltext];
         testArray.push(curlink);
     }
     return testArray;
@@ -1538,8 +1554,7 @@ function gmGenTestEntries(maxEntries) {
 /**
  * Calculate the offset of an element relating to the elemnt at the most top.
  *
- * @param element
- *            the element to check the offeset
+ * @param element - the element to check the offeset
  * @returns {Array[leftOffset, topOffset]} an array with the leftOffset,
  *          topOffset FIXME:TEST
  */
@@ -1563,10 +1578,8 @@ function gmCumulativeOffset(element) {
  *
  * @param parentElem -
  *            the element to calculate the offset from
- * @param iPoint -
- *            a screen point, to add an additional offset
- * @param iZoom -
- *            the zoom factor 1= Originalsize
+ * @param iPoint - a screen point, to add an additional offset
+ * @param iZoom  - the zoom factor 1= Originalsize
  * @returns {Number} the horizontal offset or 0 FIXME:Test
  */
 function gmCalcOffsetH(parentElem, iPoint, iZoom) {
@@ -1588,12 +1601,9 @@ function gmCalcOffsetH(parentElem, iPoint, iZoom) {
 /**
  * Searches the url for a pattern and replace the text.
  *
- * @param searchForPattern -
- *            the pattern to search for
- * @param replaceWithText -
- *            the text what will be inserted instead
- * @param oldUrl -
- *            the URL to search in
+ * @param searchForPattern - the pattern to search for
+ * @param replaceWithText  - the text what will be inserted instead
+ * @param oldUrl           - the URL to search in
  * @returns {String} the url with replaced text
  */
 function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
@@ -1818,6 +1828,12 @@ function gmGetBodyHeight() {
     return Math.max(Dh, Eh);
 }
 
+function gmOpenInTab(url) {
+    if (url) {
+        window.open(url,"_blank");
+    }
+    return true;
+}
 // ---------------
 // base-web.js - END
 // ---------------
@@ -1987,7 +2003,7 @@ function copyPostToClipboard(text) {
  * Adds the functions for using a "copy to clipboard" in a web-page.
  */
 function gmAddClipboardSupport() {
-    gmAddScriptGlobal(new Array(gmClipRef, gmCopy2clipboard, gmIsClipboardSupported));
+    gmAddScriptGlobal([gmClipRef, gmCopy2clipboard, gmIsClipboardSupported]);
 }
 
 /**
@@ -2288,13 +2304,13 @@ function lgmAddControlsGrabLinks() {
         return gmSelectInput(this);
     });
     gmCreateButton(glFormTag, "submit", "gl-sstart", "S", "start search", null, function() {
-        return lgmFilterURL('gl-searchtext');
+        return lgmSearchLinks('gl-searchtext',"gl-sdesc");
     });
     gmCreateButton(glFormTag, "button", "gl-sreset", "R", "clear search", null, function() {
-        return lgmRemall('gl-searchtext');
+        return lgmResetSearch('gl-searchtext');
     });
     gmCreateButton(glFormTag, "button", "gl-sshow", glBtnShowResultText, glBtnShowResultTextDesc, null, function() {
-        return lgmShowhide();
+        return lgmShowHideResult();
     });
     gmCreateButton(glFormTag, "button", "gl-sdesc", glBtnSearchModeAText, glBtnSearchModeADesc, glBtnSearchModeAValue, function() {
         return lgmToggleSearchDesc('gl-sdesc');
@@ -2311,10 +2327,10 @@ function lgmAddControlsGrabLinks() {
         return lgmSelectall('gl-resultplain', 'gl-resultlink');
     });
     gmCreateButton(glActionDiv, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function() {
-        lgmShow('gl-resultplain', 'gl-resultlink');
+        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
     });
     gmCreateButton(glActionDiv, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
-        lgmShow('gl-resultlink', 'gl-resultplain');
+        lgmSwitchResultDisplay('gl-resultlink', 'gl-resultplain');
     });
     gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
         lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
@@ -2324,7 +2340,7 @@ function lgmAddControlsGrabLinks() {
     gmCreateObj(glResultDiv, "div", "gl-resultlink");
     // init
     gmAddObj(glContainer, gmGetBody());
-    lgmShowhide(RESULT_HIDE);
+    lgmShowHideResult(RESULT_HIDE);
     //alert(glFormTag.outerHTML);
 }
 
@@ -2333,7 +2349,7 @@ function lgmAddControlsGrabLinks() {
  * @param frontLayer  - the layer to put in front
  * @param behindLayer - the layer to put in the bakc
  */
-function lgmShow(frontLayer, behindLayer) {
+function lgmSwitchResultDisplay(frontLayer, behindLayer) {
     var oFrontLayer = gmGetStyle(frontLayer);
     var oBehindLayer = gmGetStyle(behindLayer);
     if (oFrontLayer && oBehindLayer) {
@@ -2427,7 +2443,7 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
  * @see #glContainerHeightMax
  * @see #glContainerHeightMaxAuto
  */
-function lgmShowhide(bOnOff) {
+function lgmShowHideResult(bOnOff) {
     var oCont = gmGetElI('gl-container');
     var oContStyle = gmGetStyle(oCont);
     var oCont1 = gmGetElI('gl-resultbox');
@@ -2474,11 +2490,11 @@ function lgmShowhide(bOnOff) {
  * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmRemall(searchField) {
+function lgmResetSearch(searchField) {
     var oSearchField = gmGetElI(searchField);
     if (oSearchField) {
         gmSetAtI(oSearchField, "value", "");
-        lgmFilterURL(oSearchField);
+        lgmSearchLinks(oSearchField);
         oSearchField.focus();
     }
     return false;
@@ -2527,57 +2543,51 @@ function lgmSelectall(selElementA, selElementB) {
  * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmFilterURL(searchField) {
-    var oSearchField = gmGetElI(searchField);
-    if (oSearchField) {
-        var searchText = gmGetAtI(oSearchField, "value");
-        lgmShowLinks(searchText);
-        lgmShow('gl-resultplain', 'gl-resultlink');
-        lgmShowhide(RESULT_SHOW);
+function lgmSearchLinks(searchField, searchMode) {
+    try {
+        var searchText = gmGetAtI(searchField, "value");
+        var searchMode = gmGetAtI(searchMode, "value");
+        var arrFoundInPage = gmFindLinksInPage(searchText, searchMode);
+        lgmLinksInResult(arrFoundInPage);
+        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
+        lgmShowHideResult(RESULT_SHOW);
+    } catch (ex) {
+        alert(ex);
     }
     return false;
 }
 
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
+ * @param arrLinks - array with found links
  * @returns {Boolean} always false
  */
-function lgmShowLinks(searchText) {
+function lgmLinksInResult(arrLinks) {
+    var arrLinksPlain = [];
+    var arrLinksLink = [];
     try {
         var oResultPlainDiv = gmGetElI("gl-resultplain");
         var oResultLinkDiv = gmGetElI("gl-resultlink");
         var oResultCount = gmGetElI("gl-scount");
-        // search for all matching links in the page
-        var arrFoundInPage = lgmShowLinksCreateSearchLinks(searchText);
-        var arrLinksPlain = new Array();
-        var arrLinksLink = new Array();
-        //alert(arrFoundInPage.length);
-        arrFoundInPage = gmSortArray(arrFoundInPage, null);
-        // now build the output
+        var arrFoundInPage = gmSortArray(arrLinks);
         for ( var i = 0; i < arrFoundInPage.length; i++) {
-            if (i % 10 == 0) {
-                gmSetAtI(oResultCount, i);
-            }
             var currLink = arrFoundInPage[i][0];
-            var currCaption = lgmShowLinksCreateCleanCaption(arrFoundInPage[i][1]);
-            // row for plain text
-            var curPId = scriptID + "P" + i;
-            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption,curPId);
-            // row for htmllink
-            var curLId = scriptID + "L" + i;
-            lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curLId);
-        }
-        if (oResultPlainDiv) {
-            lgmShowLinksAddPlain(oResultPlainDiv, arrLinksPlain);
-            gmCreateObj(oResultPlainDiv, "br", null);
-        }
-        if (oResultLinkDiv) {
-            arrLinksLink.sort();
-            lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink);
-            gmCreateObj(oResultLinkDiv, "br", null);
+            var currCaption = lgmCleanArrayCaption(arrFoundInPage[i][1]);
+            //alert(currCaption);
+            lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption,i);
+            lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, i);
         }
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
+        }
+        if (oResultPlainDiv) {
+            lgmPrepareLinksInContainer(oResultPlainDiv, arrLinksPlain);
+            gmCreateObj(oResultPlainDiv, "br", null);
+        }
+        if (oResultLinkDiv) {
+            arrLinksLink = gmSortObject(arrLinksLink, "data-title");
+            lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink);
+            gmCreateObj(oResultLinkDiv, "br", null);
         }
     } catch (ex) {
         alert(ex);
@@ -2585,70 +2595,60 @@ function lgmShowLinks(searchText) {
     return false;
 }
 
-function lgmShowLinksCreateSearchLinks(searchText) {
-    // search for all matching links in the page
-    var arrFoundInPage = new Array();
-    if (bTestMode) {
-        arrFoundInPage = gmGenTestEntries(40);
-    } else {
-        var sMode = gmGetAtI("gl-sdesc", "value");
-        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
-    }
-    return arrFoundInPage;
-}
-
-function lgmShowLinksCreateCleanCaption(currCaption) {
-    currCaption = trim(currCaption);
-    if (currCaption != null) {
-        currCaption = currCaption.replace(/[\n\r]/g, '');
-        if (currCaption.indexOf("<") >= 0) {
-            currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
+function lgmCleanCaption(dirtyCaption) {
+    dirtyCaption = trim(dirtyCaption);
+    if (dirtyCaption != null) {
+        dirtyCaption = dirtyCaption.replace(/[\n\r]/g, '');
+        if (dirtyCaption.indexOf("<") >= 0) {
+            dirtyCaption = dirtyCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
         }
     }
-    if (currCaption == null || currCaption == "" || currCaption == "#") {
-        currCaption = "n/a";
+    return dirtyCaption;
+}
+
+function lgmCleanArrayCaption(arrCaption) {
+    var cleanCaption = "";
+    if (gmIsArray(arrCaption)){
+        var arrCleanCaption = [];
+        for (let currElem of arrCaption) {
+            arrCleanCaption.push(lgmCleanCaption(currElem));
+        }
+        arrCleanCaption = gmOnlyUnique(arrCleanCaption);
+        arrCleanCaption = gmSortArray(arrCleanCaption, SORT_NUM);
+        cleanCaption = "[" + arrCleanCaption.join("][") + "]";
+    } else {
+        cleanCaption = lgmCleanCaption(arrCaption);
     }
-    return currCaption;
+    return cleanCaption;
 }
 
-function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
-    // row for table text
-    var tblrow = gmCreateObj(null, "tr", null);
-    var plainlink = gmCreateObj(tblrow, "td", null);
-    gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    gmSetCoI(plainlink, currLink);
-    arrLinksPlain.push(tblrow);
-}
-
-function lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curId) {
+function lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption, curId) {
     // row for plain text
-    var plainLink = gmCreateObj(null, "span", curId);
-	var plainText = currCaption + "\n[" + currLink + "]"
-	plainLink = gmCreateObjCommon(plainLink, currLink, plainText, null, 
-		function() { return lgmShowLinksSelEntry(this); },
-		null, null, null
+    var curPId = scriptID + "P" + curId;
+    var plainLink = gmCreateObj(null, "span", curPId);
+	gmSetAtI(plainLink, "data-href", currLink);
+	plainLink = gmCreateObjCommon(plainLink, currLink, currCaption, null,
+		function() { lgmSelectEntry(this); return false;},
+		null, null, null,
+		function() { gmOpenInTab(this["data-href"]); return true; }
 	);
-    //gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    //gmSetCoI(plainlink, currLink);
     arrLinksPlain.push(plainLink);
 }
 
-function lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curId) {
+function lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, curId) {
     // row for htmllink
-    var alink = gmCreateLink(null, curId, currLink, currCaption, currCaption, "_blank", null);
+    var curLId = scriptID + "L" + curId;
+ 	var plainCaption = "[" + currLink  + "]";
+    var alink = gmCreateLink(null, curLId, currLink, currCaption, plainCaption, "_blank",
+        function() { lgmSelectEntry(this); return false; },
+        function() { gmOpenInTab(this["href"]); return true; }
+    );
+	gmSetAtI(alink, "data-title", currCaption);
     gmSetAtI(alink, FL_TAG, FL_ID);
     arrLinksLink.push(alink);
 }
 
-function lgmShowLinksAddPTable(oResultPlainDiv, arrLinksPlain) {
-    gmEmptyObj(oResultPlainDiv);
-    var tblPlain = gmCreateObj(oResultPlainDiv, "table", null);
-    for ( var idxLinks = 0; idxLinks < arrLinksPlain.length; idxLinks++) {
-        gmAddObj(arrLinksPlain[idxLinks], tblPlain);
-    }
-}
-
-function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
+function lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink) {
     gmEmptyObj(oResultLinkDiv);
     for ( var idxLinks = 0; idxLinks < arrLinksLink.length; idxLinks++) {
         gmAddObj(arrLinksLink[idxLinks], oResultLinkDiv);
@@ -2656,89 +2656,90 @@ function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
     }
 }
 
-function lgmShowLinksSelEntry(oEntry) {
+function lgmSelectEntry(oEntry) {
   try {
     gmSelectText(oEntry, false);
   } catch (ex) {
     alert(ex);
   }
 }
-const CLR_BG = "#e0e0e0"; //"#CED8F6";
-const CLR_FRMS_BRD = "#808080"; //"#819FF7";
-const CLR_FRMS_BG = "#ffffff";
-const CLR_FRMS_TX = "#000000";
-const FRMS_HGT = "20px !important";
-const CLR_HOV = "#e0e0e0";
-const CLR_HOV_BG = "#A80000";
-const CLR_HOV2 = "#ffffff";
-const CLR_HOV2_BG = "#A80000";
-const CLR_FOC = "#FFFFCC";
-const SCRB_C1 = "#A00000"; //"#e0e0e0";
-const SCRB_C2 = CLR_FRMS_BRD;
-const FNT_FRMS = "Consolas"; //"Arial, Courier New";
-const FNT_FRMS_SZ = "10pt !important";
+const MAIN_FONT_TYPE = "Consolas"; //"Arial, Courier New";
+const MAIN_FONT_SIZE = "10pt !important";
+const MAIN_CLR_TEXT = "#000000";
+const MAIN_CLR_BG = "#e0e0e0"; //"#CED8F6";
+const MAIN_FORMS_CLR_BORDER = "#808080"; //"#819FF7";
+const MAIN_FORMS_CLR_TEXT = MAIN_CLR_TEXT;
+const MAIN_FORMS_CLR_BG = "#ffffff";
+const MAIN_FORMS_HEIGHT = "20px !important";
+const HOVER1_CLR_TEXT = "#e0e0e0";
+const HOVER1_CLR_BG = "#A80000";
+const HOVER2_CLR_TEXT = "#ffffff";
+const HOVER2_CLR_BG = "#A80000";
+const FOCUS_CLR_BG = "#FFFFCC";
+const SCROLLBAR_CLR_RULER = "#A00000"; //"#e0e0e0";
+const SCROLLBAR_CLR_BG = MAIN_FORMS_CLR_BORDER;
 
 const CSS_STYLE = `
 #gl-container
 {
-    position: fixed !important;
-    top: 0 !important;
-    right: 1px !important;
-    margin: 0;
-    padding: 0 2px;
-    text-align: left;
-    vertical-align: top;
-    display: block;
-    min-height: 1%;
-    max-height: 99%;
-    min-width: 225px;
-    max-width: 50%;
-    width: 225px;
-    overflow: hidden;
-    z-index: 2147483647;
-    color: `+CLR_FRMS_TX+`;
-    font-family: `+FNT_FRMS+`;
-    font-size: `+FNT_FRMS_SZ+`;
-    line-height: 15px;
-    white-space: nowrap;
-    scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
-    scrollbar-width: initial;
     -moz-text-size-adjust: none;
     background-attachment: scroll;
     background-clip: border-box;
-    background-color: `+CLR_BG+`;
+    background-color: ` + MAIN_CLR_BG + `;
     background-image: none;
     background-origin: padding-box;
     background-position: 0%;
     background-repeat: repeat;
     background-size: auto;
+    color: ` + MAIN_CLR_TEXT + `;
+    display: block;
+    font-family: ` + MAIN_FONT_TYPE + `;
+    font-size: ` + MAIN_FONT_SIZE + `;
+    line-height: 15px;
+    max-height: 99%;
+    max-width: 50%;
+    margin: 0;
+    min-height: 1%;
+    min-width: 225px;
+    padding: 0 2px;
+    overflow: hidden;
+    position: fixed !important;
+    right: 1px !important;
+    scrollbar-color: ` + SCROLLBAR_CLR_RULER + ` ` + SCROLLBAR_CLR_BG + `;
+    scrollbar-width: initial;
+    text-align: left;
+    top: 0 !important;
+    vertical-align: top;
+    width: 225px;
+    white-space: nowrap;
+    z-index: 2147483647;
 }
 /* General Styles */
 #gl-container, #gl-container input, #gl-container button, #gl-container div, #gl-container a:hover
 {
     -moz-border-radius: 5px;
-    border-radius: 5px;
-    border: 0 none `+CLR_FRMS_BRD+`;
+    border: 0 none ` + MAIN_FORMS_CLR_BORDER + `;
     border-image-outset: 0;
     border-image-repeat: stretch;
     border-image-slice: 100%;
     border-image-source: none;
     border-image-width: 0;
+    border-radius: 5px;
 }
 #gl-container input, #gl-container button
 {
-    border: 2px solid `+CLR_FRMS_BRD+`;
-    color: `+CLR_FRMS_TX+`;
-    background-color: `+CLR_FRMS_BG+`;
-    font-family: `+FNT_FRMS+`;
-    font-size: `+FNT_FRMS_SZ+`;
+    color: ` + MAIN_FORMS_CLR_TEXT + `;
+    background-color: ` + MAIN_FORMS_CLR_BG + `;
+    border: 2px solid ` + MAIN_FORMS_CLR_BORDER + `;
+    font-family: ` + MAIN_FONT_TYPE + `;
+    font-size: ` + MAIN_FONT_SIZE + `;
     font-weight: bold;
-    padding: 0;
+    height: ` + MAIN_FORMS_HEIGHT + `;
     margin: 0;
     margin-right: 1px;
-    min-height: `+FRMS_HGT+`;
-    max-height: `+FRMS_HGT+`;
-    height: `+FRMS_HGT+`;
+    max-height: ` + MAIN_FORMS_HEIGHT + `;
+    min-height: ` + MAIN_FORMS_HEIGHT + `;
+    padding: 0;
     text-align: left;
     vertical-align: top;
     white-space: nowrap;
@@ -2749,63 +2750,66 @@ const CSS_STYLE = `
 }
 #gl-container input:hover, #gl-container input:focus
 {
-    background-color: `+CLR_FOC+`;
+    background-color: ` + FOCUS_CLR_BG + `;
 }
 #gl-container button:hover, #gl-container button:focus
 {
-    border-color: `+CLR_FRMS_BG+`;
-    color: `+CLR_HOV+`;
-    background-color: `+CLR_HOV_BG+`;
+    border-color: ` + MAIN_FORMS_CLR_BG + `;
+    color: ` + HOVER1_CLR_TEXT + `;
+    background-color: ` + HOVER1_CLR_BG + `;
 }
-#gl-container a {
-    color: `+CLR_FRMS_TX+`;
-    font-family: `+FNT_FRMS+`;
-    background-color: `+CLR_FRMS_BG+`;
-    text-decoration: underline dotted `+CLR_FRMS_TX+`;
+#gl-container a
+{
+    background-color: ` + MAIN_FORMS_CLR_BG + `;
+    color: ` + MAIN_FORMS_CLR_TEXT + `;
+    font-family: ` + MAIN_FONT_TYPE + `;
+    text-decoration: underline dotted ` + MAIN_FORMS_CLR_TEXT + `;
     white-space: nowrap;
 }
-#gl-container a:hover {
-    color: `+CLR_HOV+`;
-    background-color: `+CLR_HOV_BG+`;
+#gl-container a:hover
+{
+    color: ` + HOVER1_CLR_TEXT + `;
+    background-color: ` + HOVER1_CLR_BG + `;
     text-decoration: none transparent;
 }
 #gl-container #gl-searchbox, #gl-container #gl-actionbox, #gl-container #gl-resultbox
 {
+    border: transparent none 0;
+    display: block;
+    left: 0 !important;
+    margin: 0;
+    padding: 0;
     position: relative !important;
     top: 0 !important;
-    left: 0 !important;
-    display: block;
-    padding: 0;
-    margin: 0;
-    border: transparent none 0;
     white-space: nowrap;
 }
 #gl-container #gl-searchbox, #gl-container #gl-actionbox
 {
-    min-height: `+FRMS_HGT+`;
-    max-height: `+FRMS_HGT+`;
-    height: `+FRMS_HGT+`;
+    height: ` + MAIN_FORMS_HEIGHT + `;
+    max-height: ` + MAIN_FORMS_HEIGHT + `;
+    min-height: ` + MAIN_FORMS_HEIGHT + `;
 }
 /* Search Box */
 #gl-container #gl-searchform input
 {
-    text-align: left;
+    height: ` + MAIN_FORMS_HEIGHT + `;
+    max-height: ` + MAIN_FORMS_HEIGHT + `;
+    min-height: ` + MAIN_FORMS_HEIGHT + `;
     padding: 0 3px;
-    min-height: `+FRMS_HGT+`;
-    max-height: `+FRMS_HGT+`;
-    height: `+FRMS_HGT+`;
+    text-align: left;
 }
 #gl-container #gl-searchform #gl-searchtext
 {
-    min-width: 50px;
     max-width: 115px;
+    min-width: 50px;
 }
 #gl-container #gl-searchbox #gl-scount
 {
-    text-align: center;
-    background-color: `+CLR_BG+`;
+    background-color: ` + MAIN_CLR_BG + `;
+    font-size: smaller !important;
+    max-width: 28px;
     min-width: 5px;
-    max-width: 25px;
+    text-align: center;
 }
 /* Action Box */
 #gl-container #gl-actionbox #gl-awide
@@ -2815,34 +2819,34 @@ const CSS_STYLE = `
 /* Result Box */
 #gl-container #gl-resultbox
 {
-    min-height: 1%;
     max-height: 99%;
-    min-width: 225px;
     max-width: 225px;
-    width: 225px;
+    min-height: 1%;
+    min-width: 225px;
     overflow: auto;
+    width: 225px;
 }
 #gl-container #gl-resultbox #gl-resultplain, #gl-container #gl-resultbox #gl-resultlink
 {
-    position: absolute !important;
-    top: 1px !important;
-    left: 0 !important;
-    min-height: 1%;
-    max-height: 99%;
-    min-width: 225px;
-    max-width: 225px;
-    width: 225px;
-    height: 96%;
+    background-color: ` + MAIN_FORMS_CLR_BG + `;
     border: transparent none 0;
-    scrollbar-color: `+SCRB_C1+` `+SCRB_C2+`;
-    scrollbar-width: initial;
+    color: ` + MAIN_FORMS_CLR_TEXT + `;
+    display: block;
+    left: 0 !important;
+    max-height: 99%;
+    max-width: 225px;
+    min-height: 1%;
+    min-width: 225px;
+    height: 96%;
     overflow-y: auto;
     overflow-x: auto;
     padding: 2px;
-    color: `+CLR_FRMS_TX+`;
-    background-color: `+CLR_FRMS_BG+`;
+    position: absolute !important;
+    scrollbar-color: ` + SCROLLBAR_CLR_RULER + ` ` + SCROLLBAR_CLR_BG + `;
+    scrollbar-width: initial;
+    top: 1px !important;
+    width: 225px;
     white-space: nowrap;
-    display: block;
 }
 #gl-container #gl-resultbox #gl-resultplain
 {
@@ -2856,12 +2860,12 @@ const CSS_STYLE = `
 }
 #gl-container #gl-resultbox table, #gl-container #gl-resultbox tr, #gl-container #gl-resultbox td, #gl-container #gl-resultbox span
 {
+    background-color: ` + MAIN_FORMS_CLR_BG + `;
+    color: ` + MAIN_FORMS_CLR_TEXT + `;
+    font-family: ` + MAIN_FONT_TYPE + `;
     margin: 0;
     padding: 0;
     white-space: nowrap;
-    color: `+CLR_FRMS_TX+`;
-    background-color: `+CLR_FRMS_BG+`;
-    font-family: `+FNT_FRMS+`;
 }
 #gl-container #gl-resultbox #gl-resultplain td, #gl-container #gl-resultbox #gl-resultplain span
 {
@@ -2870,8 +2874,8 @@ const CSS_STYLE = `
 }
 #gl-container #gl-resultbox #gl-resultplain td:hover, #gl-container #gl-resultbox #gl-resultplain span:hover
 {
-    color: `+CLR_HOV2+`;
-    background-color: `+CLR_HOV2_BG+`;
+    background-color: ` + HOVER2_CLR_BG + `;
+    color: ` + HOVER2_CLR_TEXT + `;
 }
 #gl-container #gl-resultbox #gl-resultlink a
 {

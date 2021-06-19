@@ -8,10 +8,7 @@
 // @run-at          document-end
 // @license         Apache License, Version 2.0
 // @license         https://www.apache.org/licenses/LICENSE-2.0.txt
-// @version            0.50.02
-// @date            2021-06-03 23:59:59 +0200
-// @revision        0
-// @include            http://gmonkey.*.*/test/6/*
+// @version         0.51.000// @include            http://gmonkey.*.*/test/6/*
 // @include            http://devzone.*.*/test/gm/*
 // ==/UserScript==
 
@@ -26,7 +23,7 @@
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 var currHost = document.location.host;
 var currPort = document.location.port;
 
@@ -1164,84 +1161,35 @@ function gmFoundFilter2(site) {
 var FL_TAG = "fltag";
 var FL_ID = "_FL";
 
-/**
- * Search for all matching links in the page.
- *
- * @param searchPattern -
- *            the search pattern or leave "" to get all
- * @param withDesc -
- *            0 = search only in links, 1 = search also in link description
- * @returns {Array} an array with all found links
- */
-function gmFindLinksInPage(searchPattern, withDesc) {
-    if (withDesc == null) {
-        withDesc = 0;
-    }
-    var pagelinks = new Array();
-    searchPattern = gmCreateSearchRegExp(searchPattern);
-
-    for (var i=0; i < document.links.length; i++) {
-        var curlink = document.links[i];
-        var ne = 1;
-        var searchText = gmCreateSearchAttribute(curlink, withDesc);
-        var found = gmFindLinksInPage0(searchText, searchPattern);
-
-        if (found) {
-            if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
-                var htmllink = gmGetAtI(curlink, "href");
-                //alert(htmllink);
-                for (var j=0; j < pagelinks.length; j++) {
-                    //alert(pagelinks[j].join("|\n|"));
-                    if (htmllink == pagelinks[j][0]) {
-                        // link allready added, avoiding duplicates
-                        ne = 0; break;
-                    }
-                }
-                if (ne == 1) {
-                    var searchText = gmCreateSearchAttribute2(curlink, withDesc);
-                    var htmltext = gmFindLinksInPage1(searchText);
-                    //alert("L: "+htmllink + " T: " + htmltext);
-                    var curlink = new Array(htmllink, htmltext);
-                    pagelinks.push(curlink);
-                } else {
-                    //alert("== FL_ID");
-                }
-            }
-        }
-    }
-    return pagelinks;
-}
-
-function gmCreateSearchAttribute(curlink, withDesc) {
-    var searchText = new Array();
-    searchText.push(gmGetAtI(curlink, "href"));
+function gmPrepareLinkData(curlink, withDesc) {
+    var linkData = [];
+    linkData.push(gmGetAtI(curlink, "href"));
     if (withDesc != 0) {
-        searchText.push(gmGetAtI(curlink, "title"));
-        searchText.push(gmGetAtI(curlink, "aria-label"));
-        searchText.push(gmGetAtI(curlink, "alt"));
-        searchText.push(gmGetAtI(curlink, "onmouseover"));
-        searchText.push(gmGetAtI(curlink, "onclick"));
-        searchText.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
+        linkData.push(gmGetAtI(curlink, "title"));
+        linkData.push(gmGetAtI(curlink, "aria-label"));
+        linkData.push(gmGetAtI(curlink, "alt"));
+        linkData.push(gmGetAtI(curlink, "onmouseover"));
+        linkData.push(gmGetAtI(curlink, "onclick"));
+        linkData.push(curlink.innerHTML.replace("\\n", "").replace("#", ""));
     }
-    //alert(searchText.join("|\n|"));
-    return searchText;
+    return linkData;
 }
 
-function gmCreateSearchAttribute2(curlink, withDesc) {
-    var searchText = new Array();
-    searchText.push(curlink.text);
+function gmPrepareLinkTextData(curlink, withDesc) {
+    var linkTextData = [];
+    linkTextData.push(curlink.text);
     if (withDesc != 0) {
-        searchText.push(gmGetAtI(curlink, "title"));
-        searchText.push(gmGetAtI(curlink, "alt"));
-        searchText.push(gmGetAtI(curlink, "aria-label"));
-        searchText.push(gmGetAtI(curlink, "onmouseover"));
-        searchText.push(gmGetAtI(curlink, "onclick"));
-        searchText.push(curlink.innerHTML);
+        linkTextData.push(gmGetAtI(curlink, "title"));
+        linkTextData.push(gmGetAtI(curlink, "alt"));
+        linkTextData.push(gmGetAtI(curlink, "aria-label"));
+        linkTextData.push(gmGetAtI(curlink, "onmouseover"));
+        linkTextData.push(gmGetAtI(curlink, "onclick"));
+        linkTextData.push(curlink.innerHTML);
     }
-    return searchText;
+    return linkTextData;
 }
 
-function gmCreateSearchRegExp(searchPattern) {
+function gmPrepareSearchRegExp(searchPattern) {
     if (!searchPattern || searchPattern.length <= 0) {
         searchPattern = ".*";
     } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
@@ -1255,6 +1203,55 @@ function gmCreateSearchRegExp(searchPattern) {
     return searchPattern;
 }
 
+
+/**
+ * Search for all matching links in the page.
+ *
+ * @param searchPattern - the search pattern or leave "" to get all
+ * @param withDesc      - 0 = search only in links,
+ *                        1 = search also in link description
+ * @returns {Array} an array with all found links
+ */
+function gmFindLinksInPage(searchPattern, withDesc) {
+    var pagelinks = [];
+    if (withDesc == null) {
+        withDesc = 0;
+    }
+    if (bTestMode) {
+        pagelinks = gmGenTestEntries(40);
+    } else {
+        searchPattern = gmPrepareSearchRegExp(searchPattern);
+        for (var i=0; i < document.links.length; i++) {
+            var curlink = document.links[i];
+            var ne = -1;
+            var searchParamLink = gmPrepareLinkData(curlink, withDesc);
+            var found = gmLinkMatchesPattern(searchParamLink, searchPattern);
+            if (found) {
+                if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
+                    var htmllink = gmGetAtI(curlink, "href");
+                    var searchParamText = gmPrepareLinkTextData(curlink, withDesc);
+                    var htmltext = gmLinkGenerateLinkText(searchParamText);
+
+                    for (var j=0; j < pagelinks.length; j++) {
+                        if (htmllink == pagelinks[j][0]) {
+                            // link allready added, avoiding duplicates
+                            ne = j; break;
+                        }
+                    }
+                    if (ne > -1) {
+                        htmltext = htmllink + pagelinks[ne][1];
+                        pagelinks[htmllink] = htmltext;
+                        //alert("== FL_ID");
+                    }
+                    var curlink = new Array(htmllink, htmltext);
+                    pagelinks.push(curlink);
+                }
+            }
+        }
+    }
+    return pagelinks;
+}
+
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
@@ -1262,10 +1259,9 @@ function gmCreateSearchRegExp(searchPattern) {
  * @param searchPattern - a search text (might be a regular expression)
  * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmFindLinksInPage0(arrText, searchPattern) {
+function gmLinkMatchesPattern(arrText, searchPattern) {
     var found = false;
     if (gmIsArray(arrText)) {
-        //alert(arrText.join("\n----\n"));
         for (var i=0; i < arrText.length; i++) {
             var searchText = arrText[i];
             try {
@@ -1273,7 +1269,6 @@ function gmFindLinksInPage0(arrText, searchPattern) {
             } catch (e) {
                 // ignored
             }
-            //alert("i:" + i + " S:" + searchPattern + " F:" + found + " T:" + searchText);
             if (found) {
                 break;
             }
@@ -1288,7 +1283,7 @@ function gmFindLinksInPage0(arrText, searchPattern) {
  * @param arrText - an array with the possible link descriptions
  * @returns {String} the final link description
  */
-function gmFindLinksInPage1(arrText) {
+function gmLinkGenerateLinkText(arrText) {
     var searchTextClean = new Array("", "", "");
     if (gmIsArray(arrText)) {
         //alert(arrText.join("\n----\n"));
@@ -1391,7 +1386,7 @@ function gmAddScriptLinkGlobal(scLink) {
     var isSet = false;
     var head = gmGetHead();
     if (head && scLink && scLink.length > 0) {
-        var allScLink = new Array();
+        var allScLink = [];
         if (gmIsArray(scLink)) {
             allScLink = scLink;
         } else {
@@ -1454,7 +1449,7 @@ function gmGenTestEntries(maxEntries) {
     } else if (maxEntries > 100) {
         maxEntries = 100;
     }
-    testArray = new Array();
+    testArray = [];
     for ( var i = 1; i <= maxEntries; i++) {
         var curlink = "http://" + currSite + currPath + "/link-" + i;
         var htmllink = curlink;

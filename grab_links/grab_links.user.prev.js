@@ -80,7 +80,7 @@
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 var currHost = document.location.host;
 var currPort = document.location.port;
 
@@ -1211,7 +1211,7 @@ function gmFindLinksInPage(sea, withDesc) {
 	if (withDesc == null) {
 		withDesc = 0;
 	}
-	var pagelinks = new Array();
+	var pagelinks = [];
 
 	if (!sea || sea.length <= 0) {
 		sea = ".*";
@@ -1228,7 +1228,7 @@ function gmFindLinksInPage(sea, withDesc) {
 		var ne = 1;
 
 		//var searchText = curlink.href;
-		var searchText = new Array();
+		var searchText = [];
 		searchText.push(gmGetAtI(curlink, "href"));
 		if (withDesc != 0) {
 			searchText.push(gmGetAtI(curlink, "alt"));
@@ -1251,7 +1251,7 @@ function gmFindLinksInPage(sea, withDesc) {
 				}
 				if (ne == 1) {
 
-					var searchText = new Array();
+					var searchText = [];
 					searchText.push(curlink.text);
 					if (withDesc != 0) {
 						searchText.push(gmGetAtI(curlink, "alt"));
@@ -1408,7 +1408,7 @@ function gmAddScriptLinkGlobal(scLink) {
 	var isSet = false;
 	var head = gmGetHead();
 	if (head && scLink && scLink.length > 0) {
-		var allScLink = new Array();
+		var allScLink = [];
 		if (gmIsArray(scLink)) {
 			allScLink = scLink;
 		} else {
@@ -1471,7 +1471,7 @@ function gmGenTestEntries(maxEntries) {
 	} else if (maxEntries > 100) {
 		maxEntries = 100;
 	}
-	testArray = new Array();
+	testArray = [];
 	for ( var i = 1; i <= maxEntries; i++) {
 		var curlink = "http://" + currSite + currPath + "/link-" + i;
 		var htmllink = curlink;
@@ -2271,7 +2271,7 @@ function lgmShowLinks(sea) {
 	var ocountt = gmGetElI("gl-scount");
 
 	// search for all matching links in the page
-	var pagelinks = new Array();
+	var pagelinks = [];
 	if (bTestMode) {
 		pagelinks = gmGenTestEntries(sea);
 	} else {
@@ -2279,8 +2279,8 @@ function lgmShowLinks(sea) {
 		pagelinks = gmFindLinksInPage(sea, sMode);
 	}
 
-	var linkstbl = new Array();
-	var alllinks = new Array();
+	var linkstbl = [];
+	var alllinks = [];
 
 	//alert(pagelinks.length);
 	pagelinks = gmSortArray(pagelinks, null);
@@ -2371,7 +2371,7 @@ function lgm_addKnownSites() {
  */
 function lgm_addStyles() {
 	// the main container
-	var style = new Array();
+	var style = [];
 	style.push('#gl-container {position:fixed; top:0px; right:1px; margin:0px; padding:0px !important; text-align:left; vertical-align:top; width:225px; max-height:99.5% !important; overflow:hidden !important; z-index:2999999999 !important;}');
 	style.push('#gl-container {color: #000000; background-color: #CED8F6; font-family:Courier New,Arial; font-size:11px;}');
 	// General Styles

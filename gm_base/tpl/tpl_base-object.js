@@ -53,9 +53,11 @@ function gmCreateObj(par, objtyp, id) {
  *			  a javascript-call for the mouseover-event
  * @param ev_mOut -
  *			  a javascript-call for the mouseout-event
+ * @param ev_dblClick -
+ *			  a javascript-call for the doubleclick-event
  * @returns {Object} the object with added attributes FIXME: Check
  */
-function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut) {
+function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, ev_mOut, ev_dblClick) {
     if (obj) {
         // obj.attr("title", tit);
         gmSetAtI(obj, "title", tit);
@@ -70,6 +72,10 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, 
         if (ev_click) {
             // obj.click(ev_click);
             obj.onclick = ev_click;
+        };
+        if (ev_dblClick) {
+            // obj.click(ev_dblClick);
+            obj.ondblclick = ev_dblClick;
         };
         if (ev_focus) {
             // obj.focus(ev_focus);
@@ -108,7 +114,7 @@ function gmCreateObjCommon(obj, caption, tit, ro, ev_click, ev_focus, ev_mOver, 
  */
 function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
     var obj = gmCreateObj(par, "button", id);
-    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click);
     if (!typ) {
         typ = "button";
     }
@@ -132,13 +138,16 @@ function gmCreateButton(par, typ, id, caption, tit, initval, ev_click) {
  *            a W3C-conform title for that DOM
  * @param ev_click -
  *            a javascript-call for the click-event
+ * @param ev_dblClick -
+ *			  a javascript-call for the doubleclick-event
  * @returns {Object} the created DOM-Link
  */
-function gmCreateLink(par, id, href, caption, tit, target, ev_click) {
+function gmCreateLink(par, id, href, caption, tit, target, ev_click, ev_dblClick) {
     var obj = gmCreateObj(par, "a", id);
-    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null);
+    obj = gmCreateObjCommon(obj, caption, tit, null, ev_click, null, null, null, ev_dblClick);
     if (href) {
         gmSetAtI(obj, "href", href);
+        gmSetAtI(obj, "data-href", href);
     }
     if (target) {
         gmSetAtI(obj, "target", target);

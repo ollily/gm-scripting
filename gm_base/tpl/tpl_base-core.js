@@ -5,7 +5,7 @@
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 var currHost = document.location.host;
 var currPort = document.location.port;
 
@@ -434,6 +434,9 @@ function gmIsFunction(obj) {
     return gmIsInstanceOf(obj, Function);
 }
 
+function gmIsUndefined(obj) {
+    return (obj == null ? true : (typeof obj == "undefined"));
+}
 /**
  * Verifies if an instance is an object.
  *
@@ -522,6 +525,14 @@ function trim(a) {
     return ltrim(rtrim(a));
 }
 
+function gmCleanText(dirtyText) {
+    var cleanText = "";
+    if (gmIsInstanceOf(dirtyText, String)) {
+        cleanText = dirtyText.replace(/\s\s/g, "").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/#/g, "");
+    }
+    return cleanText;
+}
+
 /**
  * Extracts a numeric value from a text. Supports only "full" numbers;
  *
@@ -551,24 +562,59 @@ function gmToNo(a) {
     return newNum;
 }
 
+const SORT_NO  = 0;
+const SORT_DEF = 1;
+const SORT_REV = 2;
+const SORT_NUM = 3;
 /**
  * Sorts an array by a specific sort order (alphanumeric).
  *
- * @param unsortedArray -
- *            the aray which should be sorted
- * @param sortmode -
- *            the sort order or leave null to ignore sorting
+ * @param unsortedArray - the aray which should be sorted
+ * @param sortMode      - the sort order or leave null to ignore sorting
  * @returns {Array} the sorted array
  */
-function gmSortArray(unsortedArray, sortmode) {
+function gmSortArray(unsortedArray, sortMode) {
     var sortedArray = unsortedArray;
-    if (sortmode == null) {
-        sortmode = false;
+    if (sortMode == null) {
+        sortMode = false;
     }
-    if (sortmode) {
+    if (sortMode == SORT_NUM) {
+        sortedArray.sort(function(aE, bE){
+            return aE - bE;
+        });
+    } else if (sortMode == SORT_REV) {
+        sortedArray.reverse();
+    } else if (sortMode || sortMode == SORT_DEF) {
         sortedArray.sort();
     }
     return sortedArray;
+}
+
+function gmSortObject(unsortedObjects, sortField) {
+    try {
+        if (gmIsArray(unsortedObjects)) {
+            unsortedObjects.sort(function(aElem, bElem) {
+              var x = aElem[sortField].toLowerCase();
+              var y = bElem[sortField].toLowerCase();
+              if (x < y) {return -1;}
+              if (x > y) {return 1;}
+              return 0;
+            }
+        )};
+    } catch (ex) {
+        alert(ex);
+    }
+    return unsortedObjects;
+}
+
+function gmOnlyUnique(arrArray) {
+    var arrUnique = [];
+    if (gmIsArray(arrArray)) {
+        arrUnique = arrArray.filter(function (value, index, self) {
+          return self.indexOf(value) === index;
+        });
+    }
+    return arrUnique;
 }
 
 /**

@@ -6,7 +6,7 @@ var gm_debug = false;
 /**
  * List of all File which can be replaced, according to the same index of knownSite.
  */
-var knownRepl = new Array();
+var knownRepl = [];
 /**
  * The pattern to search for filename inside the page.
  */
@@ -361,7 +361,7 @@ function lgm_addBodyListener(refid, tagdivid) {
                         jDiv = document.getElementById(tagdivid);
 //                        var jDiv = $(divid);
 
-                        var jDivChilds = new Array();
+                        var jDivChilds = [];
                         if (jDiv) {
                             jDivChilds = jDiv.childNodes;
                         }

@@ -74,11 +74,11 @@ var currSite = getCurrentSite();
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 /**
  * List of all File which can be replaced, according to the same index of knownSite.
  */
-var knownRepl = new Array();
+var knownRepl = [];
 /**
  * The pattern to search for filename inside the page.
  */

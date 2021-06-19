@@ -58,13 +58,13 @@ function lgmAddControlsGrabLinks() {
         return gmSelectInput(this);
     });
     gmCreateButton(glFormTag, "submit", "gl-sstart", "S", "start search", null, function() {
-        return lgmFilterURL('gl-searchtext');
+        return lgmSearchLinks('gl-searchtext',"gl-sdesc");
     });
     gmCreateButton(glFormTag, "button", "gl-sreset", "R", "clear search", null, function() {
-        return lgmRemall('gl-searchtext');
+        return lgmResetSearch('gl-searchtext');
     });
     gmCreateButton(glFormTag, "button", "gl-sshow", glBtnShowResultText, glBtnShowResultTextDesc, null, function() {
-        return lgmShowhide();
+        return lgmShowHideResult();
     });
     gmCreateButton(glFormTag, "button", "gl-sdesc", glBtnSearchModeAText, glBtnSearchModeADesc, glBtnSearchModeAValue, function() {
         return lgmToggleSearchDesc('gl-sdesc');
@@ -81,10 +81,10 @@ function lgmAddControlsGrabLinks() {
         return lgmSelectall('gl-resultplain', 'gl-resultlink');
     });
     gmCreateButton(glActionDiv, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function() {
-        lgmShow('gl-resultplain', 'gl-resultlink');
+        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
     });
     gmCreateButton(glActionDiv, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
-        lgmShow('gl-resultlink', 'gl-resultplain');
+        lgmSwitchResultDisplay('gl-resultlink', 'gl-resultplain');
     });
     gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
         lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
@@ -94,7 +94,7 @@ function lgmAddControlsGrabLinks() {
     gmCreateObj(glResultDiv, "div", "gl-resultlink");
     // init
     gmAddObj(glContainer, gmGetBody());
-    lgmShowhide(RESULT_HIDE);
+    lgmShowHideResult(RESULT_HIDE);
     //alert(glFormTag.outerHTML);
 }
 
@@ -103,7 +103,7 @@ function lgmAddControlsGrabLinks() {
  * @param frontLayer  - the layer to put in front
  * @param behindLayer - the layer to put in the bakc
  */
-function lgmShow(frontLayer, behindLayer) {
+function lgmSwitchResultDisplay(frontLayer, behindLayer) {
     var oFrontLayer = gmGetStyle(frontLayer);
     var oBehindLayer = gmGetStyle(behindLayer);
     if (oFrontLayer && oBehindLayer) {
@@ -197,7 +197,7 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
  * @see #glContainerHeightMax
  * @see #glContainerHeightMaxAuto
  */
-function lgmShowhide(bOnOff) {
+function lgmShowHideResult(bOnOff) {
     var oCont = gmGetElI('gl-container');
     var oContStyle = gmGetStyle(oCont);
     var oCont1 = gmGetElI('gl-resultbox');
@@ -244,11 +244,11 @@ function lgmShowhide(bOnOff) {
  * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmRemall(searchField) {
+function lgmResetSearch(searchField) {
     var oSearchField = gmGetElI(searchField);
     if (oSearchField) {
         gmSetAtI(oSearchField, "value", "");
-        lgmFilterURL(oSearchField);
+        lgmSearchLinks(oSearchField);
         oSearchField.focus();
     }
     return false;
@@ -297,57 +297,51 @@ function lgmSelectall(selElementA, selElementB) {
  * @param searchField - the search input containing the text-filter
  * @returns {Boolean} always false
  */
-function lgmFilterURL(searchField) {
-    var oSearchField = gmGetElI(searchField);
-    if (oSearchField) {
-        var searchText = gmGetAtI(oSearchField, "value");
-        lgmShowLinks(searchText);
-        lgmShow('gl-resultplain', 'gl-resultlink');
-        lgmShowhide(RESULT_SHOW);
+function lgmSearchLinks(searchField, searchMode) {
+    try {
+        var searchText = gmGetAtI(searchField, "value");
+        var searchMode = gmGetAtI(searchMode, "value");
+        var arrFoundInPage = gmFindLinksInPage(searchText, searchMode);
+        lgmLinksInResult(arrFoundInPage);
+        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
+        lgmShowHideResult(RESULT_SHOW);
+    } catch (ex) {
+        alert(ex);
     }
     return false;
 }
 
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
+ * @param arrLinks - array with found links
  * @returns {Boolean} always false
  */
-function lgmShowLinks(searchText) {
+function lgmLinksInResult(arrLinks) {
+    var arrLinksPlain = [];
+    var arrLinksLink = [];
     try {
         var oResultPlainDiv = gmGetElI("gl-resultplain");
         var oResultLinkDiv = gmGetElI("gl-resultlink");
         var oResultCount = gmGetElI("gl-scount");
-        // search for all matching links in the page
-        var arrFoundInPage = lgmShowLinksCreateSearchLinks(searchText);
-        var arrLinksPlain = new Array();
-        var arrLinksLink = new Array();
-        //alert(arrFoundInPage.length);
-        arrFoundInPage = gmSortArray(arrFoundInPage, null);
-        // now build the output
+        var arrFoundInPage = gmSortArray(arrLinks);
         for ( var i = 0; i < arrFoundInPage.length; i++) {
-            if (i % 10 == 0) {
-                gmSetAtI(oResultCount, i);
-            }
             var currLink = arrFoundInPage[i][0];
-            var currCaption = lgmShowLinksCreateCleanCaption(arrFoundInPage[i][1]);
-            // row for plain text
-            var curPId = scriptID + "P" + i;
-            lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption,curPId);
-            // row for htmllink
-            var curLId = scriptID + "L" + i;
-            lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curLId);
-        }
-        if (oResultPlainDiv) {
-            lgmShowLinksAddPlain(oResultPlainDiv, arrLinksPlain);
-            gmCreateObj(oResultPlainDiv, "br", null);
-        }
-        if (oResultLinkDiv) {
-            arrLinksLink.sort();
-            lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink);
-            gmCreateObj(oResultLinkDiv, "br", null);
+            var currCaption = lgmCleanArrayCaption(arrFoundInPage[i][1]);
+            //alert(currCaption);
+            lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption,i);
+            lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, i);
         }
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
+        }
+        if (oResultPlainDiv) {
+            lgmPrepareLinksInContainer(oResultPlainDiv, arrLinksPlain);
+            gmCreateObj(oResultPlainDiv, "br", null);
+        }
+        if (oResultLinkDiv) {
+            arrLinksLink = gmSortObject(arrLinksLink, "data-title");
+            lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink);
+            gmCreateObj(oResultLinkDiv, "br", null);
         }
     } catch (ex) {
         alert(ex);
@@ -355,70 +349,60 @@ function lgmShowLinks(searchText) {
     return false;
 }
 
-function lgmShowLinksCreateSearchLinks(searchText) {
-    // search for all matching links in the page
-    var arrFoundInPage = new Array();
-    if (bTestMode) {
-        arrFoundInPage = gmGenTestEntries(40);
-    } else {
-        var sMode = gmGetAtI("gl-sdesc", "value");
-        arrFoundInPage = gmFindLinksInPage(searchText, sMode);
-    }
-    return arrFoundInPage;
-}
-
-function lgmShowLinksCreateCleanCaption(currCaption) {
-    currCaption = trim(currCaption);
-    if (currCaption != null) {
-        currCaption = currCaption.replace(/[\n\r]/g, '');
-        if (currCaption.indexOf("<") >= 0) {
-            currCaption = currCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
+function lgmCleanCaption(dirtyCaption) {
+    dirtyCaption = trim(dirtyCaption);
+    if (dirtyCaption != null) {
+        dirtyCaption = dirtyCaption.replace(/[\n\r]/g, '');
+        if (dirtyCaption.indexOf("<") >= 0) {
+            dirtyCaption = dirtyCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
         }
     }
-    if (currCaption == null || currCaption == "" || currCaption == "#") {
-        currCaption = "n/a";
+    return dirtyCaption;
+}
+
+function lgmCleanArrayCaption(arrCaption) {
+    var cleanCaption = "";
+    if (gmIsArray(arrCaption)){
+        var arrCleanCaption = [];
+        for (let currElem of arrCaption) {
+            arrCleanCaption.push(lgmCleanCaption(currElem));
+        }
+        arrCleanCaption = gmOnlyUnique(arrCleanCaption);
+        arrCleanCaption = gmSortArray(arrCleanCaption, SORT_NUM);
+        cleanCaption = "[" + arrCleanCaption.join("][") + "]";
+    } else {
+        cleanCaption = lgmCleanCaption(arrCaption);
     }
-    return currCaption;
+    return cleanCaption;
 }
 
-function lgmShowLinksCreateTblRow(arrLinksPlain, currLink, currCaption) {
-    // row for table text
-    var tblrow = gmCreateObj(null, "tr", null);
-    var plainlink = gmCreateObj(tblrow, "td", null);
-    gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    gmSetCoI(plainlink, currLink);
-    arrLinksPlain.push(tblrow);
-}
-
-function lgmShowLinksCreatePlainRow(arrLinksPlain, currLink, currCaption, curId) {
+function lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption, curId) {
     // row for plain text
-    var plainLink = gmCreateObj(null, "span", curId);
-	var plainText = currCaption + "\n[" + currLink + "]"
-	plainLink = gmCreateObjCommon(plainLink, currLink, plainText, null, 
-		function() { return lgmShowLinksSelEntry(this); },
-		null, null, null
+    var curPId = scriptID + "P" + curId;
+    var plainLink = gmCreateObj(null, "span", curPId);
+	gmSetAtI(plainLink, "data-href", currLink);
+	plainLink = gmCreateObjCommon(plainLink, currLink, currCaption, null,
+		function() { lgmSelectEntry(this); return false;},
+		null, null, null,
+		function() { gmOpenInTab(this["data-href"]); return true; }
 	);
-    //gmSetAtI(plainlink, "title", currCaption + "\n[" + currLink + "]");
-    //gmSetCoI(plainlink, currLink);
     arrLinksPlain.push(plainLink);
 }
 
-function lgmShowLinksCreateLinkRow(arrLinksLink, currLink, currCaption, curId) {
+function lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, curId) {
     // row for htmllink
-    var alink = gmCreateLink(null, curId, currLink, currCaption, currCaption, "_blank", null);
+    var curLId = scriptID + "L" + curId;
+ 	var plainCaption = "[" + currLink  + "]";
+    var alink = gmCreateLink(null, curLId, currLink, currCaption, plainCaption, "_blank",
+        function() { lgmSelectEntry(this); return false; },
+        function() { gmOpenInTab(this["href"]); return true; }
+    );
+	gmSetAtI(alink, "data-title", currCaption);
     gmSetAtI(alink, FL_TAG, FL_ID);
     arrLinksLink.push(alink);
 }
 
-function lgmShowLinksAddPTable(oResultPlainDiv, arrLinksPlain) {
-    gmEmptyObj(oResultPlainDiv);
-    var tblPlain = gmCreateObj(oResultPlainDiv, "table", null);
-    for ( var idxLinks = 0; idxLinks < arrLinksPlain.length; idxLinks++) {
-        gmAddObj(arrLinksPlain[idxLinks], tblPlain);
-    }
-}
-
-function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
+function lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink) {
     gmEmptyObj(oResultLinkDiv);
     for ( var idxLinks = 0; idxLinks < arrLinksLink.length; idxLinks++) {
         gmAddObj(arrLinksLink[idxLinks], oResultLinkDiv);
@@ -426,7 +410,7 @@ function lgmShowLinksAddPlain(oResultLinkDiv, arrLinksLink) {
     }
 }
 
-function lgmShowLinksSelEntry(oEntry) {
+function lgmSelectEntry(oEntry) {
   try {
     gmSelectText(oEntry, false);
   } catch (ex) {

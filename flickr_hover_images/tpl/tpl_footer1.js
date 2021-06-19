@@ -15,7 +15,7 @@ function lgm_addKnownSites() {
  */
 function lgm_addStyles() {
     // the main container
-    var style = new Array();
+    var style = [];
     style.push("a.hi-dlink, a.hi-dlink:hover {z-index:990;text-decoration:none;padding:1pt 2pt;border:#ff6080 solid 1px;background-color:rgba(255, 255, 255, 0.5);color:#ffffff;font-size:8pt;font-weight:bold");
     style.push("a.hi-dlink:hover {border:1pt #ff6080 solid;background-color:#ff6080;color:#ffffff}");
     style.push("div.hi-preview {position:absolute;z-index:997;overflow:hidden;padding:0px;margin:0px;border:solid #cccccc 1px;"

@@ -52,7 +52,7 @@
 <script type="text/javascript">
 
 /* ------- */
-knownSite = new Array();
+knownSite = [];
 i = knownSite.length;
 gmAddSite("", "", "");
 if (i == knownSite.length) {} else alert("6-00");
@@ -75,7 +75,7 @@ if ("path" == knownSite[knownSite.length - 1].path) {} else alert("6-22");
 
 
 /* ------- */
-knownSite = new Array();
+knownSite = [];
 i = knownSite.length;
 gmAddSite2("", "", "", "", "");
 if (i == knownSite.length) {} else alert("7-00");
@@ -108,7 +108,7 @@ if (2 == knownSite[knownSite.length - 1].withDownload) {} else alert("7-35");
 
 
 /* ------- */
-knownSite = new Array();
+knownSite = [];
 gmAddSite("f10", "www.site.com", "path1");
 gmAddSite("f11", "www.site.com", "");
 gmAddSite("f20", "www.site2.com", "");
@@ -123,7 +123,7 @@ if ("" == gmFoundFilter("www.site3.com", "unknown")) {} else alert("8-06");
 if ("" == gmFoundFilter("www.unknown.com", "path1")) {} else alert("8-07");
 
 /* ------- */
-knownSite = new Array();
+knownSite = [];
 gmAddSite2("site10.com", "elem10", "search10", "replace10", "large10", 0);
 gmAddSite2("site11.com", "elem11", "search11", "replace11", "large11", 1);
 gmAddSite2("site10.de", "elem12", "search12", "replace12", "large12", 2);
@@ -453,6 +453,7 @@ if ("fuchsia" == gmGetAtI(resStyle, "backgroundColor")) {} else alert("gmGetStyl
     // $("#idhallo").css("background-color", "red");
     // gmaddScriptGlobal("//DATA");
 })();
+
 
 </script>
 </body>

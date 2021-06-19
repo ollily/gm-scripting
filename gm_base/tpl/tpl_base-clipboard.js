@@ -164,7 +164,7 @@ function copyPostToClipboard(text) {
  * Adds the functions for using a "copy to clipboard" in a web-page.
  */
 function gmAddClipboardSupport() {
-    gmAddScriptGlobal(new Array(gmClipRef, gmCopy2clipboard, gmIsClipboardSupported));
+    gmAddScriptGlobal([gmClipRef, gmCopy2clipboard, gmIsClipboardSupported]);
 }
 
 /**

@@ -2,10 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Test gm_base-object.js</title>
-<script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
-<script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <title>Test gm_base-object.js</title>
+    <script type="text/javascript" src="../tpl/tpl_base-core.js"></script>
+    <script type="text/javascript" src="../tpl/tpl_base-object.js"></script>
 </head>
 <body>
 <div id="divid1" title="tit1-0"></div>
@@ -213,7 +213,7 @@ var res = gmEmptyObj("");
 if (false == res) {} else alert("gmEmptyObj-02 " + res);
 
 var res = 2;
-var res = gmEmptyObj(new Array());
+var res = gmEmptyObj([]);
 if (true == res) {} else alert("gmEmptyObj-03 " + res);
 
 var res = false;
@@ -231,6 +231,7 @@ if (3 == addO1.children.length) {} else alert("gmEmptyObj-05 " + addO1.children.
 var res = gmEmptyObj(addO1);
 if (true == res) {} else alert("gmEmptyObj-06 " + res);
 if (0 == addO1.children.length) {} else alert("gmEmptyObj-07 " + addO1.children.length);
+
 
 
 </script>

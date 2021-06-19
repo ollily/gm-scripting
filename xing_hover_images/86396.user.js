@@ -75,7 +75,7 @@ Known Bugs:
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = new Array();
+var knownSite = [];
 var currHost = document.location.host;
 var currPort = document.location.port;
 
@@ -1214,7 +1214,7 @@ function gmFindLinksInPage(searchPattern, withDesc) {
     if (withDesc == null) {
         withDesc = 0;
     }
-    var pagelinks = new Array();
+    var pagelinks = [];
     searchPattern = gmCreateSearchRegExp(searchPattern);
 
     for (var i=0; i < document.links.length; i++) {
@@ -1250,7 +1250,7 @@ function gmFindLinksInPage(searchPattern, withDesc) {
 }
 
 function gmCreateSearchAttribute(curlink, withDesc) {
-    var searchText = new Array();
+    var searchText = [];
     searchText.push(gmGetAtI(curlink, "href"));
     if (withDesc != 0) {
         searchText.push(gmGetAtI(curlink, "title"));
@@ -1265,7 +1265,7 @@ function gmCreateSearchAttribute(curlink, withDesc) {
 }
 
 function gmCreateSearchAttribute2(curlink, withDesc) {
-    var searchText = new Array();
+    var searchText = [];
     searchText.push(curlink.text);
     if (withDesc != 0) {
         searchText.push(gmGetAtI(curlink, "title"));
@@ -1428,7 +1428,7 @@ function gmAddScriptLinkGlobal(scLink) {
     var isSet = false;
     var head = gmGetHead();
     if (head && scLink && scLink.length > 0) {
-        var allScLink = new Array();
+        var allScLink = [];
         if (gmIsArray(scLink)) {
             allScLink = scLink;
         } else {
@@ -1491,7 +1491,7 @@ function gmGenTestEntries(maxEntries) {
     } else if (maxEntries > 100) {
         maxEntries = 100;
     }
-    testArray = new Array();
+    testArray = [];
     for ( var i = 1; i <= maxEntries; i++) {
         var curlink = "http://" + currSite + currPath + "/link-" + i;
         var htmllink = curlink;
@@ -2072,7 +2072,7 @@ var gm_debug = false;
 /**
  * List of all File which can be replaced, according to the same index of knownSite.
  */
-var knownRepl = new Array();
+var knownRepl = [];
 /**
  * The pattern to search for filename inside the page.
  */
@@ -2427,7 +2427,7 @@ function lgm_addBodyListener(refid, tagdivid) {
                         jDiv = document.getElementById(tagdivid);
 //                        var jDiv = $(divid);
 
-                        var jDivChilds = new Array();
+                        var jDivChilds = [];
                         if (jDiv) {
                             jDivChilds = jDiv.childNodes;
                         }

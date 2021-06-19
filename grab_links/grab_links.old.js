@@ -99,7 +99,7 @@ Changes:
 //
 // Global Code - START
 //
-var knownSite = new Array();
+var knownSite = [];
 var currSite = document.location.host;
 if (document.location.port) {
     currSite += ":" + document.location.port;
@@ -561,7 +561,7 @@ var FL_ID = "_FL";
  */
 function gm_findLinksInPage(sea) {
 
-    var pagelinks = new Array();
+    var pagelinks = [];
 
     for (var i=0; i < document.links.length; i++) {
         var curlink = document.links[i];
@@ -635,7 +635,7 @@ function gm_addScriptLinkGlobal(scLink) {
     head = document.getElementsByTagName('head')[0];
     if (!head) { return; }
 
-    var allscc = new Array();
+    var allscc = [];
     if (gm_isArray(scLink)) {
         allScLink = scLink;
     } else {
@@ -940,7 +940,7 @@ function gm_genTestEntries(maxEntries) {
     } else if (maxEntries > 100) {
         maxEntries = 100;
     }
-    testArray = new Array();
+    testArray = [];
     for (var i=0; i < maxEntries; i++) {
         var curlink = "http://"+currSite+currPath+"/link-"+i;
         var htmllink = curlink;
@@ -1258,7 +1258,7 @@ function lgm_showLinks(sea) {
     var ocountt = $("#gl-scount");
 
     // search for all matching links in the page
-    var pagelinks = new Array();
+    var pagelinks = [];
     if (bTestMode) {
         pagelinks = gm_genTestEntries(sea);
     } else {
@@ -1266,7 +1266,7 @@ function lgm_showLinks(sea) {
     }
 
     var linkstbl = null;
-    var alllinks = new Array();
+    var alllinks = [];
     var allcaps = "";
     var curcapcomp = "";
 
