@@ -1384,7 +1384,7 @@ function gmFindLinksInPage(searchPattern, withDesc) {
                     if (ne > -1) {
                         pagelinks[ne][1].push(htmltext);
                         pagelinks[ne][1] = gmOnlyUnique(pagelinks[ne][1]);
-                        alert(pagelinks[ne][1]);
+                        //alert(pagelinks[ne][1]);
                     } else {
                         var curlink = [htmllink, [htmltext]];
                         pagelinks.push(curlink);
@@ -1435,6 +1435,7 @@ function gmLinkGenerateLinkText(arrText) {
             arrText[idxST] = trim(gmCleanText(arrText[idxST]));
         }
         htmlText = gmOnlyUnique(arrText).join("");
+        alert(htmlText);
     }
     return htmlText;
 }

@@ -22,7 +22,7 @@
 // @compatible      firefox
 // @namespace       http://userscripts.org/users/ollily
 // @run-at          document-end
-// @version         2.02.000
+// @version         2.02.001
 // @grant           unsafeWindow
 // @grant           GM_addStyle
 // @grant           GM.addStyle
@@ -31,13 +31,24 @@
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/
-// @include         /http(|s)\://(|.+?\.)myvideo\..+?/.*/
 // @include         /http(|s)\://(|.+?\.)dailymotion\..+?/.*/
-// @include         /http(|s)\://(|.+?\.)metacafe\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)pinterest\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)flickr\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)instagram\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)tiktok\..+?/.*/
 // ==/UserScript==
 
 /*
  Changes:
+ 2021-06-19
+ - update syntax, remove inspection failures
+ - add jsdoc
+
+ 2021-06-19
+ - add wide/small handling of container
+ - add result line selection
+ - optimize link caption generation
+
  2021-06-03
  - switch to different IDE
  - clean code
@@ -1435,7 +1446,6 @@ function gmLinkGenerateLinkText(arrText) {
             arrText[idxST] = trim(gmCleanText(arrText[idxST]));
         }
         htmlText = gmOnlyUnique(arrText).join("");
-        alert(htmlText);
     }
     return htmlText;
 }
@@ -2249,22 +2259,21 @@ Object.entries({
  */
 const scriptID = "GM-GL";
 
-var glContainer;
-var glSearchDiv;
-var glResultDiv;
-var glActionDiv;
-var glFormTag;
-var initFilter;
+let glContainer;
+let glSearchDiv;
+let glResultDiv;
+let glActionDiv;
+let glFormTag;
+let initFilter;
 
-const glBtnShowResultText = 'SR';
-const glBtnShowResultTextDesc = 'show result';
-const glBtnHideResultText = 'HR';
-const glBtnHideResultTextDesc = 'hide result';
+const glBtnShowResultText = "SR";
+const glBtnShowResultTextDesc = "show result";
+const glBtnHideResultText = "HR";
+const glBtnHideResultTextDesc = "hide result";
 
-const glContainerHeightMin = '20px';
-const glContainerHeightMax = '99%';
-const glContainerHeightMaxAuto = 'auto';
-const glContainerLineHeight = 14;
+const glContainerHeightMin = "20px";
+const glContainerHeightMax = "99%";
+const glContainerHeightMaxAuto = "auto";
 const RESULT_SHOW = -1;
 const RESULT_HIDE = -2;
 
@@ -2277,9 +2286,9 @@ const glBtnSearchModeLValue = "0";
 
 const contWidthWide = "50%";
 const contWidthSmall = "225px";
-const resWidthWide = "100%"
+const resWidthWide = "100%";
 const resWidthSmall = "225px";
-const divWidthWide = '99%';
+const divWidthWide = "99%";
 const divWidthSmall = "225px";
 const descWidthWide = "Wide";
 const descWidthSmall = "Small";
@@ -2300,40 +2309,40 @@ function lgmAddControlsGrabLinks() {
     gmSetAtI(glFormTag, "accept-charset", "utf-8");
     // search fields
     initFilter = gmFoundFilter(currSite, currPath);
-    gmCreateInput(glFormTag, "text", "gl-searchtext", initFilter, searchText_Desc, null, null, function() {
+    gmCreateInput(glFormTag, "text", "gl-searchtext", initFilter, searchText_Desc, null, null, function () {
         return gmSelectInput(this);
     });
-    gmCreateButton(glFormTag, "submit", "gl-sstart", "S", "start search", null, function() {
-        return lgmSearchLinks('gl-searchtext',"gl-sdesc");
+    gmCreateButton(glFormTag, "submit", "gl-sstart", "S", "start search", null, function () {
+        return lgmSearchLinks("gl-searchtext", "gl-sdesc");
     });
-    gmCreateButton(glFormTag, "button", "gl-sreset", "R", "clear search", null, function() {
-        return lgmResetSearch('gl-searchtext');
+    gmCreateButton(glFormTag, "button", "gl-sreset", "R", "clear search", null, function () {
+        return lgmResetSearch("gl-searchtext");
     });
-    gmCreateButton(glFormTag, "button", "gl-sshow", glBtnShowResultText, glBtnShowResultTextDesc, null, function() {
+    gmCreateButton(glFormTag, "button", "gl-sshow", glBtnShowResultText, glBtnShowResultTextDesc, null, function () {
         return lgmShowHideResult();
     });
-    gmCreateButton(glFormTag, "button", "gl-sdesc", glBtnSearchModeAText, glBtnSearchModeADesc, glBtnSearchModeAValue, function() {
-        return lgmToggleSearchDesc('gl-sdesc');
+    gmCreateButton(glFormTag, "button", "gl-sdesc", glBtnSearchModeAText, glBtnSearchModeADesc, glBtnSearchModeAValue, function () {
+        return lgmToggleSearchDesc("gl-sdesc");
     });
     gmCreateInput(glFormTag, "text", "gl-scount", "", "number of hits", 1, null, null, null);
     // copy fields
-    var selCap = "SA";
-    var selTit = "De-/Select All";
+    let selCap = "SA";
+    let selTit = "De-/Select All";
     if (gmIsClipboardSupported()) {
         selCap = "CA";
         selTit = "Select & Copy All";
     }
-    gmCreateButton(glActionDiv, "button", "gl-aselect", selCap, selTit, null, function() {
-        return lgmSelectall('gl-resultplain', 'gl-resultlink');
+    gmCreateButton(glActionDiv, "button", "gl-aselect", selCap, selTit, null, function () {
+        return lgmSelectall("gl-resultplain", "gl-resultlink");
     });
-    gmCreateButton(glActionDiv, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function() {
-        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
+    gmCreateButton(glActionDiv, "button", "gl-ashowplain", "PR", "Show Plain Results", null, function () {
+        lgmSwitchResultDisplay("gl-resultplain", "gl-resultlink");
     });
-    gmCreateButton(glActionDiv, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function() {
-        lgmSwitchResultDisplay('gl-resultlink', 'gl-resultplain');
+    gmCreateButton(glActionDiv, "button", "gl-ashowlink", "RL", "Show Results as Link", null, function () {
+        lgmSwitchResultDisplay("gl-resultlink", "gl-resultplain");
     });
-    gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function() {
-        lgmToggleContainer('gl-container', 'gl-resultbox', 'gl-resultplain', 'gl-resultlink', 'gl-awide');
+    gmCreateButton(glActionDiv, "button", "gl-awide", "W", descWidthWide, null, function () {
+        lgmToggleContainer("gl-container", "gl-resultbox", "gl-resultplain", "gl-resultlink", "gl-awide");
     });
     // result fields
     gmCreateObj(glResultDiv, "div", "gl-resultplain");
@@ -2346,24 +2355,25 @@ function lgmAddControlsGrabLinks() {
 
 /**
  * Shows the layer in param frontLayer and hides the layer in param behindLayer.
- * @param frontLayer  - the layer to put in front
- * @param behindLayer - the layer to put in the bakc
+ *
+ * @param {string|Object} frontLayer  the layer to put in front
+ * @param {string|Object} behindLayer the layer to put in the bakc
  */
 function lgmSwitchResultDisplay(frontLayer, behindLayer) {
-    var oFrontLayer = gmGetStyle(frontLayer);
-    var oBehindLayer = gmGetStyle(behindLayer);
+    const oFrontLayer = gmGetStyle(frontLayer);
+    const oBehindLayer = gmGetStyle(behindLayer);
     if (oFrontLayer && oBehindLayer) {
-        var idxFront = gmGetAtI(oFrontLayer, "index");
-        var idxBehind = gmGetAtI(oBehindLayer, "index");
+        let idxFront = gmGetAtI(oFrontLayer, "index");
+        let idxBehind = gmGetAtI(oBehindLayer, "index");
 
-        if (!idxFront || isNaN(idxFront) || idxFront == '') {
+        if (!idxFront || isNaN(idxFront) || idxFront === "") {
             idxFront = 910;
         }
-        if (!idxBehind || isNaN(idxBehind) || idxBehind == '') {
+        if (!idxBehind || isNaN(idxBehind) || idxBehind === "") {
             idxBehind = idxFront - 1;
         }
         if (idxFront < idxBehind) {
-            var i = idxFront;
+            const i = idxFront;
             idxFront = idxBehind;
             idxBehind = i;
         }
@@ -2378,13 +2388,14 @@ function lgmSwitchResultDisplay(frontLayer, behindLayer) {
 
 /**
  * Switch the search mode.
- * @param btnSearch - the button to read the current state from
+ *
+ * @param {string|Object} btnSearch - the button to read the current state from
  */
 function lgmToggleSearchDesc(btnSearch) {
-    var oBtnSearch = gmGetElI(btnSearch);
-    if (oBtnSearch){
-        var curValue = gmGetAtI(oBtnSearch, "value");
-        if (curValue == glBtnSearchModeLValue) {
+    const oBtnSearch = gmGetElI(btnSearch);
+    if (oBtnSearch) {
+        const curValue = gmGetAtI(oBtnSearch, "value");
+        if (curValue === glBtnSearchModeLValue) {
             gmSetCoI(oBtnSearch, glBtnSearchModeAText);
             gmSetAtI(oBtnSearch, "value", glBtnSearchModeAValue);
             gmSetAtI(oBtnSearch, "title", glBtnSearchModeADesc);
@@ -2396,22 +2407,30 @@ function lgmToggleSearchDesc(btnSearch) {
     }
 }
 
+/**
+ *
+ * @param {string|Object} contDiv
+ * @param {string|Object} resultDiv
+ * @param {string|Object} resultPlainDiv
+ * @param {string|Object} resultLinkDiv
+ * @param {string|Object} btnAction
+ */
 function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, btnAction) {
-    var oContDiv = gmGetElI(contDiv);
-    var oResultDiv = gmGetElI(resultDiv);
-    var oBtnAction = gmGetElI(btnAction);
+    const oContDiv = gmGetElI(contDiv);
+    const oResultDiv = gmGetElI(resultDiv);
+    const oBtnAction = gmGetElI(btnAction);
     if (oContDiv && oResultDiv) {
-        var oContDivStyle = gmGetStyle(oContDiv);
-        var oResultDivStyle = gmGetStyle(oResultDiv);
-        var oResultPlainDivStyle = gmGetStyle(resultPlainDiv);
-        var oResultLinkDivStyle = gmGetStyle(resultLinkDiv);
-        var newContWidth = contWidthWide;
-        var newResultWidth = resWidthWide;
-        var newResultDivWidth = divWidthWide;
-        var newDescWidth = descWidthSmall;
-        var newBtnActionText = "S";
-        var curValue = gmGetAtI(oContDivStyle, "width");
-        if (curValue == contWidthWide) {
+        const oContDivStyle = gmGetStyle(oContDiv);
+        const oResultDivStyle = gmGetStyle(oResultDiv);
+        const oResultPlainDivStyle = gmGetStyle(resultPlainDiv);
+        const oResultLinkDivStyle = gmGetStyle(resultLinkDiv);
+        let newContWidth = contWidthWide;
+        let newResultWidth = resWidthWide;
+        let newResultDivWidth = divWidthWide;
+        let newDescWidth = descWidthSmall;
+        let newBtnActionText = "S";
+        const curValue = gmGetAtI(oContDivStyle, "width");
+        if (curValue === contWidthWide) {
             newContWidth = contWidthSmall;
             newResultWidth = resWidthSmall;
             newResultDivWidth = divWidthSmall;
@@ -2435,46 +2454,45 @@ function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, b
 
 /**
  * Shows the complete layer with a default size or special size.
- * @param bOnOff - a numeric height, on, off or null
- * @returns {Boolean} always false
- * @see #RESULT_SHOW
+ *
+ * @param {boolean|number} [bOnOff=] bOnOff - a numeric height, on, off or null
+ * @returns {boolean} always false
+ *
+ * @see #RESULT_HIDE
  * @see #RESULT_HIDE
  * @see #glContainerHeightMin
  * @see #glContainerHeightMax
  * @see #glContainerHeightMaxAuto
  */
 function lgmShowHideResult(bOnOff) {
-    var oCont = gmGetElI('gl-container');
-    var oContStyle = gmGetStyle(oCont);
-    var oCont1 = gmGetElI('gl-resultbox');
-    var oContStyle1 = gmGetStyle(oCont1);
-    var oBtnShow = gmGetElI('gl-sshow');
-    var oSearchCount = gmGetElI("gl-scount");
-    var currHeight;
+    const oCont = gmGetElI("gl-container");
+    const oContStyle = gmGetStyle(oCont);
+    const oCont1 = gmGetElI("gl-resultbox");
+    const oContStyle1 = gmGetStyle(oCont1);
+    const oBtnShow = gmGetElI("gl-sshow");
+    const oSearchCount = gmGetElI("gl-scount");
+    let currHeight;
     if (bOnOff) {
         currHeight = bOnOff;
     } else {
         currHeight = parseFloat(gmGetAtI(oContStyle, "height"));
     }
-    if (currHeight == RESULT_SHOW || currHeight == parseFloat(glContainerHeightMin)) {
+    if (currHeight === RESULT_SHOW || currHeight === parseFloat(glContainerHeightMin)) {
         // if container should be shown or currently is at min size
         currHeight = glContainerHeightMax;
-        var searchCnt = gmGetAtI(oSearchCount, "value");
+        const searchCnt = gmGetAtI(oSearchCount, "value");
         //alert(searchCnt);
         if (isNaN(searchCnt)) {
             currHeight = glContainerHeightMaxAuto;
-        //} else {
-        //    currHeight = glContainerHeightMin;
+            //} else {
+            //    currHeight = glContainerHeightMin;
         }
     } else {
         currHeight = glContainerHeightMin;
     }
-    var buttonText = glBtnShowResultText;
-    var buttonTextDesc = glBtnShowResultTextDesc;
-    if (currHeight == glContainerHeightMin) {
-        buttonText = glBtnShowResultText;
-        buttonTextDesc = glBtnShowResultTextDesc;
-    } else {
+    let buttonText = glBtnShowResultText;
+    let buttonTextDesc = glBtnShowResultTextDesc;
+    if (currHeight !== glContainerHeightMin) {
         buttonText = glBtnHideResultText;
         buttonTextDesc = glBtnHideResultTextDesc;
     }
@@ -2487,11 +2505,12 @@ function lgmShowHideResult(bOnOff) {
 
 /**
  * Clears any filter text and searchs again.
- * @param searchField - the search input containing the text-filter
- * @returns {Boolean} always false
+ *
+ * @param {string|Object} searchField - the search input containing the text-filter
+ * @returns {boolean} always false
  */
 function lgmResetSearch(searchField) {
-    var oSearchField = gmGetElI(searchField);
+    const oSearchField = gmGetElI(searchField);
     if (oSearchField) {
         gmSetAtI(oSearchField, "value", "");
         lgmSearchLinks(oSearchField);
@@ -2502,29 +2521,30 @@ function lgmResetSearch(searchField) {
 
 /**
  * Selects the content of element A or B.
- * @param selElementA
- * @param selElementB
- * @returns {Boolean} always false
+ *
+ * @param {string|Object} selElementA - the first container element
+ * @param {string|Object} selElementB - the second container element
+ * @returns {boolean} always false
  */
 function lgmSelectall(selElementA, selElementB) {
-    var selectedElem = null;
-    var oSelElemA = gmGetElI(selElementA);
-    var oSelElemAStyle = gmGetStyle(oSelElemA);
-    if (oSelElemA != null && gmGetAtI(oSelElemAStyle, "visibility") == "visible") {
+    let selectedElem = null;
+    const oSelElemA = gmGetElI(selElementA);
+    const oSelElemAStyle = gmGetStyle(oSelElemA);
+    if (oSelElemA != null && gmGetAtI(oSelElemAStyle, "visibility") === "visible") {
         selectedElem = oSelElemA;
     } else {
-        var oSelElemB = gmGetElI(selElementB);
-        var oSelElemBStyle = gmGetStyle(oSelElemB);
-        if (oSelElemB != null && gmGetAtI(oSelElemBStyle, "visibility") == "visible") {
+        const oSelElemB = gmGetElI(selElementB);
+        const oSelElemBStyle = gmGetStyle(oSelElemB);
+        if (oSelElemB != null && gmGetAtI(oSelElemBStyle, "visibility") === "visible") {
             selectedElem = oSelElemB;
         }
     }
     if (selectedElem != null) {
-        var bForce = false;
+        let bForce = false;
         if (gmIsClipboardSupported()) {
             bForce = true;
         }
-        var selText = gmSelectText(selectedElem, bForce);
+        const selText = gmSelectText(selectedElem, bForce);
         if (selText) {
             try {
                 if (unsafeWindow) {
@@ -2540,16 +2560,18 @@ function lgmSelectall(selElementA, selElementB) {
 
 /**
  * Search for all matching URLs and shows them the result.
- * @param searchField - the search input containing the text-filter
- * @returns {Boolean} always false
+ *
+ * @param {string|Object} searchFieldAttr - the search input containing the text-filter
+ * @param {string|Object} [searchModeAttr=] searchModeAttr - the searchMode input
+ * @returns {boolean} always false
  */
-function lgmSearchLinks(searchField, searchMode) {
+function lgmSearchLinks(searchFieldAttr, searchModeAttr) {
     try {
-        var searchText = gmGetAtI(searchField, "value");
-        var searchMode = gmGetAtI(searchMode, "value");
-        var arrFoundInPage = gmFindLinksInPage(searchText, searchMode);
+        const searchText = gmGetAtI(searchFieldAttr, "value");
+        const searchMode = gmGetAtI(searchModeAttr, "value");
+        const arrFoundInPage = gmFindLinksInPage(searchText, searchMode);
         lgmLinksInResult(arrFoundInPage);
-        lgmSwitchResultDisplay('gl-resultplain', 'gl-resultlink');
+        lgmSwitchResultDisplay("gl-resultplain", "gl-resultlink");
         lgmShowHideResult(RESULT_SHOW);
     } catch (ex) {
         alert(ex);
@@ -2559,23 +2581,26 @@ function lgmSearchLinks(searchField, searchMode) {
 
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
- * @param arrLinks - array with found links
- * @returns {Boolean} always false
+ *
+ * @param {Object[]} arrLinks - array with found links
+ * @returns {boolean} always false
  */
 function lgmLinksInResult(arrLinks) {
-    var arrLinksPlain = [];
-    var arrLinksLink = [];
+    const arrLinksPlain = [];
+    let arrLinksLink = [];
     try {
-        var oResultPlainDiv = gmGetElI("gl-resultplain");
-        var oResultLinkDiv = gmGetElI("gl-resultlink");
-        var oResultCount = gmGetElI("gl-scount");
-        var arrFoundInPage = gmSortArray(arrLinks);
-        for ( var i = 0; i < arrFoundInPage.length; i++) {
-            var currLink = arrFoundInPage[i][0];
-            var currCaption = lgmCleanArrayCaption(arrFoundInPage[i][1]);
+        const oResultPlainDiv = gmGetElI("gl-resultplain");
+        const oResultLinkDiv = gmGetElI("gl-resultlink");
+        const oResultCount = gmGetElI("gl-scount");
+        const arrFoundInPage = gmSortArray(arrLinks);
+        for (let i = 0; i < arrFoundInPage.length; i++) {
+            const currLink = arrFoundInPage[i][0];
+            const currCaption = lgmCleanArrayCaption(arrFoundInPage[i][1]);
             //alert(currCaption);
-            lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption,i);
-            lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, i);
+            arrLinksPlain.push(lgmPrepareLinkAsPlain(currLink, currCaption, i));
+            arrLinksLink.push(lgmPrepareLinkAsLink(currLink, currCaption, i));
+            // lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption, i);
+            // lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, i);
         }
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
@@ -2595,21 +2620,33 @@ function lgmLinksInResult(arrLinks) {
     return false;
 }
 
+/**
+ * Removes unallowed chars from a text.
+ *
+ * @param {string} dirtyCaption - a text with unallowed chars
+ * @returns {string} the cleaned text
+ */
 function lgmCleanCaption(dirtyCaption) {
     dirtyCaption = trim(dirtyCaption);
     if (dirtyCaption != null) {
-        dirtyCaption = dirtyCaption.replace(/[\n\r]/g, '');
+        dirtyCaption = dirtyCaption.replace(/[\n\r]/g, "");
         if (dirtyCaption.indexOf("<") >= 0) {
-            dirtyCaption = dirtyCaption.replace(/<(?:.|\n)*?>/gm, '').replace(/\s{2,}/gm, ' ');
+            dirtyCaption = dirtyCaption.replace(/<(?:.|\n)*?>/gm, "").replace(/\s{2,}/gm, " ");
         }
     }
     return dirtyCaption;
 }
 
+/**
+ * Removes unallowed chars from an array or a single text.
+ *
+ * @param {string|string[]} arrCaption - an array or a text with unallowed chars
+ * @returns {string} the cleaned array or text
+ */
 function lgmCleanArrayCaption(arrCaption) {
-    var cleanCaption = "";
-    if (gmIsArray(arrCaption)){
-        var arrCleanCaption = [];
+    let cleanCaption;
+    if (gmIsArray(arrCaption)) {
+        let arrCleanCaption = [];
         for (let currElem of arrCaption) {
             arrCleanCaption.push(lgmCleanCaption(currElem));
         }
@@ -2622,46 +2659,85 @@ function lgmCleanArrayCaption(arrCaption) {
     return cleanCaption;
 }
 
-function lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption, curId) {
+/**
+ * Creates a span element containing an url as plain text.
+ *
+ * @param {string} currLink    - the url
+ * @param {string} currCaption - the text for the url
+ * @param {number} curId       - the id for the span
+ * @returns {Object} the newly span element
+ */
+function lgmPrepareLinkAsPlain(currLink, currCaption, curId) {
     // row for plain text
-    var curPId = scriptID + "P" + curId;
-    var plainLink = gmCreateObj(null, "span", curPId);
-	gmSetAtI(plainLink, "data-href", currLink);
-	plainLink = gmCreateObjCommon(plainLink, currLink, currCaption, null,
-		function() { lgmSelectEntry(this); return false;},
-		null, null, null,
-		function() { gmOpenInTab(this["data-href"]); return true; }
-	);
-    arrLinksPlain.push(plainLink);
-}
-
-function lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, curId) {
-    // row for htmllink
-    var curLId = scriptID + "L" + curId;
- 	var plainCaption = "[" + currLink  + "]";
-    var alink = gmCreateLink(null, curLId, currLink, currCaption, plainCaption, "_blank",
-        function() { lgmSelectEntry(this); return false; },
-        function() { gmOpenInTab(this["href"]); return true; }
+    const curPId = scriptID + "P" + curId;
+    let plainLink = gmCreateObj(null, "span", curPId);
+    gmSetAtI(plainLink, "data-href", currLink);
+    plainLink = gmCreateObjCommon(plainLink, currLink, currCaption, null,
+        function () {
+            lgmSelectEntry(this);
+            return false;
+        },
+        null, null, null,
+        function () {
+            gmOpenInTab(this["data-href"]);
+            return true;
+        }
     );
-	gmSetAtI(alink, "data-title", currCaption);
-    gmSetAtI(alink, FL_TAG, FL_ID);
-    arrLinksLink.push(alink);
+    return plainLink;
 }
 
+/**
+ * Creates a a element containing an url as plain text.
+ *
+ * @param {string} currLink    - the url
+ * @param {string} currCaption - the text for the url
+ * @param {number} curId       - the id for the span
+ * @return {Object} the newly a element
+ */
+function lgmPrepareLinkAsLink(currLink, currCaption, curId) {
+    // row for htmllink
+    const curLId = scriptID + "L" + curId;
+    const plainCaption = "[" + currLink + "]";
+    const alink = gmCreateLink(null, curLId, currLink, currCaption, plainCaption, "_blank",
+        function () {
+            lgmSelectEntry(this);
+            return false;
+        },
+        function () {
+            gmOpenInTab(this["href"]);
+            return true;
+        }
+    );
+    gmSetAtI(alink, "data-title", currCaption);
+    gmSetAtI(alink, FL_TAG, FL_ID);
+    return alink;
+}
+
+/**
+ * Fills the container element with the result object.
+ *
+ * @param {string|Object} oResultLinkDiv - the container element
+ * @param {Object[]} arrLinksLink - array with the result objects
+ */
 function lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink) {
     gmEmptyObj(oResultLinkDiv);
-    for ( var idxLinks = 0; idxLinks < arrLinksLink.length; idxLinks++) {
+    for (let idxLinks = 0; idxLinks < arrLinksLink.length; idxLinks++) {
         gmAddObj(arrLinksLink[idxLinks], oResultLinkDiv);
         gmCreateObj(oResultLinkDiv, "br", null);
     }
 }
 
+/**
+ * Select a result entry.
+ *
+ * @param {Object} oEntry - a page element
+ */
 function lgmSelectEntry(oEntry) {
-  try {
-    gmSelectText(oEntry, false);
-  } catch (ex) {
-    alert(ex);
-  }
+    try {
+        gmSelectText(oEntry, false);
+    } catch (ex) {
+        alert(ex);
+    }
 }
 const MAIN_FONT_TYPE = "Consolas"; //"Arial, Courier New";
 const MAIN_FONT_SIZE = "10pt !important";
@@ -2888,6 +2964,8 @@ const CSS_STYLE = `
 //GM-Script specific code - END
 //
 
+// noinspection JSUnusedGlobalSymbols
+
 /**
  * Adds site which should be known by this script.
  * Can be left empty.
@@ -2898,11 +2976,13 @@ function lgm_addKnownSites() {
     gmAddSite("video", "(|.+?\.)dailymotion\..+?", ".*");
     gmAddSite("watch", "(|.+?\.)metacafe\..+?", ".*");
     gmAddSite("10", "devzone\\..+?\\.(net|eu)", "/test/gmonkey/.*");
-};
+}
 
 /**
  * Adds CSS-Styles for this script.
  * Can be left empty.
+ *
+ * @return {boolean} always true
  */
 function lgm_addStyles() {
     GM_addStyle(CSS_STYLE);
@@ -2915,15 +2995,17 @@ function lgm_addStyles() {
  */
 function lgm_addControls() {
     lgmAddControlsGrabLinks();
-};
+}
 
 /**
  * The first action which should be excecuted in this script.
  * Can be left empty.
+ *
+ * @return {boolean} always true
  */
 function lgm_addInitAction() {
     return true;
-};
+}
 
 gmInitEventHandler();
 

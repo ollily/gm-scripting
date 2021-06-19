@@ -6,13 +6,24 @@
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/
-// @include         /http(|s)\://(|.+?\.)myvideo\..+?/.*/
 // @include         /http(|s)\://(|.+?\.)dailymotion\..+?/.*/
-// @include         /http(|s)\://(|.+?\.)metacafe\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)pinterest\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)flickr\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)instagram\..+?/.*/
+// @include         /http(|s)\://(|.+?\.)tiktok\..+?/.*/
 // ==/UserScript==
 
 /*
  Changes:
+ 2021-06-19
+ - update syntax, remove inspection failures
+ - add jsdoc
+
+ 2021-06-19
+ - add wide/small handling of container
+ - add result line selection
+ - optimize link caption generation
+
  2021-06-03
  - switch to different IDE
  - clean code

@@ -1344,7 +1344,6 @@ function gmLinkGenerateLinkText(arrText) {
             arrText[idxST] = trim(gmCleanText(arrText[idxST]));
         }
         htmlText = gmOnlyUnique(arrText).join("");
-        alert(htmlText);
     }
     return htmlText;
 }
