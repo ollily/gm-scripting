@@ -1,31 +1,32 @@
 // ---------------
 // base-web.js - START
 // ---------------
+// noinspection JSUnusedGlobalSymbols
 
 /**
  * Minimum width of the preview.
+ * @type {number}
  */
-var minWidth = 240;
+const minWidth = 240;
+
 /**
  * Maximum width of the preview.
+ * @type {number}
  */
-var maxWidth = 640;
+const maxWidth = 640;
 
 /**
  * Adds an url which should be known for the search.
  *
- * @param filter -
- *            a predefined searchtext for that url
- * @param site -
- *            the hostname as regular expression
- * @param path -
- *            a path as regular expression (optional)
+ * @param filter - a predefined searchtext for that url
+ * @param site - the hostname as regular expression
+ * @param path - a path as regular expression (optional)
  */
 function gmAddSite(filter, site, path) {
     if (knownSite) {
-        if (site && (site != "")) {
-            var len = knownSite.length;
-            knownSite[len] = new Object();
+        if (site && (site !== "")) {
+            const len = knownSite.length;
+            knownSite[len] = {};
             knownSite[len].site = site;
             knownSite[len].filter = (filter != null ? filter : ".+");
             knownSite[len].path = (path != null ? path : "");
@@ -36,25 +37,18 @@ function gmAddSite(filter, site, path) {
 /**
  * Adds a config for a known site.
  *
- * @param site -
- *            a site pattern
- * @param urlElem -
- *            a pattern for the html-element to search in the page
- * @param urlSearch -
- *            a pattern to search inside the url of the html-element
- * @param urlReplace -
- *            a literal which will used for replacing the urlSearch
- * @param urlReplaceLarge -
- *            a literal which will used for replacing the urlSearch with a url
- *            for large images
- * @param withDownload -
- *            1=will add a download-link beneath the picture, else 0
+ * @param site - a site pattern
+ * @param urlElem - a pattern for the html-element to search in the page
+ * @param urlSearch - a pattern to search inside the url of the html-element
+ * @param urlReplace - a literal which will used for replacing the urlSearch
+ * @param urlReplaceLarge - a literal which will used for replacing the urlSearch with a url for large images
+ * @param withDownload - 1=will add a download-link beneath the picture, else 0
  */
 function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDownload) {
     if (knownSite) {
         if (site && site.length > 0) {
-            var len = knownSite.length;
-            knownSite[len] = new Object();
+            const len = knownSite.length;
+            knownSite[len] = {};
             knownSite[len].site = site;
             knownSite[len].url = (urlElem != null ? urlElem : ".+");
             knownSite[len].search = (urlSearch != null ? urlSearch : "");
@@ -70,33 +64,31 @@ function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withD
  * predefined searchtext. If multiple sites will match, the LAST matching
  * filter will be returned.
  *
- * @param site -
- *            the hostname of the site to search for
- * @param path -
- *            the path of the site to search for (optional)
- * @returns {String} the predefined searchtext
+ * @param site - the hostname of the site to search for
+ * @param path - the path of the site to search for (optional)
+ * @returns {string} the predefined searchtext
  */
 function gmFoundFilter(site, path) {
-    var retFilter = "";
-    var init = 0;
+    let retFilter = "";
+    let init = 0;
     if (knownSite && site) {
         if (!path) {
             path = "";
         }
         // alert("site: " + site + "| path: " + path);
-        for ( var i = 0; i < knownSite.length; i++) {
+        for (let i = 0; i < knownSite.length; i++) {
             // alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
             if (site.search(knownSite[i].site) >= 0) {
-                if (init == 0 && knownSite[i].path == "") {
+                if (init === 0 && knownSite[i].path === "") {
                     retFilter = knownSite[i].filter;
                     init = 1;
                 }
-                var fIdx = path.search(knownSite[i].path);
+                const fIdx = path.search(knownSite[i].path);
                 //alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
-                if (path != "" && (fIdx >= 0)) {
+                if (path !== "" && (fIdx >= 0)) {
                     retFilter = knownSite[i].filter;
                     break;
-                } else if (path == "" && knownSite[i].path == "") {
+                } else if (path === "" && knownSite[i].path === "") {
                     retFilter = knownSite[i].filter;
                     break;
                 }
@@ -107,19 +99,16 @@ function gmFoundFilter(site, path) {
 }
 
 /**
- * Searchs in the list of known sites, if this site is found and returns the
- * predefined searchtext. If multiple sites will match, the LAST matching site
- * will be returned.
+ * Searchs in the list of known sites, if this site is found and returns the predefined searchtext. If multiple sites will match, the LAST matching site will be returned.
  *
- * @param site -
- *            the hostname of the site to search for
+ * @param site - the hostname of the site to search for
  * @return a pattern for the html-element to search in the page
  */
 function gmFoundFilter2(site) {
-    var retFilter = null;
+    let retFilter = null;
     if (knownSite != null && site != null) {
-        for (var i=0; i < knownSite.length; i++) {
-            if (site.search(knownSite[i].site) >= 0 ) {
+        for (let i = 0; i < knownSite.length; i++) {
+            if (site.search(knownSite[i].site) >= 0) {
                 retFilter = knownSite[i];
             }
         }
@@ -127,13 +116,13 @@ function gmFoundFilter2(site) {
     return retFilter;
 }
 
-var FL_TAG = "result-list";
-var FL_ID = "_FL";
+const FL_TAG = "result-list";
+const FL_ID = "_FL";
 
 function gmPrepareLinkData(curlink, withDesc) {
-    var linkData = [];
+    const linkData = [];
     linkData.push(gmGetAtI(curlink, "href"));
-    if (withDesc != 0) {
+    if (withDesc !== 0) {
         linkData.push(gmGetAtI(curlink, "title"));
         linkData.push(gmGetAtI(curlink, "aria-label"));
         linkData.push(gmGetAtI(curlink, "alt"));
@@ -145,11 +134,11 @@ function gmPrepareLinkData(curlink, withDesc) {
 }
 
 function gmPrepareLinkTextData(curlink, withDesc) {
-    var linkTextData = [];
+    let linkTextData = [];
     try {
-        var tmpTextData = [];
+        const tmpTextData = [];
         tmpTextData.push(curlink.text);
-        if (withDesc != 0) {
+        if (withDesc !== 0) {
             tmpTextData.push(gmGetAtI(curlink, "title"));
             tmpTextData.push(gmGetAtI(curlink, "alt"));
             tmpTextData.push(gmGetAtI(curlink, "aria-label"));
@@ -157,12 +146,12 @@ function gmPrepareLinkTextData(curlink, withDesc) {
             tmpTextData.push(gmGetAtI(curlink, "onclick"));
             tmpTextData.push(curlink.innerHTML);
             linkTextData = tmpTextData.map(function (value) {
-              	if (gmIsUndefined(value)) {
-                  return "";
+                if (gmIsUndefined(value)) {
+                    return "";
                 } else if (gmIsObject(value)) {
                     return value.toString();
                 } else if (gmIsInstanceOf(value, String)) {
-                	return gmCleanText(value);
+                    return gmCleanText(value);
                 } else {
                     return value;
                 }
@@ -177,9 +166,9 @@ function gmPrepareLinkTextData(curlink, withDesc) {
 function gmPrepareSearchRegExp(searchPattern) {
     if (!searchPattern || searchPattern.length <= 0) {
         searchPattern = ".*";
-    } else if (searchPattern.charAt(0) == "/" && searchPattern.charAt(searchPattern.length - 1) == "/") {
+    } else if (searchPattern.charAt(0) === "/" && searchPattern.charAt(searchPattern.length - 1) === "/") {
         searchPattern = searchPattern.substring(1, searchPattern.length);
-        searchPattern = searchPattern.substring(0, searchPattern.length -1);
+        searchPattern = searchPattern.substring(0, searchPattern.length - 1);
     } else {
         searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
     }
@@ -188,17 +177,16 @@ function gmPrepareSearchRegExp(searchPattern) {
     return searchPattern;
 }
 
-
 /**
  * Search for all matching links in the page.
  *
  * @param searchPattern - the search pattern or leave "" to get all
  * @param withDesc      - 0 = search only in links,
  *                        1 = search also in link description
- * @returns {Array} an array with all found links
+ * @returns {array} an array with all found links
  */
 function gmFindLinksInPage(searchPattern, withDesc) {
-    var pagelinks = [];
+    let pagelinks = [];
     if (withDesc == null) {
         withDesc = 0;
     }
@@ -206,18 +194,18 @@ function gmFindLinksInPage(searchPattern, withDesc) {
         pagelinks = gmGenTestEntries(40);
     } else {
         searchPattern = gmPrepareSearchRegExp(searchPattern);
-        for (var i=0; i < document.links.length; i++) {
-            var curlink = document.links[i];
-            var ne = -1;
-            var searchParamLink = gmPrepareLinkData(curlink, withDesc);
-            var found = gmLinkMatchesPattern(searchParamLink, searchPattern);
+        for (let i = 0; i < document.links.length; i++) {
+            let curlink = document.links[i];
+            let ne = -1;
+            const searchParamLink = gmPrepareLinkData(curlink, withDesc);
+            const found = gmLinkMatchesPattern(searchParamLink, searchPattern);
             if (found) {
-                if (gmGetAtI(curlink.id, FL_TAG) != FL_ID) {
-                    var htmllink = gmGetAtI(curlink, "href");
-                    var searchParamText = gmPrepareLinkTextData(curlink, withDesc);
-                    var htmltext = gmLinkGenerateLinkText(searchParamText);
-                    for (var j=0; j < pagelinks.length; j++) {
-                        if (htmllink == pagelinks[j][0]) {
+                if (gmGetAtI(curlink.id, FL_TAG) !== FL_ID) {
+                    const htmllink = gmGetAtI(curlink, "href");
+                    const searchParamText = gmPrepareLinkTextData(curlink, withDesc);
+                    const htmltext = gmLinkGenerateLinkText(searchParamText);
+                    for (let j = 0; j < pagelinks.length; j++) {
+                        if (htmllink === pagelinks[j][0]) {
                             ne = j;
                             break;
                         }
@@ -227,7 +215,7 @@ function gmFindLinksInPage(searchPattern, withDesc) {
                         pagelinks[ne][1] = gmOnlyUnique(pagelinks[ne][1]);
                         //alert(pagelinks[ne][1]);
                     } else {
-                        var curlink = [htmllink, [htmltext]];
+                        curlink = [htmllink, [htmltext]];
                         pagelinks.push(curlink);
                     }
                 }
@@ -242,15 +230,15 @@ function gmFindLinksInPage(searchPattern, withDesc) {
  *
  * @param arrText - an array texts to search in
  * @param searchPattern - a search text (might be a regular expression)
- * @returns {Boolean} TRUE= the search text is found in the array, or FALSE
+ * @returns {boolean} TRUE= the search text is found in the array, or FALSE
  */
 function gmLinkMatchesPattern(arrText, searchPattern) {
-    var found = false;
+    let found = false;
     if (gmIsArray(arrText)) {
-        for (var i=0; i < arrText.length; i++) {
-            var searchText = arrText[i];
+        for (let i = 0; i < arrText.length; i++) {
+            const searchText = arrText[i];
             try {
-                found = searchText.search(searchPattern) != -1;
+                found = searchText.search(searchPattern) !== -1;
             } catch (e) {
                 // ignored
             }
@@ -266,16 +254,16 @@ function gmLinkMatchesPattern(arrText, searchPattern) {
  * <b>DON'T USE DIRECTLY</b>
  *
  * @param arrText - an array with the possible link descriptions
- * @returns {String} the final link description
+ * @returns {string} the final link description
  */
 function gmLinkGenerateLinkText(arrText) {
-    var searchTextClean = [];
-    var htmlText = "";
+    const searchTextClean = [];
+    let htmlText = "";
     if (gmIsArray(arrText)) {
-        for (var idxST = 0; idxST < arrText.length; idxST++) {
-            arrText[idxST] = trim(gmCleanText(arrText[idxST]));
+        for (let idxST = 0; idxST < arrText.length; idxST++) {
+            searchTextClean[idxST] = trim(gmCleanText(arrText[idxST]));
         }
-        htmlText = gmOnlyUnique(arrText).join("");
+        htmlText = gmOnlyUnique(searchTextClean).join("");
     }
     return htmlText;
 }
@@ -284,19 +272,19 @@ function gmLinkGenerateLinkText(arrText) {
  * Adds a javascript block into the page.
  *
  * @param scc - a string, a function or an array with the javascript code or a function-list
- * @returns {Boolean} TRUE = if the script block could be set, else FALSE
+ * @returns {boolean} TRUE = if the script block could be set, else FALSE
  */
 function gmAddScriptGlobal(scc) {
-    var isSet = false;
+    let isSet = false;
     if (gmIsObject(scc) || gmIsFunction(scc) || (scc && scc.length > 0)) {
-        var head = gmGetHead();
+        const head = gmGetHead();
         if (head) {
-            var script = gmCreateObj(head, "script");
-            script.type = 'text/javascript';
+            const script = gmCreateObj(head, "script");
+            script.type = "text/javascript";
 
-            var allscc = "";
+            let allscc = "";
             if (gmIsArray(scc)) {
-                for ( var i = 0; i < scc.length; i++) {
+                for (let i = 0; i < scc.length; i++) {
                     allscc += scc[i] + " \n";
                 }
             } else {
@@ -316,19 +304,19 @@ function gmAddScriptGlobal(scc) {
  * FIXME: Check
  */
 function gmAddScriptLinkGlobal(scLink) {
-    var isSet = false;
-    var head = gmGetHead();
+    let isSet = false;
+    const head = gmGetHead();
     if (head && scLink && scLink.length > 0) {
-        var allScLink = [];
+        let allScLink;
         if (gmIsArray(scLink)) {
             allScLink = scLink;
         } else {
             allScLink = [scLink];
         }
 
-        for ( var i = 0; i < allScLink.length; i++) {
-            var newScript = gmCreateObj(head, "script");
-            newScript.type = 'text/javascript';
+        for (let i = 0; i < allScLink.length; i++) {
+            const newScript = gmCreateObj(head, "script");
+            newScript.type = "text/javascript";
             newScript.src = allScLink[i];
         }
         isSet = true;
@@ -340,19 +328,19 @@ function gmAddScriptLinkGlobal(scLink) {
  * Adds a style block into the page.
  *
  * @param scc - a string or an array with the css code
- * @returns {Boolean} TRUE = if the style block could be set, else FALSE
+ * @returns {boolean} TRUE = if the style block could be set, else FALSE
  */
 function gmAddStyleGlobal(scc) {
-    var isSet = false;
+    let isSet = false;
     if (gmIsObject(scc) || (scc && scc.length > 0)) {
-        var head = gmGetHead();
+        const head = gmGetHead();
         if (head) {
-            var style = gmCreateObj(head, "style");
-            style.type = 'text/css';
+            const style = gmCreateObj(head, "style");
+            style.type = "text/css";
 
-            var allscc = "";
+            let allscc = "";
             if (gmIsArray(scc)) {
-                for ( var i = 0; i < scc.length; i++) {
+                for (let i = 0; i < scc.length; i++) {
                     allscc += scc[i] + " \n";
                 }
             } else {
@@ -372,7 +360,7 @@ function gmAddStyleGlobal(scc) {
  * @returns {Array} array of entries
  */
 function gmGenTestEntries(maxEntries) {
-    if (isNaN(maxEntries) || maxEntries == "") {
+    if (isNaN(maxEntries) || maxEntries === "") {
         maxEntries = 1;
     }
     if (maxEntries < 0) {
@@ -380,12 +368,11 @@ function gmGenTestEntries(maxEntries) {
     } else if (maxEntries > 100) {
         maxEntries = 100;
     }
-    testArray = [];
-    for ( var i = 1; i <= maxEntries; i++) {
-        var curlink = "http://" + currSite + currPath + "/link-" + i;
-        var htmllink = curlink;
-        var htmltext = "linktext-" + i;
-        var curlink = [htmllink, htmltext];
+    let testArray = [];
+    for (let i = 1; i <= maxEntries; i++) {
+        let htmllink = "https://" + currSite + currPath + "/link-" + i;
+        let htmltext = "linktext-" + i;
+        let curlink = [htmllink, htmltext];
         testArray.push(curlink);
     }
     return testArray;
@@ -394,13 +381,13 @@ function gmGenTestEntries(maxEntries) {
 /**
  * Calculate the offset of an element relating to the elemnt at the most top.
  *
- * @param element - the element to check the offeset
- * @returns {Array[leftOffset, topOffset]} an array with the leftOffset,
- *          topOffset FIXME:TEST
+ * @param {Object} element - the element to check the offeset
+ * @returns {number[]} an array with the leftOffset, topOffset
+ *          FIXME:TEST
  */
 function gmCumulativeOffset(element) {
-    var valueT = 0;
-    var valueL = 0;
+    let valueT = 0;
+    let valueL = 0;
     if (element) {
         valueL = element.width || 0;
         do {
@@ -409,24 +396,22 @@ function gmCumulativeOffset(element) {
             element = element.offsetParent;
         } while (element);
     }
-    return [ valueL, valueT ];
+    return [valueL, valueT];
 }
 
 /**
- * Calculates the horizontal offset to the right in relation to it's parent
- * element.
+ * Calculates the horizontal offset to the right in relation to it's parent element.
  *
- * @param parentElem -
- *            the element to calculate the offset from
+ * @param parentElem - the element to calculate the offset from
  * @param iPoint - a screen point, to add an additional offset
  * @param iZoom  - the zoom factor 1= Originalsize
- * @returns {Number} the horizontal offset or 0 FIXME:Test
+ * @returns {number} the horizontal offset or 0 FIXME:Test
  */
 function gmCalcOffsetH(parentElem, iPoint, iZoom) {
     if (isNaN(iZoom)) {
         iZoom = 1;
     }
-    var offsetH = 0;
+    let offsetH = 0;
     if (parentElem) {
         offsetH = gmCumulativeOffset(parentElem)[1];
         if (!isNaN(offsetH) && gmIsArray(iPoint)) {
@@ -444,17 +429,17 @@ function gmCalcOffsetH(parentElem, iPoint, iZoom) {
  * @param searchForPattern - the pattern to search for
  * @param replaceWithText  - the text what will be inserted instead
  * @param oldUrl           - the URL to search in
- * @returns {String} the url with replaced text
+ * @returns {string} the url with replaced text
  */
 function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
-    var newUrl = oldUrl;
+    let newUrl = oldUrl;
     if (oldUrl != null) {
-        if (searchForPattern != "") {
+        if (searchForPattern !== "") {
             // there is something to replace
             if (replaceWithText == null) {
                 replaceWithText = "";
             }
-            var patternReplace = new RegExp(searchForPattern);
+            const patternReplace = new RegExp(searchForPattern);
             newUrl = oldUrl.replace(patternReplace, replaceWithText);
         }
     }
@@ -467,7 +452,7 @@ function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
  * @returns a server name
  */
 function gmGetCurrentSite() {
-    currSite = document.location.host;
+    let currSite = document.location.host;
     if (document.location.port) {
         currSite += ":" + document.location.port;
     }
@@ -477,13 +462,12 @@ function gmGetCurrentSite() {
 /**
  * Determine the metrics of that image.
  *
- * @param newImage -
- *            the image to inspect
- * @returns {Array[width, height]} the image metrics [width, height] in px
+ * @param {Object} newImage - the image to inspect
+ * @returns {number[]} the image metrics [width, height] in px
  */
 function gmGetImageSize(newImage) {
-    var imageObjectWidth = 0;
-    var imageObjectHeight = 0;
+    let imageObjectWidth = 0;
+    let imageObjectHeight = 0;
 
     if (newImage && newImage.width && newImage.width > 0) {
         imageObjectWidth = newImage.width;
@@ -498,31 +482,27 @@ function gmGetImageSize(newImage) {
     if (imageObjectHeight <= 0) {
         imageObjectHeight = "auto";
     }
-    return [ imageObjectWidth, imageObjectHeight ];
+    return [imageObjectWidth, imageObjectHeight];
 }
 
 /**
  * Add a default style to a div-element.
  *
- * @param hDiv -
- *            the div-element
- * @param iPoint -
- *            metrics of the image [width, height] in px
- * @param offsetW -
- *            an offset (number) for the width (optional), default is 5px
- * @param offsetH -
- *            an offset (number) for the height (optional), default is 5px
- * @param ratio -
- *            the aspect ratio of the image, only is used, if we have no image height
- * @returns {Boolean} TRUE = the layout could be added, else FALSE
+ * @param hDiv - the div-element
+ * @param iPoint - metrics of the image [width, height] in px
+ * @param offsetW - an offset (number) for the width (optional), default is 5px
+ * @param offsetH - an offset (number) for the height (optional), default is 5px
+ * @param ratio - the aspect ratio of the image, only is used, if we have no image height
+ * @param iZoom -
+ * @returns {boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
-    var w = "auto";
-    var h = "auto";
-    var oH = "5px";
-    var oW = "5px";
+    let w = "auto";
+    let h = "auto";
+    let oH = "5px";
+    let oW = "5px";
 
-    var isSet = false;
+    let isSet = false;
     if (gmIsObject(hDiv)) {
         if (isNaN(iZoom)) {
             iZoom = 1;
@@ -543,19 +523,21 @@ function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
         if (!isNaN(offsetW)) {
             oW = offsetW + "px";
         }
+        // noinspection JSCheckFunctionSignatures
         if (!isNaN(w)) {
             w *= iZoom;
             w = w + "px";
         }
+        // noinspection JSCheckFunctionSignatures
         if (!isNaN(h)) {
             h *= iZoom;
             h = h + "px";
         }
-        var css = gmGetAtI(hDiv, "style");
-        if (css == false) {
+        let css = gmGetAtI(hDiv, "style");
+        if (css === false) {
             css = "";
         }
-        css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW ;
+        css += ";width:" + w + ";height:" + h + ";top:" + oH + ";left:" + oW;
         gmSetAtI(hDiv, "style", css);
         isSet = true;
     }
@@ -566,21 +548,17 @@ function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
 /**
  * Add a default style to an img-element.
  *
- * @param hDiv -
- *            the div-element
- * @param hImg -
- *            the img-element
- * @param iPoint -
- *            metrics of the image [width, height] in px
- * @param iZoom -
- *            the zoom factor (1 = Originalsize)
+ * @param hDiv - the div-element
+ * @param hImg - the img-element
+ * @param iPoint - metrics of the image [width, height] in px
+ * @param iZoom - the zoom factor (1 = Originalsize)
  * @returns {Boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
-    var h = "auto";
-    var w = "auto";
+    let h = "auto";
+    let w = "auto";
 
-    var isSet = false;
+    let isSet = false;
     if (gmIsObject(hDiv)) {
         if (isNaN(iZoom)) {
             iZoom = 1;
@@ -591,23 +569,25 @@ function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
             }
             if (isNaN(iPoint[1])) {
                 if (gmIsObject(hImg)) {
-                    ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
+                    let ratio = gmToNo(hImg.style.width) / gmToNo(hImg.style.height);
                     h = (gmToNo(hDiv.style.width) / ratio);// + picTextHeight;
                 }
             } else {
                 h = iPoint[1]; // + picTextHeight;
             }
         }
+        // noinspection JSCheckFunctionSignatures
         if (!isNaN(w)) {
             w *= iZoom;
             w = w + "px";
         }
+        // noinspection JSCheckFunctionSignatures
         if (!isNaN(h)) {
             h *= iZoom;
             h = h + "px";
         }
-        var css = gmGetAtI(hDiv, "style");
-        if (css == false) {
+        let css = gmGetAtI(hDiv, "style");
+        if (css === false) {
             css = "";
         }
         css += ";width:" + w + ";height:" + h;
@@ -639,8 +619,8 @@ function gmGetBody() {
  * @returns {Object} the css-style-object from that object
  */
 function gmGetStyle(obj) {
-    var res = null;
-    var oObj = gmGetElI(obj);
+    let res = null;
+    const oObj = gmGetElI(obj);
     if (oObj) {
         try {
             res = oObj.style;
@@ -652,17 +632,19 @@ function gmGetStyle(obj) {
 }
 
 /**
- * @returns {Integer} height of the document body
+ * @returns {number} height of the document body
  */
 function gmGetBodyHeight() {
-    var D = gmGetBody();
-    var Dh = 0;
-    var Eh = 0;
+    let D = gmGetBody();
+    let Dh = 0;
+    let Eh = 0;
     if (D) {
+        // noinspection JSCheckFunctionSignatures
         Dh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     if (D.documentElement) {
         D = D.documentElement;
+        // noinspection JSCheckFunctionSignatures
         Eh = Math.max(isNaN(D.style.height) ? 0 : D.style.height, D.scrollHeight, D.offsetHeight, D.clientHeight);
     }
     return Math.max(Dh, Eh);
@@ -670,10 +652,11 @@ function gmGetBodyHeight() {
 
 function gmOpenInTab(url) {
     if (url) {
-        window.open(url,"_blank");
+        window.open(url, "_blank");
     }
     return true;
 }
+
 // ---------------
 // base-web.js - END
 // ---------------

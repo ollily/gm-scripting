@@ -1,41 +1,37 @@
 // ---------------
 // base-core.js - START
 // ---------------
+// noinspection JSUnusedGlobalSymbols
 
 /**
  * List of all URLs which are known by this script.
  */
-var knownSite = [];
-var currHost = document.location.host;
-var currPort = document.location.port;
+const knownSite = [];
+const CURR_HOST = document.location.host;
+let CURR_PORT = document.location.port;
 
 /**
  * The URL we are currently running on.
  */
-var currSite = currHost;
+let currSite = CURR_HOST;
 if (document.location.port) {
-    currPort = ":" + document.location.port;
-    if (currSite.search(currPort) == -1) {
+    CURR_PORT = ":" + document.location.port;
+    if (currSite.search(CURR_PORT) === -1) {
         currSite += ":" + document.location.port;
     }
 }
-var currPath = document.location.href.substring(document.location.href
-        .indexOf(currSite)
-        + currSite.length);
 
-var bTestMode = false;
-
-var INIT_ONLOAD = true;
-
+const currPath = document.location.href.substring(document.location.href.indexOf(currSite) + currSite.length);
+const bTestMode = false;
+const INIT_ONLOAD = true;
 
 // - General DHTML-Lib - Start
 // - modified & extended dhtml.js from selfhtml.de
 
-var DHTML = false, DOM = false, MSIE4 = false, NS4 = false, OP = false;
+let DHTML = false, DOM = false, MSIE4 = false, NS4 = false, OP = false;
 
-var shortId = "id";
-
-var ATTR_SEP = ";";
+const SHORT_ID = "id";
+const ATTR_SEP = ";";
 
 if (document.getElementById) {
     DHTML = true;
@@ -64,7 +60,7 @@ if (window.opera) {
  * @returns {Object} the found object or null
  */
 function gmGetElI(identifier) {
-    return gmGetEl(shortId, identifier, null);
+    return gmGetEl(SHORT_ID, identifier, null);
 }
 
 /**
@@ -79,7 +75,7 @@ function gmGetElI(identifier) {
  * @returns {Object} the found object or null
  */
 function gmGetEl(mode, identifier, elementNumber) {
-    var element, elementList;
+    let element, elementList;
     if (gmIsObject(identifier)) {
         return identifier;
     }
@@ -92,21 +88,22 @@ function gmGetEl(mode, identifier, elementNumber) {
         } else {
             alert(null);
         }
+        return null;
     }
     if (DOM) {
-        if (mode.toLowerCase() == "id") {
+        if (mode.toLowerCase() === "id") {
             element = document.getElementById(identifier);
             return element;
         }
-        if (mode.toLowerCase() == "name") {
+        if (mode.toLowerCase() === "name") {
             elementList = document.getElementsByName(identifier);
             element = elementList[elementNumber];
-            if (!element || element == "undefined") {
+            if (!element || element === "undefined") {
                 element = null;
             }
             return element;
         }
-        if (mode.toLowerCase() == "tagname") {
+        if (mode.toLowerCase() === "tagname") {
             elementList = document.getElementsByTagName(identifier);
             element = elementList[elementNumber];
             return element;
@@ -114,11 +111,11 @@ function gmGetEl(mode, identifier, elementNumber) {
         return null;
     }
     if (MSIE4) {
-        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
+        if (mode.toLowerCase() === "id" || mode.toLowerCase() === "name") {
             element = document.all(identifier);
             return element;
         }
-        if (mode.toLowerCase() == "tagname") {
+        if (mode.toLowerCase() === "tagname") {
             elementList = document.all.tags(identifier);
             element = elementList[elementNumber];
             return element;
@@ -126,14 +123,14 @@ function gmGetEl(mode, identifier, elementNumber) {
         return null;
     }
     if (NS4) {
-        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
+        if (mode.toLowerCase() === "id" || mode.toLowerCase() === "name") {
             element = document[identifier];
             if (!element) {
                 element = document.anchors[identifier];
             }
             return element;
         }
-        if (mode.toLowerCase() == "layerindex") {
+        if (mode.toLowerCase() === "layerindex") {
             element = document.layers[identifier];
             return element;
         }
@@ -159,20 +156,19 @@ function gmGetElList(mode, identifier) {
         return null;
     }
     if (DOM) {
-        if (mode.toLowerCase() == "name") {
+        if (mode.toLowerCase() === "name") {
             return document.getElementsByName(identifier);
         }
-        if (mode.toLowerCase() == "tagname") {
+        if (mode.toLowerCase() === "tagname") {
             return document.getElementsByTagName(identifier);
         }
         return null;
     }
     if (MSIE4) {
-        if (mode.toLowerCase() == "id" || mode.toLowerCase() == "name") {
-            element = document.all(identifier);
-            return element;
+        if (mode.toLowerCase() === "id" || mode.toLowerCase() === "name") {
+            return document.all(identifier);
         }
-        if (mode.toLowerCase() == "tagname") {
+        if (mode.toLowerCase() === "tagname") {
             return document.all.tags(identifier);
         }
         return null;
@@ -193,7 +189,7 @@ function gmGetElList(mode, identifier) {
  * @returns {Object} returns the found attribute or false
  */
 function gmGetAtI(identifier, attributeName) {
-    return gmGetAt(shortId, identifier, null, attributeName);
+    return gmGetAt(SHORT_ID, identifier, null, attributeName);
 }
 
 /**
@@ -210,8 +206,8 @@ function gmGetAtI(identifier, attributeName) {
  * @returns {Object} returns the found attribute or null
  */
 function gmGetAt(mode, identifier, elementNumber, attributeName) {
-    var attribute = null;
-    var element = gmGetEl(mode, identifier, elementNumber);
+    let attribute = null;
+    const element = gmGetEl(mode, identifier, elementNumber);
     if (element) {
         if (DOM || MSIE4) {
             try {
@@ -242,7 +238,7 @@ function gmGetAt(mode, identifier, elementNumber, attributeName) {
  * @returns {Object} returns the found content or null
  */
 function gmGetCoI(identifier) {
-    return gmGetCo(shortId, identifier, null);
+    return gmGetCo(SHORT_ID, identifier, null);
 }
 
 /**
@@ -257,11 +253,11 @@ function gmGetCoI(identifier) {
  * @returns {Object} returns the found content or null
  */
 function gmGetCo(mode, identifier, elementNumber) {
-    var content = null;
-    var element = gmGetEl(mode, identifier, elementNumber);
+    let content = null;
+    const element = gmGetEl(mode, identifier, elementNumber);
     if (element) {
         if (DOM && element.firstChild) {
-            if (element.firstChild.nodeType == 3) {
+            if (element.firstChild.nodeType === 3) {
                 content = element.firstChild.nodeValue;
             } else {
                 content = "";
@@ -286,7 +282,7 @@ function gmGetCo(mode, identifier, elementNumber) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gmSetCoI(identifier, text) {
-    return gmSetCo(shortId, identifier, null, text);
+    return gmSetCo(SHORT_ID, identifier, null, text);
 }
 
 /**
@@ -303,7 +299,7 @@ function gmSetCoI(identifier, text) {
  * @returns {Boolean} TRUE=if set was successfull, else FALSE
  */
 function gmSetCo(mode, identifier, elementNumber, text) {
-    var element = gmGetEl(mode, identifier, elementNumber);
+    const element = gmGetEl(mode, identifier, elementNumber);
     if (element) {
         if (DOM) {
             if (!element.firstChild) {
@@ -325,6 +321,7 @@ function gmSetCo(mode, identifier, elementNumber, text) {
     }
     return false;
 }
+
 // - General DHTML-Lib - End
 
 /**
@@ -340,7 +337,7 @@ function gmSetCo(mode, identifier, elementNumber, text) {
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmSetAtI(identifier, attributeName, attributeValue) {
-    return gmSetAt(shortId, identifier, null, attributeName, attributeValue);
+    return gmSetAt(SHORT_ID, identifier, null, attributeName, attributeValue);
 }
 
 /**
@@ -351,6 +348,7 @@ function gmSetAtI(identifier, attributeName, attributeValue) {
  *            how the Identifier is interpreted (id, name, tagname)
  * @param identifier -
  *            the key (id, name, tagname) of the element
+ * @param elementNumber
  * @param attributeName -
  *            the unique name of the attribute
  * @param attributeValue -
@@ -359,7 +357,7 @@ function gmSetAtI(identifier, attributeName, attributeValue) {
  */
 function gmSetAt(mode, identifier, elementNumber, attributeName, attributeValue) {
     //var attribute;
-    var element = gmGetEl(mode, identifier, elementNumber);
+    const element = gmGetEl(mode, identifier, elementNumber);
     if (element) {
         if (DOM || MSIE4) {
             try {
@@ -398,8 +396,8 @@ function gmSetAt(mode, identifier, elementNumber, attributeName, attributeValue)
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmAppAt(mode, identifier, attributeName, attributeValue) {
-    var oldValue = gmGetAt(mode, identifier, attributeName);
-    var newValue = oldValue + ATTR_SEP + attributeValue;
+    const oldValue = gmGetAt(mode, identifier, attributeName);
+    const newValue = oldValue + ATTR_SEP + attributeValue;
     return gmSetAt(mode, identifier, attributeName, newValue);
 }
 
@@ -416,7 +414,7 @@ function gmAppAt(mode, identifier, attributeName, attributeValue) {
  * @returns {Boolean} TRUE = the value could be set, else FALSE
  */
 function gmAppAtI(identifier, attributeName, attributeValue) {
-    return gmAppAt(shortId, identifier, attributeName, attributeValue);
+    return gmAppAt(SHORT_ID, identifier, attributeName, attributeValue);
 }
 
 /**
@@ -437,6 +435,7 @@ function gmIsFunction(obj) {
 function gmIsUndefined(obj) {
     return (obj == null ? true : (typeof obj == "undefined"));
 }
+
 /**
  * Verifies if an instance is an object.
  *
@@ -458,14 +457,14 @@ function gmIsObject(obj) {
  * @returns {Boolean} TRUE = if the object is from the tested type, else FALSE
  */
 function gmIsInstanceOf(obj, objType) {
-    var isType = false;
+    let isType = false;
     if (obj != null) {
         if (objType == null) {
             objType = "Object";
         }
         try {
-            tObjType = eval(objType);
-            isType = (obj.constructor == tObjType);
+            let tObjType = eval(objType);
+            isType = (obj.constructor === tObjType);
         } catch (e) {
             // ignore
         }
@@ -482,11 +481,11 @@ function gmIsInstanceOf(obj, objType) {
  * @returns {String} the trimmed string
  */
 function ltrim(a) {
-    var ret = null;
+    let ret = null;
     if (a != null) {
-        ret = new String(a);
-        var pos = 0;
-        while (a.charAt(pos) == " ") {
+        ret = String(a);
+        let pos = 0;
+        while (a.charAt(pos) === " ") {
             pos++;
         }
         ret = a.substring(pos);
@@ -502,11 +501,11 @@ function ltrim(a) {
  * @returns {String} the trimmed string
  */
 function rtrim(a) {
-    var ret = null;
+    let ret = null;
     if (a != null) {
-        ret = new String(a);
-        var pos = a.length - 1;
-        while (a.charAt(pos) == " ") {
+        ret = String(a);
+        let pos = a.length - 1;
+        while (a.charAt(pos) === " ") {
             pos--;
         }
         ret = a.substring(0, pos + 1);
@@ -526,7 +525,7 @@ function trim(a) {
 }
 
 function gmCleanText(dirtyText) {
-    var cleanText = "";
+    let cleanText = "";
     if (gmIsInstanceOf(dirtyText, String)) {
         cleanText = dirtyText.replace(/\s\s/g, "").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/#/g, "");
     }
@@ -541,11 +540,11 @@ function gmCleanText(dirtyText) {
  * @returns {Number} the found numeric value or 0;
  */
 function gmToNo(a) {
-    var numFound = "";
+    let numFound = "";
     if (isNaN(a)) {
         if (a && a.length > 0) {
-            for ( var int = 0; int < a.length; int++) {
-                var a_ele = a[int];
+            for (let int = 0; int < a.length; int++) {
+                const a_ele = a[int];
                 if (!isNaN(a_ele)) {
                     numFound += a_ele;
                 } else {
@@ -555,17 +554,18 @@ function gmToNo(a) {
     } else {
         numFound = a;
     }
-    newNum = new Number(numFound).valueOf();
-    if (typeof(newNum) != "number") {
+    let newNum = Number(numFound).valueOf();
+    if (typeof (newNum) != "number") {
         newNum = 0;
     }
     return newNum;
 }
 
-const SORT_NO  = 0;
+const SORT_NO = 0;
 const SORT_DEF = 1;
 const SORT_REV = 2;
 const SORT_NUM = 3;
+
 /**
  * Sorts an array by a specific sort order (alphanumeric).
  *
@@ -574,17 +574,17 @@ const SORT_NUM = 3;
  * @returns {Array} the sorted array
  */
 function gmSortArray(unsortedArray, sortMode) {
-    var sortedArray = unsortedArray;
+    const sortedArray = unsortedArray;
     if (sortMode == null) {
         sortMode = false;
     }
-    if (sortMode == SORT_NUM) {
-        sortedArray.sort(function(aE, bE){
+    if (sortMode === SORT_NUM) {
+        sortedArray.sort(function (aE, bE) {
             return aE - bE;
         });
-    } else if (sortMode == SORT_REV) {
+    } else if (sortMode === SORT_REV) {
         sortedArray.reverse();
-    } else if (sortMode || sortMode == SORT_DEF) {
+    } else if (sortMode || sortMode === SORT_DEF) {
         sortedArray.sort();
     }
     return sortedArray;
@@ -593,14 +593,20 @@ function gmSortArray(unsortedArray, sortMode) {
 function gmSortObject(unsortedObjects, sortField) {
     try {
         if (gmIsArray(unsortedObjects)) {
-            unsortedObjects.sort(function(aElem, bElem) {
-              var x = aElem[sortField].toLowerCase();
-              var y = bElem[sortField].toLowerCase();
-              if (x < y) {return -1;}
-              if (x > y) {return 1;}
-              return 0;
-            }
-        )};
+            unsortedObjects.sort(function (aElem, bElem) {
+                    const x = aElem[sortField].toLowerCase();
+                    const y = bElem[sortField].toLowerCase();
+                    if (x < y) {
+                        return -1;
+                    }
+                    if (x > y) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            );
+        }
+
     } catch (ex) {
         alert(ex);
     }
@@ -608,10 +614,10 @@ function gmSortObject(unsortedObjects, sortField) {
 }
 
 function gmOnlyUnique(arrArray) {
-    var arrUnique = [];
+    let arrUnique = [];
     if (gmIsArray(arrArray)) {
         arrUnique = arrArray.filter(function (value, index, self) {
-          return self.indexOf(value) === index;
+            return self.indexOf(value) === index;
         });
     }
     return arrUnique;
@@ -625,7 +631,7 @@ function gmOnlyUnique(arrArray) {
  * @returns {Boolean} TRUE = if all handler are succesfull done, else FALSE
  */
 function gmAddHandler(e) {
-    var isDone = false;
+    let isDone;
     lgm_addKnownSites();
     lgm_addStyles();
     lgm_addControls();
@@ -634,13 +640,12 @@ function gmAddHandler(e) {
     return isDone;
 }
 
-
 /**
-* Now add the event handler.
-*/
+ * Now add the event handler.
+ */
 function gmInitEventHandler() {
     if (INIT_ONLOAD) {
-        window.addEventListener("load",  function(e) {
+        window.addEventListener("load", function (e) {
             gmAddHandler(e);
         });
     }
