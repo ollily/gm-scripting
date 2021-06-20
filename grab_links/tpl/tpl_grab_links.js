@@ -100,8 +100,8 @@ function lgmAddControlsGrabLinks() {
 /**
  * Shows the layer in param frontLayer and hides the layer in param behindLayer.
  *
- * @param {string|Object} frontLayer  the layer to put in front
- * @param {string|Object} behindLayer the layer to put in the bakc
+ * @param {string|HTMLDivElement} frontLayer  the layer to put in front
+ * @param {string|HTMLDivElement} behindLayer the layer to put in the bakc
  */
 function lgmSwitchResultDisplay(frontLayer, behindLayer) {
     const oFrontLayer = gmGetStyle(frontLayer);
@@ -133,7 +133,7 @@ function lgmSwitchResultDisplay(frontLayer, behindLayer) {
 /**
  * Switch the search mode.
  *
- * @param {string|Object} btnSearch - the button to read the current state from
+ * @param {string|HTMLButtonElement} btnSearch - the button to read the current state from
  */
 function lgmToggleSearchDesc(btnSearch) {
     const oBtnSearch = gmGetElI(btnSearch);
@@ -153,11 +153,11 @@ function lgmToggleSearchDesc(btnSearch) {
 
 /**
  *
- * @param {string|Object} contDiv
- * @param {string|Object} resultDiv
- * @param {string|Object} resultPlainDiv
- * @param {string|Object} resultLinkDiv
- * @param {string|Object} btnAction
+ * @param {string|HTMLDivElement} contDiv
+ * @param {string|HTMLDivElement} resultDiv
+ * @param {string|HTMLDivElement} resultPlainDiv
+ * @param {string|HTMLDivElement} resultLinkDiv
+ * @param {string|HTMLButtonElement} btnAction
  */
 function lgmToggleContainer(contDiv, resultDiv, resultPlainDiv, resultLinkDiv, btnAction) {
     const oContDiv = gmGetElI(contDiv);
@@ -228,8 +228,6 @@ function lgmShowHideResult(bOnOff) {
         //alert(searchCnt);
         if (isNaN(searchCnt)) {
             currHeight = glContainerHeightMaxAuto;
-            //} else {
-            //    currHeight = glContainerHeightMin;
         }
     } else {
         currHeight = glContainerHeightMin;
@@ -250,7 +248,7 @@ function lgmShowHideResult(bOnOff) {
 /**
  * Clears any filter text and searchs again.
  *
- * @param {string|Object} searchField - the search input containing the text-filter
+ * @param {string|HTMLInputElement} searchField - the search input containing the text-filter
  * @returns {boolean} always false
  */
 function lgmResetSearch(searchField) {
@@ -266,8 +264,8 @@ function lgmResetSearch(searchField) {
 /**
  * Selects the content of element A or B.
  *
- * @param {string|Object} selElementA - the first container element
- * @param {string|Object} selElementB - the second container element
+ * @param {string|HTMLElement} selElementA - the first container element
+ * @param {string|HTMLElement} selElementB - the second container element
  * @returns {boolean} always false
  */
 function lgmSelectall(selElementA, selElementB) {
@@ -305,8 +303,8 @@ function lgmSelectall(selElementA, selElementB) {
 /**
  * Search for all matching URLs and shows them the result.
  *
- * @param {string|Object} searchFieldAttr - the search input containing the text-filter
- * @param {string|Object} [searchModeAttr=] searchModeAttr - the searchMode input
+ * @param {string|HTMLInputElement} searchFieldAttr - the search input containing the text-filter
+ * @param {string|HTMLInputElement} [searchModeAttr=] searchModeAttr - the searchMode input
  * @returns {boolean} always false
  */
 function lgmSearchLinks(searchFieldAttr, searchModeAttr) {
@@ -326,7 +324,7 @@ function lgmSearchLinks(searchFieldAttr, searchModeAttr) {
 /**
  * Searchs for all URL in the page and optional filters by a regular expression.
  *
- * @param {Object[]} arrLinks - array with found links
+ * @param {PagelinksClazz[]} arrLinks - array with found links
  * @returns {boolean} always false
  */
 function lgmLinksInResult(arrLinks) {
@@ -338,13 +336,11 @@ function lgmLinksInResult(arrLinks) {
         const oResultCount = gmGetElI("gl-scount");
         const arrFoundInPage = gmSortArray(arrLinks);
         for (let i = 0; i < arrFoundInPage.length; i++) {
-            const currLink = arrFoundInPage[i][0];
-            const currCaption = lgmCleanArrayCaption(arrFoundInPage[i][1]);
+            const currLink = arrFoundInPage[i].link;
+            const currCaption = lgmCleanArrayCaption(arrFoundInPage[i].linkText);
             //alert(currCaption);
             arrLinksPlain.push(lgmPrepareLinkAsPlain(currLink, currCaption, i));
             arrLinksLink.push(lgmPrepareLinkAsLink(currLink, currCaption, i));
-            // lgmPrepareLinkAsPlain(arrLinksPlain, currLink, currCaption, i);
-            // lgmPrepareLinkAsLink(arrLinksLink, currLink, currCaption, i);
         }
         if (oResultCount) {
             gmSetAtI(oResultCount, "value", arrFoundInPage.length);
@@ -409,7 +405,7 @@ function lgmCleanArrayCaption(arrCaption) {
  * @param {string} currLink    - the url
  * @param {string} currCaption - the text for the url
  * @param {number} curId       - the id for the span
- * @returns {Object} the newly span element
+ * @returns {HTMLSpanElement} the newly span element
  */
 function lgmPrepareLinkAsPlain(currLink, currCaption, curId) {
     // row for plain text
@@ -436,7 +432,7 @@ function lgmPrepareLinkAsPlain(currLink, currCaption, curId) {
  * @param {string} currLink    - the url
  * @param {string} currCaption - the text for the url
  * @param {number} curId       - the id for the span
- * @return {Object} the newly a element
+ * @return {HTMLAnchorElement} the newly a element
  */
 function lgmPrepareLinkAsLink(currLink, currCaption, curId) {
     // row for htmllink
@@ -448,7 +444,7 @@ function lgmPrepareLinkAsLink(currLink, currCaption, curId) {
             return false;
         },
         function () {
-            gmOpenInTab(this["href"]);
+            gmOpenInTab(this.href);
             return true;
         }
     );
@@ -460,8 +456,8 @@ function lgmPrepareLinkAsLink(currLink, currCaption, curId) {
 /**
  * Fills the container element with the result object.
  *
- * @param {string|Object} oResultLinkDiv - the container element
- * @param {Object[]} arrLinksLink - array with the result objects
+ * @param {string|HTMLDivElement} oResultLinkDiv - the container element
+ * @param {HTMLAnchorElement[]} arrLinksLink - array with the result objects
  */
 function lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink) {
     gmEmptyObj(oResultLinkDiv);
@@ -474,7 +470,7 @@ function lgmPrepareLinksInContainer(oResultLinkDiv, arrLinksLink) {
 /**
  * Select a result entry.
  *
- * @param {Object} oEntry - a page element
+ * @param {HTMLElement} oEntry - a page element
  */
 function lgmSelectEntry(oEntry) {
     try {

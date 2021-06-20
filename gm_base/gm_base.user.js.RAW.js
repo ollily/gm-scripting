@@ -3,10 +3,6 @@
 // ---------------
 // noinspection JSUnusedGlobalSymbols
 
-/**
- * List of all URLs which are known by this script.
- */
-const knownSite = [];
 const CURR_HOST = document.location.host;
 let CURR_PORT = document.location.port;
 
@@ -1046,6 +1042,69 @@ function gmEmptyObj(obj) {
 // ---------------
 // noinspection JSUnusedGlobalSymbols
 
+class PagelinksClazz {
+    /**
+     *
+     * @param {string} link
+     * @param {string|string[]} linkText
+     */
+    constructor(link, linkText) {
+        this.link = link;
+        if (!gmIsArray(linkText)) {
+            this.linkText = [linkText];
+        } else {
+            this.linkText = linkText;
+        }
+    }
+}
+
+class KnowSiteClazz {
+    /**
+     * @param {string|RegExp} site
+     */
+    constructor(site) {
+        this.site = site;
+    }
+}
+
+class KnowSiteFilterClazz extends KnowSiteClazz {
+    /**
+     * @param {string|RegExp} site
+     * @param {string} filter
+     * @param {string|RegExp} path
+     */
+    constructor(site, filter, path) {
+        super(site);
+        this.filter = filter;
+        this.path = path;
+    }
+}
+
+class KnowSiteExtClazz extends KnowSiteClazz {
+    /**
+     * @param {string|RegExp} site
+     * @param {string|RegExp} url
+     * @param {string|RegExp} search
+     * @param {string|RegExp} replace
+     * @param {string|RegExp} replaceLarge
+     * @param {number} withDownload
+     */
+    constructor(site, url, search, replace, replaceLarge, withDownload) {
+        super(site);
+        this.url = url;
+        this.search = search;
+        this.replace = replace;
+        this.replace_large = replaceLarge;
+        this.withDownload = withDownload;
+    }
+}
+
+/**
+ * List of all URLs which are known by this script.
+ * @type {KnowSiteFilterClazz[]|KnowSiteExtClazz[]}
+ */
+let knownSite = [];
+
 /**
  * Minimum width of the preview.
  * @type {number}
@@ -1061,18 +1120,23 @@ const maxWidth = 640;
 /**
  * Adds an url which should be known for the search.
  *
- * @param filter - a predefined searchtext for that url
- * @param site - the hostname as regular expression
- * @param path - a path as regular expression (optional)
+ * @param {string} filter - a predefined searchtext for that url
+ * @param {string|RegExp} site - the hostname as regular expression
+ * @param {string|RegExp} path - a path as regular expression (optional)
  */
 function gmAddSite(filter, site, path) {
-    if (knownSite) {
-        if (site && (site !== "")) {
-            const len = knownSite.length;
-            knownSite[len] = {};
-            knownSite[len].site = site;
-            knownSite[len].filter = (filter != null ? filter : ".+");
-            knownSite[len].path = (path != null ? path : "");
+    if (gmIsArray(knownSite)) {
+        if (site && (site.length > 0)) {
+            knownSite.push(new KnowSiteFilterClazz(
+                site,
+                (filter != null ? filter : ".+"),
+                (path != null ? path : ""))
+            );
+            // const len = knownSite.length;
+            // knownSite[len] = {};
+            // knownSite[len].site = site;
+            // knownSite[len].filter = (filter != null ? filter : ".+");
+            // knownSite[len].path = (path != null ? path : "");
         }
     }
 }
@@ -1080,24 +1144,32 @@ function gmAddSite(filter, site, path) {
 /**
  * Adds a config for a known site.
  *
- * @param site - a site pattern
- * @param urlElem - a pattern for the html-element to search in the page
- * @param urlSearch - a pattern to search inside the url of the html-element
- * @param urlReplace - a literal which will used for replacing the urlSearch
- * @param urlReplaceLarge - a literal which will used for replacing the urlSearch with a url for large images
- * @param withDownload - 1=will add a download-link beneath the picture, else 0
+ * @param {string|RegExp} site - a site pattern
+ * @param {string|RegExp} urlElem - a pattern for the html-element to search in the page
+ * @param {string|RegExp} urlSearch - a pattern to search inside the url of the html-element
+ * @param {string|RegExp} urlReplace - a literal which will used for replacing the urlSearch
+ * @param {string|RegExp} urlReplaceLarge - a literal which will used for replacing the urlSearch with a url for large images
+ * @param {number} withDownload - 1=will add a download-link beneath the picture, else 0
  */
 function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withDownload) {
-    if (knownSite) {
+    if (gmIsArray(knownSite)) {
         if (site && site.length > 0) {
-            const len = knownSite.length;
-            knownSite[len] = {};
-            knownSite[len].site = site;
-            knownSite[len].url = (urlElem != null ? urlElem : ".+");
-            knownSite[len].search = (urlSearch != null ? urlSearch : "");
-            knownSite[len].replace = (urlReplace != null ? urlReplace : "");
-            knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
-            knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
+            knownSite.push(new KnowSiteExtClazz(
+                site,
+                (urlElem != null ? urlElem : ".+"),
+                (urlSearch != null ? urlSearch : ""),
+                (urlReplace != null ? urlReplace : ""),
+                (urlReplaceLarge != null ? urlReplaceLarge : ""),
+                (withDownload != null ? withDownload : 0)
+            ));
+            // const len = knownSite.length;
+            // knownSite[len] = {};
+            // knownSite[len].site = site;
+            // knownSite[len].url = (urlElem != null ? urlElem : ".+");
+            // knownSite[len].search = (urlSearch != null ? urlSearch : "");
+            // knownSite[len].replace = (urlReplace != null ? urlReplace : "");
+            // knownSite[len].replace_large = (urlReplaceLarge != null ? urlReplaceLarge : "");
+            // knownSite[len].withDownload = (withDownload != null ? withDownload : 0);
         }
     }
 }
@@ -1107,32 +1179,31 @@ function gmAddSite2(site, urlElem, urlSearch, urlReplace, urlReplaceLarge, withD
  * predefined searchtext. If multiple sites will match, the LAST matching
  * filter will be returned.
  *
- * @param site - the hostname of the site to search for
- * @param path - the path of the site to search for (optional)
+ * @param {string} site - the hostname of the site to search for
+ * @param {string} path - the path of the site to search for (optional)
  * @returns {string} the predefined searchtext
  */
 function gmFoundFilter(site, path) {
     let retFilter = "";
-    let init = 0;
-    if (knownSite && site) {
+    if (gmIsArray(knownSite) && site) {
         if (!path) {
             path = "";
         }
-        // alert("site: " + site + "| path: " + path);
-        for (let i = 0; i < knownSite.length; i++) {
-            // alert("u:" + knownSite[i].site+" p:" + knownSite[i].path);
-            if (site.search(knownSite[i].site) >= 0) {
-                if (init === 0 && knownSite[i].path === "") {
-                    retFilter = knownSite[i].filter;
+        //for (let i = 0; i < knownSite.length; i++) {
+        let init = 0;
+        for (let currSite of knownSite) {
+            //let currSite = knownSite[i];
+            if (site.search(currSite.site) >= 0) {
+                if (init === 0 && currSite.path === "") {
+                    retFilter = currSite.filter;
                     init = 1;
                 }
-                const fIdx = path.search(knownSite[i].path);
-                //alert(fIdx + " u:>" + knownSite[i].site + "< p:>" + path + "< k:>"+knownSite[i].path + "<");
+                let fIdx = path.search(currSite.path);
                 if (path !== "" && (fIdx >= 0)) {
-                    retFilter = knownSite[i].filter;
+                    retFilter = currSite.filter;
                     break;
-                } else if (path === "" && knownSite[i].path === "") {
-                    retFilter = knownSite[i].filter;
+                } else if (path === "" && currSite.path === "") {
+                    retFilter = currSite.filter;
                     break;
                 }
             }
@@ -1144,24 +1215,36 @@ function gmFoundFilter(site, path) {
 /**
  * Searchs in the list of known sites, if this site is found and returns the predefined searchtext. If multiple sites will match, the LAST matching site will be returned.
  *
- * @param site - the hostname of the site to search for
- * @return a pattern for the html-element to search in the page
+ * @param {string} site - the hostname of the site to search for
+ * @return {KnowSiteExtClazz} a found site configuration
  */
 function gmFoundFilter2(site) {
     let retFilter = null;
-    if (knownSite != null && site != null) {
-        for (let i = 0; i < knownSite.length; i++) {
-            if (site.search(knownSite[i].site) >= 0) {
-                retFilter = knownSite[i];
+    if (gmIsArray(knownSite) && site) {
+        for (let currSite of knownSite) {
+            if (site.search(currSite.site) >= 0) {
+                retFilter = currSite;
             }
         }
+        //for (let i = 0; i < knownSite.length; i++) {
+        //  if (site.search(knownSite[i].site) >= 0) {
+        // retFilter = knownSite[i];
+        //}
     }
     return retFilter;
 }
 
+/** @type {string} */
 const FL_TAG = "result-list";
+/** @type {string} */
 const FL_ID = "_FL";
 
+/**
+ *
+ * @param {string|HTMLElement} curlink
+ * @param {number} withDesc
+ * @return {string[]}
+ */
 function gmPrepareLinkData(curlink, withDesc) {
     const linkData = [];
     linkData.push(gmGetAtI(curlink, "href"));
@@ -1176,6 +1259,12 @@ function gmPrepareLinkData(curlink, withDesc) {
     return linkData;
 }
 
+/**
+ *
+ * @param {string|HTMLAnchorElement} curlink
+ * @param {number} withDesc
+ * @return {string[]}
+ */
 function gmPrepareLinkTextData(curlink, withDesc) {
     let linkTextData = [];
     try {
@@ -1206,6 +1295,11 @@ function gmPrepareLinkTextData(curlink, withDesc) {
     return linkTextData;
 }
 
+/**
+ *
+ * @param {string} searchPattern
+ * @return {RegExp}
+ */
 function gmPrepareSearchRegExp(searchPattern) {
     if (!searchPattern || searchPattern.length <= 0) {
         searchPattern = ".*";
@@ -1216,51 +1310,46 @@ function gmPrepareSearchRegExp(searchPattern) {
         searchPattern = searchPattern.replace(/\?/g, ".").replace(/\./g, "\.").replace(/\*/g, ".*");
     }
     //alert(searchPattern);
-    searchPattern = new RegExp(searchPattern, "i");
-    return searchPattern;
+    return new RegExp(searchPattern, "i");
 }
 
 /**
  * Search for all matching links in the page.
  *
- * @param searchPattern - the search pattern or leave "" to get all
- * @param withDesc      - 0 = search only in links,
+ * @param {string} searchPattern - the search pattern or leave "" to get all
+ * @param {number} withDesc      - 0 = search only in links,
  *                        1 = search also in link description
- * @returns {array} an array with all found links
+ * @returns {PagelinksClazz[]} an array with all found links
  */
 function gmFindLinksInPage(searchPattern, withDesc) {
     let pagelinks = [];
-    if (withDesc == null) {
+    if (!withDesc) {
         withDesc = 0;
     }
     if (bTestMode) {
         pagelinks = gmGenTestEntries(40);
     } else {
-        searchPattern = gmPrepareSearchRegExp(searchPattern);
-        for (let i = 0; i < document.links.length; i++) {
-            let curlink = document.links[i];
-            let ne = -1;
-            const searchParamLink = gmPrepareLinkData(curlink, withDesc);
-            const found = gmLinkMatchesPattern(searchParamLink, searchPattern);
-            if (found) {
-                if (gmGetAtI(curlink.id, FL_TAG) !== FL_ID) {
-                    const htmllink = gmGetAtI(curlink, "href");
-                    const searchParamText = gmPrepareLinkTextData(curlink, withDesc);
-                    const htmltext = gmLinkGenerateLinkText(searchParamText);
-                    for (let j = 0; j < pagelinks.length; j++) {
-                        if (htmllink === pagelinks[j][0]) {
-                            ne = j;
-                            break;
-                        }
+        //searchPattern = gmPrepareSearchRegExp(searchPattern);
+        //for (let linksIdx = 0; linksIdx < document.links.length; linksIdx++) {
+        for (let curLink of document.links) {
+            //let curLink = document.links[linksIdx];
+            const found = gmLinkMatchesPattern(curLink, searchPattern, withDesc);
+            if (found && gmGetAtI(curLink.id, FL_TAG) !== FL_ID) {
+                let htmlLink = gmGetAtI(curLink, "href");
+                let htmlText = gmLinkGenerateLinkText(curLink, withDesc);
+                let bFound = false;
+                for (let foundLinksIdx = 0; foundLinksIdx < pagelinks.length; foundLinksIdx++) {
+                    let currPageLink = pagelinks[foundLinksIdx];
+                    if (htmlLink === currPageLink.link) {
+                        bFound = true;
+                        currPageLink.linkText.push(htmlText);
+                        pagelinks[foundLinksIdx].linkText = gmOnlyUnique(currPageLink.linkText);
+                        //alert(pagelinks[foundLinksIdx].linkText);
+                        break;
                     }
-                    if (ne > -1) {
-                        pagelinks[ne][1].push(htmltext);
-                        pagelinks[ne][1] = gmOnlyUnique(pagelinks[ne][1]);
-                        //alert(pagelinks[ne][1]);
-                    } else {
-                        curlink = [htmllink, [htmltext]];
-                        pagelinks.push(curlink);
-                    }
+                }
+                if (!bFound) {
+                    pagelinks.push(new PagelinksClazz(htmlLink, htmlText));
                 }
             }
         }
@@ -1271,36 +1360,41 @@ function gmFindLinksInPage(searchPattern, withDesc) {
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
- * @param arrText - an array texts to search in
- * @param searchPattern - a search text (might be a regular expression)
+ * @param {string|Object} curLink
+ * @param {string} searchPattern - a search text (might be a regular expression)
+ * @param {number} withDesc
  * @returns {boolean} TRUE= the search text is found in the array, or FALSE
  */
-function gmLinkMatchesPattern(arrText, searchPattern) {
-    let found = false;
+function gmLinkMatchesPattern(curLink, searchPattern, withDesc) {
+    let cleanSearchPattern = gmPrepareSearchRegExp(searchPattern);
+    const arrText = gmPrepareLinkData(curLink, withDesc);
+    let bFound = false;
     if (gmIsArray(arrText)) {
         for (let i = 0; i < arrText.length; i++) {
             const searchText = arrText[i];
             try {
-                found = searchText.search(searchPattern) !== -1;
+                bFound = searchText.search(cleanSearchPattern) !== -1;
             } catch (e) {
                 // ignored
             }
-            if (found) {
+            if (bFound) {
                 break;
             }
         }
     }
-    return found;
+    return bFound;
 }
 
 /**
  * <b>DON'T USE DIRECTLY</b>
  *
- * @param arrText - an array with the possible link descriptions
+ * @param {string|Object} curLink
+ * @param {number} withDesc
  * @returns {string} the final link description
  */
-function gmLinkGenerateLinkText(arrText) {
-    const searchTextClean = [];
+function gmLinkGenerateLinkText(curLink, withDesc) {
+    let arrText = gmPrepareLinkTextData(curLink, withDesc);
+    let searchTextClean = [];
     let htmlText = "";
     if (gmIsArray(arrText)) {
         for (let idxST = 0; idxST < arrText.length; idxST++) {
@@ -1314,7 +1408,7 @@ function gmLinkGenerateLinkText(arrText) {
 /**
  * Adds a javascript block into the page.
  *
- * @param scc - a string, a function or an array with the javascript code or a function-list
+ * @param {Object|Function|Array|string} scc - a string, a function or an array with the javascript code or a function-list
  * @returns {boolean} TRUE = if the script block could be set, else FALSE
  */
 function gmAddScriptGlobal(scc) {
@@ -1343,7 +1437,7 @@ function gmAddScriptGlobal(scc) {
 /**
  * Adds a link to a javascript file into the page.
  *
- * @param scLink - a string or an array with the url of the javascript-file
+ * @param {string|string[]} scLink - a string or an array with the url of the javascript-file
  * FIXME: Check
  */
 function gmAddScriptLinkGlobal(scLink) {
@@ -1370,7 +1464,7 @@ function gmAddScriptLinkGlobal(scLink) {
 /**
  * Adds a style block into the page.
  *
- * @param scc - a string or an array with the css code
+ * @param {string|string[]} scc - a string or an array with the css code
  * @returns {boolean} TRUE = if the style block could be set, else FALSE
  */
 function gmAddStyleGlobal(scc) {
@@ -1399,11 +1493,11 @@ function gmAddStyleGlobal(scc) {
 /**
  * Generates some sample entries for testing.
  *
- * @param maxEntries - number of entries to generate
- * @returns {Array} array of entries
+ * @param {number} maxEntries - number of entries to generate
+ * @returns {PagelinksClazz[]} array of entries
  */
 function gmGenTestEntries(maxEntries) {
-    if (isNaN(maxEntries) || maxEntries === "") {
+    if (isNaN(maxEntries)) {
         maxEntries = 1;
     }
     if (maxEntries < 0) {
@@ -1413,10 +1507,9 @@ function gmGenTestEntries(maxEntries) {
     }
     let testArray = [];
     for (let i = 1; i <= maxEntries; i++) {
-        let htmllink = "https://" + currSite + currPath + "/link-" + i;
-        let htmltext = "linktext-" + i;
-        let curlink = [htmllink, htmltext];
-        testArray.push(curlink);
+        let htmlLink = "https://" + currSite + currPath + "/link-" + i;
+        let htmlText = "linktext-" + i;
+        testArray.push(new PagelinksClazz(htmlLink, htmlText));
     }
     return testArray;
 }
@@ -1424,7 +1517,7 @@ function gmGenTestEntries(maxEntries) {
 /**
  * Calculate the offset of an element relating to the elemnt at the most top.
  *
- * @param {Object} element - the element to check the offeset
+ * @param {Object|HTMLInputElement} element - the element to check the offeset
  * @returns {number[]} an array with the leftOffset, topOffset
  *          FIXME:TEST
  */
@@ -1445,9 +1538,9 @@ function gmCumulativeOffset(element) {
 /**
  * Calculates the horizontal offset to the right in relation to it's parent element.
  *
- * @param parentElem - the element to calculate the offset from
- * @param iPoint - a screen point, to add an additional offset
- * @param iZoom  - the zoom factor 1= Originalsize
+ * @param {Object} parentElem - the element to calculate the offset from
+ * @param {Array} iPoint - a screen point, to add an additional offset
+ * @param {number} iZoom  - the zoom factor 1= Originalsize
  * @returns {number} the horizontal offset or 0 FIXME:Test
  */
 function gmCalcOffsetH(parentElem, iPoint, iZoom) {
@@ -1469,9 +1562,9 @@ function gmCalcOffsetH(parentElem, iPoint, iZoom) {
 /**
  * Searches the url for a pattern and replace the text.
  *
- * @param searchForPattern - the pattern to search for
- * @param replaceWithText  - the text what will be inserted instead
- * @param oldUrl           - the URL to search in
+ * @param {string} searchForPattern - the pattern to search for
+ * @param {string} replaceWithText  - the text what will be inserted instead
+ * @param {string} oldUrl           - the URL to search in
  * @returns {string} the url with replaced text
  */
 function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
@@ -1492,7 +1585,7 @@ function gmGetReplaceUrl(searchForPattern, replaceWithText, oldUrl) {
 /**
  * Returns the actual server of the running page.
  *
- * @returns a server name
+ * @returns {string} a server name
  */
 function gmGetCurrentSite() {
     let currSite = document.location.host;
@@ -1531,12 +1624,12 @@ function gmGetImageSize(newImage) {
 /**
  * Add a default style to a div-element.
  *
- * @param hDiv - the div-element
- * @param iPoint - metrics of the image [width, height] in px
- * @param offsetW - an offset (number) for the width (optional), default is 5px
- * @param offsetH - an offset (number) for the height (optional), default is 5px
- * @param ratio - the aspect ratio of the image, only is used, if we have no image height
- * @param iZoom -
+ * @param {Object} hDiv - the div-element
+ * @param {number[]} iPoint - metrics of the image [width, height] in px
+ * @param {number} offsetW - an offset (number) for the width (optional), default is 5px
+ * @param {number} offsetH - an offset (number) for the height (optional), default is 5px
+ * @param {number} ratio - the aspect ratio of the image, only is used, if we have no image height
+ * @param {number} iZoom -
  * @returns {boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
@@ -1591,11 +1684,11 @@ function gmSetDivLayout(hDiv, iPoint, offsetW, offsetH, ratio, iZoom) {
 /**
  * Add a default style to an img-element.
  *
- * @param hDiv - the div-element
- * @param hImg - the img-element
- * @param iPoint - metrics of the image [width, height] in px
- * @param iZoom - the zoom factor (1 = Originalsize)
- * @returns {Boolean} TRUE = the layout could be added, else FALSE
+ * @param {Object} hDiv - the div-element
+ * @param {Object} hImg - the img-element
+ * @param {number[]} iPoint - metrics of the image [width, height] in px
+ * @param {number} iZoom - the zoom factor (1 = Originalsize)
+ * @returns {boolean} TRUE = the layout could be added, else FALSE
  */
 function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
     let h = "auto";
@@ -1637,7 +1730,6 @@ function gmSetImgLayout(hDiv, hImg, iPoint, iZoom) {
         gmSetAtI(hDiv, "style", css);
         isSet = true;
     }
-
     return isSet;
 }
 
@@ -1658,7 +1750,7 @@ function gmGetBody() {
 }
 
 /**
- * @param obj - the object from which to get the css-style
+ * @param {string|Object} obj - the object from which to get the css-style
  * @returns {Object} the css-style-object from that object
  */
 function gmGetStyle(obj) {
@@ -1693,6 +1785,11 @@ function gmGetBodyHeight() {
     return Math.max(Dh, Eh);
 }
 
+/**
+ *
+ * @param {string} url
+ * @return {boolean}
+ */
 function gmOpenInTab(url) {
     if (url) {
         window.open(url, "_blank");

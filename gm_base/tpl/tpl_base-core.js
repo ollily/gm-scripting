@@ -3,10 +3,6 @@
 // ---------------
 // noinspection JSUnusedGlobalSymbols
 
-/**
- * List of all URLs which are known by this script.
- */
-const knownSite = [];
 const CURR_HOST = document.location.host;
 let CURR_PORT = document.location.port;
 
