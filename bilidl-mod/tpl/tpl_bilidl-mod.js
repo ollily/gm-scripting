@@ -1,63 +1,84 @@
+/**
+ * Define the global variables used for this script.
+ */
+const scriptID = "BDM";
+
 (function () {
     "use strict";
-
-    let btnGet = "Get";
     const size_mb = 1048576;
     const size_byt = 1 / size_mb;
+    const btnColorText = "#3aaf20";
+    const btnColorBg = "#aff5a0";
+    const btnColorText2 = "#af2020";
+    const btnColorBg2 = "#f5a0a0";
+    const btnColorText3 = "#aaaaaa";
+    const btnColorBg3 = "#eeeeee";
+
     let controller, fileName, dataObj, qualityList, videoList;
 
-    // let span = document.createElement("span"),
-    //     option = document.createElement("option"),
-    //     div = document.createElement("div"),
-    //     select = document.createElement("select"),
-    //     button = document.createElement("button");
+    let div = gmCreateObj(null, "div", `${scriptID}cont`);
+    let select = gmCreateObj(div, "select", `${scriptID}sel`);
+    let option = gmCreateObj(select, "option", null);
+    let button = gmCreateObj(div, "button", `${scriptID}btnDL`);
+    let span = gmCreateObj(div, "span", `${scriptID}prog`);
 
-    let div = gmCreateObj(null, "div", 3);
-    let select = gmCreateObj(div, "select", 4);
-    let option = gmCreateObj(select, "option", 2);
-    let button = gmCreateObj(div, "button", 5);
-    let span = gmCreateObj(span, "span", 1);
-
-    let loop = function (i) {
-        if ($(i)[0] === undefined) {
+    let loop = function (searchText) {
+        let tmpFile = $(searchText)[0];
+        if (tmpFile === undefined) {
             setTimeout(() => {
-                loop(i);
+                loop(searchText);
             }, 1000);
         } else {
-            fileName = $(i)[0].textContent;
+            fileName = tmpFile.textContent;
         }
     };
 
-    if ($(".special-cover")[0] != undefined) {
-        div.style.position = "absolute";
-    }
-    div.style.marginLeft = "137.667px";
-    button.style.width = "90px";
-    button.style.height = "49px";
-    button.style.fontSize = "20px";
-    select.style.fontSize = "20px";
-    select.style.height = "45px";
-    select.style.width = "320px";
-    span.style.fontSize = "20px";
+    gmSetStyle(div, "position", "relative");
+    gmSetStyle(div, "top", "0");
+    gmSetStyle(div, "left", "25px");
+    gmSetStyle(div, "margin", "0");
+    gmSetStyle(div, "padding", "2px");
+    gmSetStyle(div, "font-size", "14px");
+    gmSetStyle(div, "font-family", "Tahoma, Arial");
+    gmSetStyle(div, "color", "#000000");
+    gmSetStyle(div, "background-color", btnColorBg3);
+    gmSetStyle(div, "min-width", "100px");
+    gmSetStyle(div, "max-width", "380px");
+    gmSetStyle(div, "overflow", "visible");
+    gmSetStyle(div, "z-index", "99999");
+    gmSetStyle(div, "white-space", "nowrap");
+    gmSetStyle(div, "border-radius", "4px");
+
+    gmSetStyle(select, "margin", "0");
+    gmSetStyle(select, "padding", "3px 5px");
+    gmSetStyle(select, "border", "2px solid " + btnColorBg);
+    gmSetStyle(select, "max-height", "50px");
+    gmSetStyle(select, "max-width", "350px");
+    gmSetStyle(select, "border-radius", "4px");
+
+    gmSetStyle(button, "margin", "0 2px");
+    gmSetStyle(button, "padding", "2px 5px");
+    gmSetStyle(button, "cursor", "pointer");
+    gmSetStyle(button, "color", btnColorText);
+    gmSetStyle(button, "background-color", btnColorBg);
+    gmSetStyle(button, "border", "1px solid " + btnColorText3);
+    gmSetStyle(button, "border-radius", "4px");
     button.setAttribute("v-on:click", "click");
-    option.setAttribute("v-for", "i in options");
     button.textContent = "{{text}}";
+
+    option.setAttribute("v-for", "i in options");
     option.textContent = "{{ i }}";
+
+    gmSetStyle(span, "font-size", "8pt");
+    gmSetStyle(span, "line-height", "9pt");
+    gmSetStyle(span, "padding", "0 5px");
     span.textContent = "{{text}}";
 
     if (window.location.href.match(/video/)) {
         $("#video-page-app")[0].after(div);
-        // div.prepend(select);
-        // select.after(button);
-        // select.prepend(option);
-        // button.after(span);
         loop(".tit");
     } else if (window.location.href.match(/bangumi/)) {
         $("#app")[0].before(div);
-        // div.prepend(select);
-        // select.after(button);
-        // select.prepend(option);
-        // button.after(span);
         loop(".bilibili-player-video-top-title");
     }
 
@@ -78,29 +99,29 @@
         return data;
     };
 
-    let statVm = new Vue({
+    let statusVm = new Vue({
         el: span,
         data: {
             text: ""
         }
     });
 
-    let buttVm = new Vue({
+    let buttonVm = new Vue({
         el: button,
         data: {
-            text: btnGet,
+            text: "Get",
             signal: false
         },
         methods: {
             click: function () {
-                if (buttVm.signal === false) {
+                if (buttonVm.signal === false) {
                     controller = new AbortController();
                     this.signal = true;
                     this.stat2();
-                    for (let i = 0; i < seleVm.$el.length; i++) {
-                        let s = seleVm.$el[i];
+                    for (let idxStreams = 0; idxStreams < selectVm.$el.length; idxStreams++) {
+                        let s = selectVm.$el[idxStreams];
                         if (s.selected === true) {
-                            this.download(i);
+                            this.download(idxStreams);
                         }
                     }
                 } else {
@@ -108,22 +129,25 @@
                     this.signal = false;
                     controller.abort();
                     this.stat1();
-                    statVm.text = " 已取消!";
+                    statusVm.text = " Cancelled!";
                 }
             },
-            download: async function (i) {
+            download: async function (stream) {
                 try {
-                    let resV = await fetch(videoList[i].baseUrl.replace("http:", "https:"), {signal: controller.signal});
+                    let resV = await fetch(videoList[stream].baseUrl.replace("http:", "https:"), {signal: controller.signal});
                     let resA = await fetch(dataObj.dash.audio[0].baseUrl.replace("http:", "https:"), {signal: controller.signal});
                     const readerV = resV.body.getReader();
                     const readerA = resA.body.getReader();
                     const VcontentLength = resV.headers.get("Content-Length");
                     const AcontentLength = resA.headers.get("Content-Length");
-                    const totalLength = ((parseInt(VcontentLength) + parseInt(AcontentLength)) / (1024 * 1024)).toFixed(2);
+                    const totalLength = ((parseInt(VcontentLength) + parseInt(AcontentLength)) / (size_mb)).toFixed(1);
+
                     let receivedLength = 0;
                     let vchunks = [];
                     let achunks = [];
-                    //fetch progress
+
+                    let bProc = true;
+                    //fetch video
                     while (true) {
                         const {done, value} = await readerV.read();
                         if (done) {
@@ -131,8 +155,12 @@
                         }
                         vchunks.push(value);
                         receivedLength += value.length;
-                        statVm.text = ` DL:${(parseFloat(receivedLength) / 1024 / 1024).toFixed(2)}MiB Aprox:${totalLength}MiB`;
+                        if (bProc) {
+                            progress(statusVm, receivedLength, totalLength);
+                        }
+                        bProc = !bProc;
                     }
+                    //fetch audio
                     while (true) {
                         const {done, value} = await readerA.read();
                         if (done) {
@@ -140,48 +168,56 @@
                         }
                         achunks.push(value);
                         receivedLength += value.length;
-                        statVm.text = ` DL:${(parseFloat(receivedLength) / 1024 / 1024).toFixed(2)}MiB Aprox:${totalLength}MiB`;
+                        if (bProc) {
+                            progress(statusVm, receivedLength, totalLength);
+                        }
+                        bProc = !bProc;
                     }
+                    statusVm.text = ` ${totalLength}MB`;
+
+                    // prepare download link
                     let vblob = new Blob(vchunks);
                     let ablob = new Blob(achunks);
-                    statVm.text = ` Apply... Aprox:${totalLength}MiB`;
                     let result = await mergeVideo(vblob, ablob);
                     let blob = new Blob([result.data]);
-                    let dl = document.createElement("a");
+
+                    //let dl = document.createElement("a");
+                    let dl = gmCreateObj(null, "a", scriptID + "aDL");
                     dl.download = `${fileName}.mp4`;
                     dl.href = URL.createObjectURL(blob);
                     dl.click();
                     URL.revokeObjectURL(dl.href);
                     dl.remove();
-                    statVm.text = ` Multiplexing! Total:${totalLength}MiB`;
+
+                    statusVm.text = ` Done:${totalLength}MB`;
                     this.stat1();
                     this.signal = false;
                 } catch (err) {
                     console.log(err.name);
-                    if (err.name != "AbortError") {
-                        statVm.text = " An error occurred! Please try again";
+                    if (err.name !== "AbortError") {
+                        statusVm.text = " An error occurred! Please try again";
                     }
                     this.stat1();
                 }
             },
             stat1: function () {
                 this.text = "download";
-                this.$el.style.backgroundColor = "#89e078";
-                this.$el.style.color = "#3aaf20";
+                this.$el.style.backgroundColor = btnColorBg;
+                this.$el.style.color = btnColorText;
             },
             stat2: function () {
                 this.text = "cancel";
-                this.$el.style.backgroundColor = "#e07878";
-                this.$el.style.color = "#af2020";
+                this.$el.style.backgroundColor = btnColorBg2;
+                this.$el.style.color = btnColorText2;
             }
         }
     });
 
     try {
         // parse url
-        for (let i = 0; i < document.querySelectorAll("script").length; i++) {
-            if (/^window.__playinfo__/.test(document.querySelectorAll("script")[i].innerText)) {
-                dataObj = JSON.parse(document.querySelectorAll("script")[i].innerText.replace("window.__playinfo__=", "")).data;
+        for (let idxScript = 0; idxScript < document.querySelectorAll("script").length; idxScript++) {
+            if (/^window.__playinfo__/.test(document.querySelectorAll("script")[idxScript].innerText)) {
+                dataObj = JSON.parse(document.querySelectorAll("script")[idxScript].innerText.replace("window.__playinfo__=", "")).data;
                 break;
             }
         }
@@ -192,20 +228,18 @@
             if (item.id === 116 || item.id === 74) {
                 fps = "60";
             } else {
-                fps = item.id;
+                fps = "  ";
             }
             qualityList[index] = item.height + "p" + fps + " " + item.mimeType.replace(/....../, "") + "-" + item.codecs;
         });
-        alert(videoList);
-        alert(qualityList);
     } catch (err) {
         //error when parsing premium video with non-premium account or getting network issue
-        statVm.text = " Analysis error! Try refreshing page";
-        buttVm.$el.disabled = true;
+        statusVm.text = " Analysis error! Try refreshing page";
+        buttonVm.$el.disabled = true;
     }
 
     let optionsList = {options: qualityList};
-    let seleVm = new Vue({
+    let selectVm = new Vue({
         el: select,
         data: optionsList
     });
@@ -213,11 +247,12 @@
     /**
      *
      * @param {HTMLElement} el
-     * @param {number} proc
-     * @param {number} totalLength
+     * @param {number|string} proc
+     * @param {number|string} totalLength
      */
     function progress(el, proc, totalLength) {
-        el.text = ` DL: ${(parseFloat(proc) * size_byt).toFixed(2)}/${totalLength}MB`;
+        let curProc = (parseFloat(proc) * size_byt).toFixed(1);
+        el.text = ` ${curProc}/${totalLength}MB`;
 
     }
 })();

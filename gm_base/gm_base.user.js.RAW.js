@@ -1750,8 +1750,8 @@ function gmGetBody() {
 }
 
 /**
- * @param {string|Object} obj - the object from which to get the css-style
- * @returns {Object} the css-style-object from that object
+ * @param {string|HTMLElement} obj - the object from which to get the css-style
+ * @returns {HTMLStyleElement} the css-style-object from that object
  */
 function gmGetStyle(obj) {
     let res = null;
@@ -1764,6 +1764,25 @@ function gmGetStyle(obj) {
         }
     }
     return res;
+}
+
+/**
+ *
+ * @param {string|HTMLElement} obj - the object to set the css-style
+ * @param {string} styleName - the name of style
+ * @param {*} styleValue - the new value for this style
+ * @return {HTMLElement} the modified object
+ */
+function gmSetStyle(obj, styleName, styleValue) {
+    let oStyle = gmGetStyle(obj);
+    if (oStyle) {
+        try {
+            gmSetAtI(oStyle, styleName, styleValue);
+        } catch (e) {
+            // ignored
+        }
+    }
+    return obj;
 }
 
 /**
