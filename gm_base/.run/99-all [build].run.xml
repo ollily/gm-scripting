@@ -7,7 +7,6 @@
     <option name="SCRIPT_NAME" value="" />
     <option name="PARAMETERS" value="" />
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="01-gm_base [build]" run_configuration_type="BatchConfigurationType" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="10-grab_links [build]" run_configuration_type="BatchConfigurationType" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="40-flickr_hover_images [build]" run_configuration_type="BatchConfigurationType" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="41-xing_hover_images [build]" run_configuration_type="BatchConfigurationType" />

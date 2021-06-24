@@ -6,8 +6,6 @@
     <module name="" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/release-build.cmd" />
     <option name="PARAMETERS" value="" />
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="01-gm_base [build]" run_configuration_type="BatchConfigurationType" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>
