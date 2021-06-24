@@ -1,23 +1,42 @@
+// ==UserScript==
+// @name            bilidl-mod
+// @fullname        bilibili.com downloader (european mod)
+// @description     Download bilibili videos (european mod)
+// @author          ollily2907
+// @license         MIT License
+// @homepageURL     https://github.com/ollily/gm-scripting
+// @supportURL      https://github.com/ollily/gm-scripting
+// @downloadURL     https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @installURL      https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @source          https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
+// @icon            https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/resource/gl_logo.png
+// @compatible      firefox >=52
+// @compatible      chrome >=57
+// @namespace       http://userscripts.org/users/ollily
+// @run-at          document-idle
+// @version         0.01.000
+// @match                https://www.bilibili.com/bangumi/play/*
+// @match                https://www.bilibili.com/video/*
+// @grant                none
+// @require              https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js
+// @require              https://unpkg.com/@ffmpeg/ffmpeg@0.7.0/dist/ffmpeg.min.js
+// @require              https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js
+// ==/UserScript==
+
+//
+//GM-Script specific code - START
+//
+
 (function () {
     "use strict";
-
     let btnGet = "Get";
-    const size_mb = 1048576;
-    const size_byt = 1 / size_mb;
     let controller, fileName, dataObj, qualityList, videoList;
-
-    // let span = document.createElement("span"),
-    //     option = document.createElement("option"),
-    //     div = document.createElement("div"),
-    //     select = document.createElement("select"),
-    //     button = document.createElement("button");
-
-    let div = gmCreateObj(null, "div", 3);
-    let select = gmCreateObj(div, "select", 4);
-    let option = gmCreateObj(select, "option", 2);
-    let button = gmCreateObj(div, "button", 5);
-    let span = gmCreateObj(span, "span", 1);
-
+    let span = document.createElement("span"),
+        option = document.createElement("option"),
+        div = document.createElement("div"),
+        select = document.createElement("select"),
+        button = document.createElement("button");
     let loop = function (i) {
         if ($(i)[0] === undefined) {
             setTimeout(() => {
@@ -47,17 +66,17 @@
 
     if (window.location.href.match(/video/)) {
         $("#video-page-app")[0].after(div);
-        // div.prepend(select);
-        // select.after(button);
-        // select.prepend(option);
-        // button.after(span);
+        div.prepend(select);
+        select.after(button);
+        select.prepend(option);
+        button.after(span);
         loop(".tit");
     } else if (window.location.href.match(/bangumi/)) {
         $("#app")[0].before(div);
-        // div.prepend(select);
-        // select.after(button);
-        // select.prepend(option);
-        // button.after(span);
+        div.prepend(select);
+        select.after(button);
+        select.prepend(option);
+        button.after(span);
         loop(".bilibili-player-video-top-title");
     }
 
@@ -166,13 +185,11 @@
             },
             stat1: function () {
                 this.text = "download";
-                this.$el.style.backgroundColor = "#89e078";
-                this.$el.style.color = "#3aaf20";
+                this.$el.style.backgroundColor = "";
             },
             stat2: function () {
                 this.text = "cancel";
-                this.$el.style.backgroundColor = "#e07878";
-                this.$el.style.color = "#af2020";
+                this.$el.style.backgroundColor = "#99ccff";
             }
         }
     });
@@ -189,15 +206,13 @@
         videoList = dataObj.dash.video;
         videoList.forEach((item, index) => {
             let fps;
-            if (item.id === 116 || item.id === 74) {
+            if (item.id == 116 || item.id == 74) {
                 fps = "60";
             } else {
-                fps = item.id;
+                fps = "";
             }
             qualityList[index] = item.height + "p" + fps + " " + item.mimeType.replace(/....../, "") + "-" + item.codecs;
         });
-        alert(videoList);
-        alert(qualityList);
     } catch (err) {
         //error when parsing premium video with non-premium account or getting network issue
         statVm.text = " Analysis error! Try refreshing page";
@@ -209,15 +224,13 @@
         el: select,
         data: optionsList
     });
-
-    /**
-     *
-     * @param {HTMLElement} el
-     * @param {number} proc
-     * @param {number} totalLength
-     */
-    function progress(el, proc, totalLength) {
-        el.text = ` DL: ${(parseFloat(proc) * size_byt).toFixed(2)}/${totalLength}MB`;
-
-    }
 })();
+//
+//GM-Script specific code - END
+//
+
+
+//
+//GM-Script - END
+//
+

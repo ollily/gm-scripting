@@ -10,7 +10,7 @@
 // @installURL      https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
 // @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
 // @source          https://raw.githubusercontent.com/ollily/gm-scripting/grab_links/grab_links.user.js
-// @icon            https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/resource/gl_logo.png
+// @icon
 // @compatible      firefox >=52
 // @compatible      chrome >=57
 // @namespace       http://userscripts.org/users/ollily
