@@ -2744,12 +2744,13 @@ const MAIN_FORMS_CLR_BORDER = "#808080"; //"#819FF7";
 const MAIN_FORMS_CLR_TEXT = MAIN_CLR_TEXT;
 const MAIN_FORMS_CLR_BG = "#ffffff";
 const MAIN_FORMS_HEIGHT = "20px !important";
+const MAIN_FORMS_LINE_HEIGHT = "15px";
 const HOVER1_CLR_TEXT = "#e0e0e0";
-const HOVER1_CLR_BG = "#A80000";
+const HOVER1_CLR_BG = "#a80000";
 const HOVER2_CLR_TEXT = "#ffffff";
-const HOVER2_CLR_BG = "#A80000";
-const FOCUS_CLR_BG = "#FFFFCC";
-const SCROLLBAR_CLR_RULER = "#A00000"; //"#e0e0e0";
+const HOVER2_CLR_BG = "#a80000";
+const FOCUS_CLR_BG = "#ffffcc";
+const SCROLLBAR_CLR_RULER = "#a00000"; //"#e0e0e0";
 const SCROLLBAR_CLR_BG = MAIN_FORMS_CLR_BORDER;
 
 const CSS_STYLE = `
@@ -2804,10 +2805,12 @@ const CSS_STYLE = `
     color: ` + MAIN_FORMS_CLR_TEXT + `;
     background-color: ` + MAIN_FORMS_CLR_BG + `;
     border: 2px solid ` + MAIN_FORMS_CLR_BORDER + `;
+    box-sizing: border-box;
     font-family: ` + MAIN_FONT_TYPE + `;
     font-size: ` + MAIN_FONT_SIZE + `;
     font-weight: bold;
     height: ` + MAIN_FORMS_HEIGHT + `;
+    line-height: ` + MAIN_FORMS_LINE_HEIGHT + `;
     margin: 0;
     margin-right: 1px;
     max-height: ` + MAIN_FORMS_HEIGHT + `;

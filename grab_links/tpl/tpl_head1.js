@@ -2,9 +2,6 @@
 // @name            Grab Links
 // @fullname        Grab Links
 // @description     Lists all links from one webpage, so you can copy them easily.
-// @name:en         Grab Links
-// @fullname:en     Grab Links
-// @description:en  Lists all links from one webpage, so you can copy them easily.
 // @name:de         Link Schnapper
 // @fullname:de     Link Schnapper
 // @description:de  Alle Links einer Webseite werden aufgelistet und du kannst sie einfach kopieren.
