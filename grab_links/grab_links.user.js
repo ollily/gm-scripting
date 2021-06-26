@@ -25,7 +25,7 @@
 // @grant           GM.addStyle
 // @grant           GM_getResourceText
 // @grant           GM.getResourceText
-// @require         https://raw.githubusercontent.com/ollily/gm-common/0.52.001/gm_base/gm_base.user.js
+// @require         https://greasyfork.org/scripts/428507-gm-base/code/GM%20Base.user.js
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/
