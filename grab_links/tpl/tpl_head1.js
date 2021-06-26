@@ -15,7 +15,7 @@
 // @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/grab_links.user.js
 // @source          https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/grab_links.user.js
 // @icon            https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/resource/gl_logo.png
-// @compatible      chrome
-// @compatible      firefox
+// @compatible      firefox >=52
+// @compatible      chrome >=57
 // @namespace       https://github.com/ollily
 // @run-at          document-end

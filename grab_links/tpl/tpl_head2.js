@@ -3,7 +3,7 @@
 // @grant           GM.addStyle
 // @grant           GM_getResourceText
 // @grant           GM.getResourceText
-// @require         https://github.com/ollily/gm-common/raw/0.52.000/gm_base/gm_base.user.js.RAW.js
+// @require         https://raw.githubusercontent.com/ollily/gm-common/0.52.001/gm_base/gm_base.user.js
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/

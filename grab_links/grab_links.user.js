@@ -15,8 +15,8 @@
 // @updateURL       https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/grab_links.user.js
 // @source          https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/grab_links.user.js
 // @icon            https://raw.githubusercontent.com/ollily/gm-scripting/master/grab_links/resource/gl_logo.png
-// @compatible      chrome
-// @compatible      firefox
+// @compatible      firefox >=52
+// @compatible      chrome >=57
 // @namespace       https://github.com/ollily
 // @run-at          document-end
 // @version         2.02.002
@@ -25,7 +25,7 @@
 // @grant           GM.addStyle
 // @grant           GM_getResourceText
 // @grant           GM.getResourceText
-// @require         https://github.com/ollily/gm-common/raw/0.52.000/gm_base/gm_base.user.js.RAW.js
+// @require         https://raw.githubusercontent.com/ollily/gm-common/0.52.001/gm_base/gm_base.user.js
 // @include         http://gmonkey.*.*/test/*
 // @include         http://devzone.*.*/test/gm/*
 // @include         /http(|s)\://(|.+?\.)youtube\..+?/.*/
