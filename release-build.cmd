@@ -10,8 +10,8 @@ REM -----
 set BASE_DIR=%~dp0
 set FILE_PREFIX=tpl_
 set SRC_BASE_NAME=tpl
-set COMMON_DIR=%BASE_DIR%\gm_base
-set TOOLS_DIR=%BASE_DIR%\gm_tools
+set COMMON_DIR=%BASE_DIR%\..\gm-common\gm_base
+set TOOLS_DIR=%BASE_DIR%\..\gm-common\gm_tools
 set RAW_EXT=.RAW.js
 if "%RAW%x" EQU "x" set RAW=0
 
