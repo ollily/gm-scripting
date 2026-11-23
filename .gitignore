@@ -176,3 +176,4 @@ modules.xml
 **/*.prev
 node_modules
 package-lock.json
+/nbproject/private/
