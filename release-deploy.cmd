@@ -7,8 +7,8 @@ REM -----
 set BASE_DIR=%~dp0
 set FILE_PREFIX=tpl_
 set SRC_DIR=tpl
-set COMMON_DIR=%BASE_DIR%\gm_base
-set TOOLS_DIR=%BASE_DIR%\gm_tools
+set COMMON_DIR=%BASE_DIR%\..\gm-common\gm_base
+set TOOLS_DIR=%BASE_DIR%\..\gm-common\gm_tools
 
 set MODULE_DIR=%cd%
 if "%~1" NEQ "" (

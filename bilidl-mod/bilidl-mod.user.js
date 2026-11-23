@@ -16,7 +16,6 @@
 // @namespace       http://userscripts.org/users/ollily
 // @run-at          document-idle
 // @version         0.01.000
-// @match                https://www.bilibili.com/bangumi/play/*
 // @match                https://www.bilibili.com/video/*
 // @grant                none
 // @require              https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js
