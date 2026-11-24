@@ -367,7 +367,7 @@ endif::[]
 :toc: preamble
 :toclevels: 2
 
-{pj_ps_release_img}
+image:{pj_ps_license_url}[title="License"]
 {pj_ps_langtop_img}
 {pj_ps_langcount_img}
 {pj_ps_issues_img}
@@ -375,6 +375,25 @@ endif::[]
 == Description
 
 Just some userscripts (aka Greasemonkey).
+
+== Usage
+
+There are several userscripts which can be used.
+
+:cm_shlds_install_url: {cm_shlds_badge_url}/Install_the_script-%23b0c800?style=plastic&logo=javascript&logoColor=%230068a9&logoSize=auto&labelColor=white&color=%23b0c800[Install]
+:cm_gh_install_url: {pj_gh_vcsid_url}/raw/refs/heads/master
+
+=== Deprecated Confluence Macros
+Marks all confluence macros, which will not be available on the cloud
+link:{cm_gh_install_url}/dep_conf_macros/dep_conf_macros.user.js[image:{cm_shlds_install_url}]
+
+=== Grab Links
+Lists all links from one webpage, so you can copy them easily.
+link:{pj_gh_vcs_url}/ollily/gm_grab-links/raw/refs/heads/master/gm_grab-links.user.js[image:{cm_shlds_install_url}]
+
+=== Flickr Hover Images
+On Flickr enlarge all Thumbs to middle size.
+link:{cm_gh_install_url}/flickr_hover_images/flickr_hover_images.user.js[image:{cm_shlds_install_url}]
 
 == Configuration
 
@@ -400,25 +419,6 @@ To use user scripts you need install a user script manager first. Dependend on y
 === Ready
 Now you are able to install user scripts.
 There is a https://www.tampermonkey.net/[documentation for Tampermonkey].
-
-== Usage
-
-There are several userscripts which can be used.
-
-:cm_shlds_install_url: {cm_shlds_badge_url}/Install_the_script-%23b0c800?style=plastic&logo=javascript&logoColor=%230068a9&logoSize=auto&labelColor=white&color=%23b0c800[Install]
-:cm_gh_install_url: {pj_gh_vcsid_url}/raw/refs/heads/master
-
-=== Deprecated Confluence Macros
-Marks all confluence macros, which will not be available on the cloud
-link:{cm_gh_install_url}/dep_conf_macros/dep_conf_macros.user.js[image:{cm_shlds_install_url}]
-
-=== Grab Links
-Lists all links from one webpage, so you can copy them easily.
-link:{pj_gh_vcs_url}/ollily/gm_grab-links/raw/refs/heads/master/gm_grab-links.user.js[image:{cm_shlds_install_url}]
-
-=== Flickr Hover Images
-On Flickr enlarge all Thumbs to middle size.
-link:{cm_gh_install_url}/flickr_hover_images/flickr_hover_images.user.js[image:{cm_shlds_install_url}]
 
 
 _{pj_cright_author}_
