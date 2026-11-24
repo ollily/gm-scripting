@@ -19,183 +19,27 @@
 // @icon            https://cdn.jsdelivr.net/gh/ollily/gm-scripting/dep_conf_macros/resource/logo.png
 // @namespace       http://coding.glowa-net.com
 // @run-at          document-end
-// @version         0.02.001
-// @grant           unsafeWindow
-// @grant           GM_addStyle
-// @grant           GM.addStyle
-// @grant           GM_getResourceText
-// @grant           GM.getResourceText
+// @version         0.02.002
 // @require         https://releases.jquery.com/git/jquery-3.x-git.slim.min.js
 // @include         https://*.*/spaces/*
 // ==/UserScript==
 
 /*
- History
- 0.01.001: Initial Version
- 0.02.001: Optimizing code
+History
+0.01.001: Initial Version
+0.02.001: Optimizing code
+0.02.002: Macrolist updated (24.11.26)
  */
 
 (function () {
     'use strict';
     const appTitle = 'DCM';
+    const appVersion = '0.02.001';
+    
+    const macrUnsupp = ["attachment-table", "csv", "gallery", "unmigrated-wiki-markup", "search", "spaces", "loremipsum", "projectdoc-story-points", "projectdoc-story-relevance", "projectdoc-story-status", "projectdoc-actor-type", "projectdoc-communication-type", "projectdoc-feature-importance", "projectdoc-issue-severity", "projectdoc-issue-status", "projectdoc-project-constraint-type", "projectdoc-project-vision-type", "projectdoc-quality-scenario-type", "projectdoc-technical-debt-quality", "projectdoc-use-case-level", "projectdoc-user-character-type", "projectdoc-user-type", "vbcp-enterprise-process-net-macro", "workflow-reporter", "html", "html-include", "rss", "rss-include", "um-rule-blue", "um-iframe", "um-css-style", "link-to", "child-counter", "incoming-links", "orphaned-links", "outgoing-links", "undefined-links", "link-window", "projectdoc-stakeholder-rating-macro", "projectdoc-hide", "projectdoc-display-all-properties-macro", "projectdoc-display-all-space-properties-macro", "projectdoc-display-space-attribute-macro", "projectdoc-index-entries-table-macro", "projectdoc-tag-list-macro", "projectdoc-action-button-macro", "projectdoc-attachment-link-macro", "projectdoc-box-deprecated", "projectdoc-box-fault", "projectdoc-box-feedback", "projectdoc-box-generic", "projectdoc-box-pending", "projectdoc-box-question", "projectdoc-box-references", "projectdoc-box-version", "projectdoc-changelog-macro", "projectdoc-complexity", "projectdoc-count-macro", "projectdoc-even-rating-macro", "projectdoc-hml-rating", "projectdoc-level-macro", "projectdoc-priority", "projectdoc-property-display-as-list-macro", "projectdoc-random-static-transclusion-macro", "projectdoc-table-set-macro", "projectdoc-transclusion-property-display-as-link-macro", "projectdoc-transclusion-text-macro", "excerpt-includeplus", "ai-table", "spreadsheet-body-table", "spreadsheet-include", "spreadsheet-table", ];
+    const macrMaybe = ["portfolio-for-jira-plan", "jql-table", "json-table", "table-plus", "gadget", "viewdoc", "viewppt", "vbcp-macro-enterprise", "add-page", "add-page-form", "link-page", "projectdoc-hide-from-anonymous-user-macro", "projectdoc-definition-list-macro", "projectdoc-aside-panel-macro", "projectdoc-box-example", "projectdoc-box-info", "projectdoc-box-tip", "projectdoc-box-warning", "projectdoc-code-block-placeholder-macro", "projectdoc-content-marker", "projectdoc-create-one-document-macro", "projectdoc-display-template-list", "projectdoc-dynamic-document-link-macro", "projectdoc-in-document-link-macro", "projectdoc-layout-element-macro", "projectdoc-page-include-macro", "projectdoc-physical-children-macro", "projectdoc-properties-supplier-from-documents-macro", "projectdoc-properties-supplier-macro", "projectdoc-properties-supply-by-attachment-macro", "projectdoc-quote", "projectdoc-space-list-macro", "projectdoc-space-property-display-macro", "projectdoc-steps-macro", "projectdoc-tour-by-property-macro", "projectdoc-transclusion-macro", "projectdoc-section", "projectdoc-transclude-documents-macro", "projectdoc-transclusion-ancestor-property-macro", "projectdoc-transclusion-properties-display", "projectdoc-transclusion-property-display-as-image-macro", "projectdoc-transclusion-property-display-ref", "projectdoc-transclusion-property-display-ref-concat", "projectdoc-transclusion-ref-macro", "includeplus", "sv-pagetree", "table-chart", "table-filter", "csv-table", "json-from-table", "pivot-table", "table-excerpt", "table-excerpt-include", "table-joiner", ];
+    const macrTransition = ["create-from-template", "projectdoc-hide-from-reader-macro", "projectdoc-table-merger-macro", "projectdoc-box-caution", "projectdoc-box-note", "projectdoc-display-list", "projectdoc-display-table", "projectdoc-iteration", "projectdoc-link-external", "projectdoc-link-wiki", "projectdoc-name-list", "projectdoc-primary-page-property-display-macro", "projectdoc-properties-marker", "projectdoc-quote-external", "projectdoc-tour-macro", "projectdoc-transclusion-parent-property", "projectdoc-transclusion-property-display", "scroll-exportbutton", ];
 
-    const macrUnsupp = [
-        /* Misc */
-        "gallery",
-        "loremipsum",
-        "search",
-        "spaces",
-        "unmigrated-wiki-markup",
-        "gadget",
-        "html",
-        "html-include",
-        "rss",
-        "rss-include",
-        "um-css-style",
-        "um-iframe",
-        "um-rule-blue",
-        /* Linking for Confluence */
-        "child-counter",
-        "incoming-links",
-        "link-to",
-        "link-window",
-        "orphaned-links",
-        "outgoing-links",
-        "undefined-links",
-        /* PDT */
-        "projectdoc-story-points",
-        "projectdoc-story-relevance",
-        "projectdoc-story-status",
-        "projectdoc-actor-type",
-        "projectdoc-communication-type",
-        "projectdoc-feature-importance",
-        "projectdoc-issue-severity",
-        "projectdoc-issue-status",
-        "projectdoc-project-constraint-type",
-        "projectdoc-project-vision-type",
-        "projectdoc-quality-scenario-type",
-        "projectdoc-technical-debt-quality",
-        "projectdoc-use-case-level",
-        "projectdoc-user-character-type",
-        "projectdoc-user-type",
-        "projectdoc-stakeholder-rating-macro",
-        "projectdoc-action-button-macro",
-        "projectdoc-attachment-link-macro",
-        "projectdoc-box-deprecated",
-        "projectdoc-box-fault",
-        "projectdoc-box-feedback",
-        "projectdoc-box-generic",
-        "projectdoc-box-pending",
-        "projectdoc-box-question",
-        "projectdoc-box-references",
-        "projectdoc-box-version",
-        "projectdoc-changelog-macro",
-        "projectdoc-complexity",
-        "projectdoc-count-macro",
-        "projectdoc-display-all-properties-macro",
-        "projectdoc-display-space-attribute-macro",
-        "projectdoc-even-rating-macro",
-        "projectdoc-hide",
-        "projectdoc-hml-rating",
-        "projectdoc-index-entries-table-macro",
-        "projectdoc-level-macro",
-        "projectdoc-priority",
-        "projectdoc-property-display-as-list-macro",
-        "projectdoc-random-static-transclusion-macro",
-        "projectdoc-table-set-macro",
-        "projectdoc-tag-list-macro",
-        "projectdoc-transclusion-property-display-as-link-macro",
-        "projectdoc-transclusion-text-macro",
-        /* Scroll */
-        "excerpt-includeplus",
-        /* Table Filter and Charts for Confluence */
-        "ai-table",
-        "spreadsheet-body-table",
-        "spreadsheet-include",
-        "spreadsheet-table",
-        /* Advanced Table */
-        "attachment-table",
-        "csv",
-        /* Comala Document Management */
-        "workflow-reporter",
-    ];
-    const macrMaybe = [
-        "projectdoc-properties-marker",
-    ];
-    const macrTransition = [
-        /* Misc */
-        "create-from-template",
-        "viewppt",
-        "portfolio-for-jira-plan",
-        /** BPMN Modeler Enterprise */
-        "vbcp-macro-enterprise",
-        /* PDT */
-        "projectdoc-aside-panel-macro",
-        "projectdoc-box-caution",
-        "projectdoc-box-example",
-        "projectdoc-box-info",
-        "projectdoc-box-note",
-        "projectdoc-box-tip",
-        "projectdoc-box-warning",
-        "projectdoc-code-block-placeholder-macro",
-        "projectdoc-content-marker",
-        "projectdoc-create-one-document-macro",
-        "projectdoc-definition-list-macro",
-        "projectdoc-display-list",
-        "projectdoc-display-table",
-        "projectdoc-display-template-list",
-        "projectdoc-dynamic-document-link-macro",
-        "projectdoc-hide-from-reader-macro",
-        "projectdoc-in-document-link-macro",
-        "projectdoc-iteration",
-        "projectdoc-layout-element-macro",
-        "projectdoc-link-external",
-        "projectdoc-link-wiki",
-        "projectdoc-name-list",
-        "projectdoc-page-include-macro",
-        "projectdoc-physical-children-macro",
-        "projectdoc-primary-page-property-display-macro",
-        //"projectdoc-properties-marker",
-        "projectdoc-properties-supplier-from-documents-macro",
-        "projectdoc-properties-supplier-macro",
-        "projectdoc-quote",
-        "projectdoc-quote-external",
-        "projectdoc-section",
-        "projectdoc-space-list-macro",
-        "projectdoc-space-property-display-macro",
-        "projectdoc-steps-macro",
-        "projectdoc-table-merger-macro",
-        "projectdoc-tour-by-property-macro",
-        "projectdoc-tour-macro",
-        "projectdoc-transclude-documents-macro",
-        "projectdoc-transclusion-ancestor-property-macro",
-        "projectdoc-transclusion-macro",
-        "projectdoc-transclusion-parent-property",
-        "projectdoc-transclusion-properties-display",
-        "projectdoc-transclusion-property-display",
-        "projectdoc-transclusion-property-display-as-image-macro",
-        "projectdoc-transclusion-property-display-ref",
-        "projectdoc-transclusion-property-display-ref-concat",
-        "projectdoc-transclusion-ref-macro",
-        /* Table Filter and Charts for Confluence */
-        "csv-table",
-        "pivot-table",
-        "table-chart",
-        "table-excerpt",
-        "table-excerpt-include",
-        "table-filter",
-        "table-joiner",
-        /* Scroll */
-        "includeplus",
-        "scroll-exportbutton",
-        /* Linking for Confluence */
-        "add-page",
-        "link-page",
-        /* Advanced Table */
-        "jql-table",
-        "json-table",
-        "table-plus",
-    ];
     // Controlbox
     const cssContainer = "dcm-cssContainer";
     const styleContainer = "position:fixed;right:15px;bottom:15px;min-width:100px;max-width:50%;min-height:20px;max-height:95%;padding:0;margin:0 5px 5px 0;border:2px solid #0068a9;border-radius:5px;background-color:hsl(203, 100%, 96%);color:#000000;display:grid;grid-template-columns:auto;visibility:visible;z-index:9999;";
@@ -244,12 +88,13 @@
                 ;
             }
         },
-        createSumBox: function (parent, title) {
+        createSumBox: function (parent, title, version) {
             let container;
 
             if (parent) {
+                let appTitle = title + "-" + version;
                 container = '<div id="dcm-sum-container" class="dcm-cssContainer">';
-                container += '<div id="dcm-sum-title" class="dcm-cssTitle"><div style="text-align:left">' + title + '</div><div><button id="dcm-btn-start" alt="Start" title="Start Analysis">Start</button><button id="dcm-btn-close" alt="Close" title="Close">X</button></div></div>';
+                container += '<div id="dcm-sum-title" class="dcm-cssTitle"><div style="text-align:left">' + appTitle + '</div><div><button id="dcm-btn-start" alt="Start" title="Start Analysis">Start</button><button id="dcm-btn-close" alt="Close" title="Close">X</button></div></div>';
                 container += '<div id="dcm-sum-content" class="dcm-cssContent"></div>';
                 container += '</div>';
                 parent.prepend(container);
@@ -313,7 +158,7 @@
     const App = {
         start: function () {
             Func.createCss();
-            let container = Func.createSumBox($("body"), appTitle);
+            let container = Func.createSumBox($("body"), appTitle, appVersion);
         }
     };
 
