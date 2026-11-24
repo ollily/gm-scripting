@@ -367,7 +367,7 @@ endif::[]
 :toc: preamble
 :toclevels: 2
 
-image:{pj_ps_release_img}
+image:{pj_ps_license_url}[title="License"]
 {pj_ps_langtop_img}
 {pj_ps_langcount_img}
 {pj_ps_issues_img}
