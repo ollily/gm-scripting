@@ -367,7 +367,7 @@ endif::[]
 :toc: preamble
 :toclevels: 2
 
-{pj_ps_release_img}
+image:{pj_ps_release_img}
 {pj_ps_langtop_img}
 {pj_ps_langcount_img}
 {pj_ps_issues_img}
